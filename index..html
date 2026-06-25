@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DRO Cargas v4.1 Firebase</title>
+<style>
+:root{--nav:#08213a;--blue:#2563eb;--green:#16a34a;--red:#ef4444;--bg:#f3f7fb;--card:#fff;--line:#d8e2ef;--txt:#142033;--muted:#60708a;--amber:#f59e0b;--purple:#7c3aed;--orange:#f97316}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--txt)}button,input,textarea,select{font:inherit}button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.btn{background:#e8eef7;color:#12213a}.primary{background:var(--blue);color:white}.green{background:var(--green);color:white}.red{background:var(--red);color:white}.dark{background:#071626;color:white}.ghost{background:#eef4fb}.small{padding:7px 10px;font-size:13px}.app{display:flex;min-height:100vh}.side{width:250px;background:var(--nav);color:white;position:fixed;left:0;top:0;bottom:0;transition:.2s;z-index:5;overflow:auto}.side.closed{width:72px}.brand{height:82px;display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid rgba(255,255,255,.12);position:relative}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2f80ed,#1aa286);display:grid;place-items:center;font-weight:900}.brand span{font-weight:900;font-size:20px;white-space:nowrap}.toggle{margin-left:auto;background:#29415e;color:white;border-radius:10px;padding:8px 10px;min-width:38px;z-index:9}.side.closed .toggle{position:absolute;right:-17px;top:23px;border:2px solid #fff;border-radius:50%;width:36px;height:36px;padding:0;background:#29415e;display:grid;place-items:center}.side:not(.closed) .toggle{display:block}.side.closed .brand span,.side.closed .label{display:none}.nav a{display:flex;align-items:center;gap:14px;margin:8px 10px;padding:12px 13px;border-radius:10px;color:white;text-decoration:none}.nav a.active,.nav a:hover{background:#173d63}.ico{font-size:20px;width:22px;text-align:center}.main{margin-left:250px;transition:.2s;width:calc(100% - 250px);padding:28px 32px}.side.closed+.main{margin-left:72px;width:calc(100% - 72px)}h1{margin:0;font-size:30px}.sub{color:var(--muted);margin:4px 0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:22px}.actions{display:flex;gap:10px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:14px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 10px 28px rgba(15,36,67,.06);cursor:pointer}.card b{font-size:34px;display:block;margin-top:8px}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:18px;box-shadow:0 10px 28px rgba(15,36,67,.06)}.panel h2{margin:0 0 12px}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.search{max-width:330px;width:100%;padding:13px;border:1px solid var(--line);border-radius:11px}.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}.table th{background:#f8fbff;text-align:left;color:#30435f;font-size:13px;text-transform:uppercase}.table th,.table td{padding:13px;border-bottom:1px solid var(--line);vertical-align:middle}.table tr:last-child td{border-bottom:0}.table tbody tr:hover{background:#f8fbff}.route{font-weight:900}.money{display:inline-block;background:#eef4ff;padding:7px 10px;border-radius:10px;font-weight:900;margin:2px}.margin{background:#fff3e6}.status{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:900;font-size:13px}.Disponivel{background:#dbeafe;color:#1d4ed8}.Agendado{background:#fef3c7;color:#92400e}.Manifestado{background:#ede9fe;color:#5b21b6}.Carregado{background:#dcfce7;color:#166534}.Transito{background:#ffedd5;color:#9a3412}.Finalizado{background:#dcfce7;color:#166534}.actionsRow{display:flex;gap:8px;flex-wrap:wrap}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:22px}.modal.show{display:flex}.box{background:white;border-radius:18px;padding:22px;max-width:900px;width:100%;max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:13px;color:#53637a;font-weight:800;margin:0 0 4px}.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:white}.field textarea{min-height:80px}.span2{grid-column:1/-1}.readonly{background:#f8fbff;border:1px solid var(--line);border-radius:12px;padding:13px}.readonly small{display:block;color:#60708a}.readonly b{display:block;margin-top:3px}.steps{display:flex;gap:10px;flex-wrap:wrap}.step{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#f8fbff}.step input{margin-right:7px}.notice{padding:12px;border-radius:12px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412}.drop{border:2px dashed #9bb5d6;border-radius:14px;padding:18px;text-align:center;background:#f8fbff;min-height:160px}.drop img{max-width:100%;max-height:170px}.ad{white-space:pre-wrap;background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}.hidden{display:none}.tableWrap{width:100%;overflow-x:auto}.manifest-table{min-width:1120px}.manifest-table th,.manifest-table td{white-space:nowrap;padding:10px 8px}.manifest-table .step{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;min-width:124px;padding:8px 10px;margin:0}.manifest-table .step input{margin:0}.manifest-table .search{max-width:none;width:100%;min-width:105px;padding:8px}.manifest-save{min-width:78px}.login-note{font-size:12px;color:#60708a}@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.side{width:72px}.side .brand span,.side .label{display:none}.main{margin-left:72px;width:calc(100% - 72px);padding:18px}.top{flex-direction:column}.table{font-size:13px}.table th,.table td{padding:9px}.actionsRow button{padding:7px 9px}.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="login" class="modal" style="display:none"><div class="box" style="max-width:420px"><div style="display:flex;gap:12px;align-items:center;margin-bottom:18px"><div class="logo">DRO</div><div><h1 style="font-size:28px">DRO Cargas</h1><div class="sub" style="margin:0">Gestão inteligente de fretes</div></div></div><div class="field"><label>E-mail</label><input id="email" value="diego@drocargas.com"></div><div class="field" style="margin-top:10px"><label>Senha</label><input id="senha" type="password" value="123456"></div><button class="green" style="width:100%;margin-top:16px" onclick="login()">Entrar</button><p class="sub">Login inicial: diego@drocargas.com / 123456</p></div></div>
+<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v4.1 Firebase</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
+<div id="modal" class="modal"><div class="box" id="modalBox"></div></div>
+<input id="restoreFile" type="file" accept="application/json" class="hidden" onchange="restoreBackup(event)">
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script>
+const KEY='DRO_CARGAS_DATA'; const MASTER='DRO_CARGAS_MASTER'; const OLD=['DRO_CARGAS_MASTER','DRO_CARGAS_DATA','droCargasData','DRO_CARGAS_V19','DRO_CARGAS_V20','dro-cargas'];
+const firebaseConfig={
+  apiKey:"AIzaSyDEZ0OuW2uznRTAcVxB_LfVOxR8J2Dc_VU",
+  authDomain:"dro-cargas.firebaseapp.com",
+  projectId:"dro-cargas",
+  storageBucket:"dro-cargas.firebasestorage.app",
+  messagingSenderId:"252244507021",
+  appId:"1:252244507021:web:d0c96527fbc0dabc58e5c4"
+};
+let firebaseDb=null, cloudDoc=null, cloudReady=false, cloudApplying=false, cloudTimer=null, lastCloudPayload='';
+let page='dashboard', search='', editId=null; let simpleFilters={clientes:'',motoristas:'',veiculos:''}; let manFilter={motorista:'',placa:'',agendado:'',manifestado:'',carregado:'',transito:'',finalizado:''};
+let db=load();
+const pages=[['dashboard','🏠','Dashboard'],['rascunhos','📝','Rascunhos'],['agenda','🗓️','Agenda'],['cargas','🚛','Cargas'],['importar','📥','Importação Inteligente'],['agendamentos','📋','Agendamentos'],['manifestos','📄','Manifestos'],['clientes','👥','Clientes'],['motoristas','👤','Motoristas'],['veiculos','🚚','Veículos'],['anuncios','📣','Anúncios'],['relatorios','📊','Relatórios']];
+function defaultDb(){return{cargas:[],agendamentos:[],manifestos:[],clientes:[],motoristas:[],veiculos:[],anuncios:[],agenda:[],historico:[],rascunho:'',lastOp:0,version:'4.0'}}
+function load(){let d=null; for(const k of OLD){let o=localStorage.getItem(k); if(o){d=o; break}} try{let x=d?JSON.parse(d):defaultDb(); return Object.assign(defaultDb(),x)}catch(e){return defaultDb()}}
+function localOnlySave(){const payload=JSON.stringify(db); localStorage.setItem(KEY,payload); localStorage.setItem(MASTER,payload); try{localStorage.setItem('DRO_CARGAS_V35_ULTIMO',payload)}catch(e){} return payload}
+function save(){const payload=localOnlySave(); if(!cloudApplying) queueCloudSave(payload)}
+function queueCloudSave(payload){
+  if(!cloudReady||!cloudDoc)return;
+  if(payload===lastCloudPayload)return;
+  clearTimeout(cloudTimer);
+  cloudTimer=setTimeout(()=>saveCloud(payload),450);
+}
+async function saveCloud(payload){
+  if(!cloudDoc)return;
+  try{
+    lastCloudPayload=payload;
+    await cloudDoc.set({db:JSON.parse(payload),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),version:'4.1-firebase'}, {merge:true});
+    showCloudStatus('☁️ Salvo na nuvem');
+  }catch(e){
+    console.error('Erro ao salvar no Firebase:',e);
+    showCloudStatus('⚠️ Erro ao salvar na nuvem');
+  }
+}
+function showCloudStatus(txt){
+  let el=document.getElementById('cloudStatus');
+  if(!el)return;
+  el.textContent=txt;
+}
+function initFirebaseCloud(){
+  try{
+    if(!window.firebase){console.warn('Firebase SDK não carregou.'); return;}
+    if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+    firebaseDb=firebase.firestore();
+    cloudDoc=firebaseDb.collection('droCargas').doc('principal');
+    cloudDoc.onSnapshot((snap)=>{
+      cloudReady=true;
+      if(!snap.exists){
+        saveCloud(localOnlySave());
+        return;
+      }
+      const remote=snap.data()?.db;
+      if(!remote)return;
+      const remotePayload=JSON.stringify(remote);
+      const localPayload=localOnlySave();
+      if(remotePayload===localPayload)return;
+      cloudApplying=true;
+      db=Object.assign(defaultDb(),remote);
+      normalize();
+      localOnlySave();
+      lastCloudPayload=JSON.stringify(db);
+      render();
+      cloudApplying=false;
+      showCloudStatus('☁️ Sincronizado');
+    },(err)=>{
+      console.error('Erro ao sincronizar Firebase:',err);
+      showCloudStatus('⚠️ Sem conexão com nuvem');
+    });
+  }catch(e){
+    console.error('Erro ao iniciar Firebase:',e);
+    showCloudStatus('⚠️ Firebase não iniciado');
+  }
+}
+function login(){const e=document.getElementById('email').value.trim(); const s=document.getElementById('senha').value.trim(); if(e!=='diego@drocargas.com'||s!=='123456'){alert('E-mail ou senha incorretos.'); return;} sessionStorage.setItem('DRO_CARGAS_SESSAO','1');document.getElementById('login').classList.remove('show');document.getElementById('login').style.display='none'; page='dashboard'; render(); initFirebaseCloud()}
+function logout(){sessionStorage.removeItem('DRO_CARGAS_SESSAO'); document.getElementById('login').style.display='flex'; document.getElementById('login').classList.add('show');}
+function toggleSide(){let s=document.getElementById('side'); s.classList.toggle('closed'); s.querySelector('.toggle').textContent=s.classList.contains('closed')?'▶':'◀'}
+function go(p){page=p; search=''; render()}
+function renderNav(){document.getElementById('nav').innerHTML=pages.map(p=>`<a title="${p[2]}" class="${page==p[0]?'active':''}" onclick="go('${p[0]}')"><span class="ico">${p[1]}</span><span class="label">${p[2]}</span></a>`).join('')}
+function render(){normalize(); save(); renderNav(); const m=document.getElementById('main'); const title=pages.find(x=>x[0]==page)?.[2]||''; if(page==='dashboard') return dashboard(m); if(page==='rascunhos') return rascunhosPage(m); if(page==='cargas') return cargasPage(m); if(page==='agendamentos') return agPage(m); if(page==='manifestos') return manPage(m); if(page==='anuncios') return adsPage(m); if(page==='pendencias') return pendPage(m); if(page==='importar') return importPage(m); if(page==='clientes') return simplePage(m,'clientes','Clientes',['nome','cidade','uf','contato','cnpj','localizacao','telefone','email','observacoes']); if(page==='motoristas') return simplePage(m,'motoristas','Motoristas',['nome','telefone','placa','cidade','tipoVeiculo','observacoes']); if(page==='veiculos') return simplePage(m,'veiculos','Veículos',['placa','tipo','motorista','cidade','situacao']); if(page==='agenda') return simplePage(m,'agenda','Agenda',['titulo','descricao','data']); if(page==='relatorios') return reports(m);}
+function topHtml(title,sub='Resumo operacional do DRO Cargas'){return `<div class="top"><div><h1>${title}</h1><div class="sub">${sub}</div><div id="cloudStatus" class="sub" style="margin-top:6px;font-weight:800">☁️ Conectando à nuvem...</div></div><div class="actions"><button class="btn" onclick="backup()">Backup JSON</button><button class="btn" onclick="document.getElementById('restoreFile').click()">Restaurar Backup</button><button class="primary" onclick="openCarga()">+ Nova Carga</button><button class="ghost" onclick="go('importar')">📥 Importação Inteligente</button><button class="dark" onclick="logout()">Sair</button></div></div>`}
+function statusClass(s){return String(s||'Disponível').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace('Em transito','Transito')}
+function dateBR(d){if(!d)return''; if(d.includes('/'))return d; let [y,m,da]=d.split('-'); return y&&m&&da?`${da}/${m}/${y}`:d}
+function today(){return new Date().toISOString().slice(0,10)}
+function currency(v){let n=Number(String(v||0).replace(',','.'))||0; return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function nextOp(){let max=Math.max(0,...db.cargas.map(c=>parseInt(c.op)||0),db.lastOp||0); db.lastOp=max+1; return String(db.lastOp).padStart(3,'0')}
+function sortedCargas(){return [...db.cargas].sort((a,b)=>(parseInt(b.op)||0)-(parseInt(a.op)||0))}
+function normalize(){
+  db.cargas.forEach(c=>{
+    if(!c.op)c.op=nextOp();
+    if(!c.id)c.id=crypto.randomUUID();
+    if(!c.data)c.data=today();
+    if(c.status==='ativo')c.status='Disponível';
+    if(!c.status)c.status='Disponível';
+    c.valorEmpresa=Number(c.valorEmpresa ?? c.valor ?? 0);
+    c.margem=Number(c.margem ?? 10);
+    c.valorMotorista=Number(c.valorMotorista ?? c.valorEmpresa*(1-c.margem/100));
+  });
+  db.agendamentos.forEach(a=>{if(!a.id)a.id=crypto.randomUUID();});
+  db.manifestos.forEach(m=>{
+    if(!m.id)m.id=crypto.randomUUID();
+    m.agendado=true;
+    m.manifestado=!!m.manifestado;
+    m.carregado=!!m.carregado;
+    m.transito=!!m.transito;
+    m.finalizado=!!m.finalizado;
+    if(m.finalizado){m.manifestado=true; m.carregado=true; m.transito=true;}
+    else if(m.transito){m.manifestado=true; m.carregado=true;}
+    else if(m.carregado){m.manifestado=true;}
+    let c=db.cargas.find(x=>x.id===m.cargaId);
+    // Regra principal: o Manifesto é a fonte da verdade do fluxo operacional.
+    // Nunca apagar marcações feitas pelo usuário ao trocar de tela.
+    if(c){
+      if(m.finalizado)c.status='Finalizado';
+      else if(m.transito)c.status='Em trânsito';
+      else if(m.carregado)c.status='Carregado';
+      else if(m.manifestado)c.status='Manifestado';
+      else if(m.agendado)c.status='Agendado';
+    }
+  });
+}
+function counts(){let c=db.cargas; return{disp:c.filter(x=>x.status==='Disponível').length,agen:c.filter(x=>x.status==='Agendado').length,mani:c.filter(x=>x.status==='Manifestado').length,fin:c.filter(x=>x.status==='Finalizado').length,pend:pendencias().length}}
+function dashboard(m){let ct=counts(); m.innerHTML=topHtml('Dashboard')+`<div class="cards"><div class="card" onclick="search='Disponível';go('cargas')">Disponíveis<b>${ct.disp}</b></div><div class="card" onclick="search='Agendado';go('cargas')">Agendadas<b>${ct.agen}</b></div><div class="card" onclick="search='Manifestado';go('cargas')">Manifestadas<b>${ct.mani}</b></div><div class="card" onclick="search='Finalizado';go('cargas')">Finalizadas<b>${ct.fin}</b></div><div class="card" onclick="go('manifestos')">Pendências<b>${ct.pend}</b></div></div>`+cargasTable(sortedCargas().slice(0,10),'Últimas cargas')}
+function cargasPage(m){m.innerHTML=topHtml('Cargas','Cadastro e controle de cargas')+cargasTable(filteredCargas(),'Cargas')}
+function filteredCargas(){let q=search.toLowerCase(); return sortedCargas().filter(c=>!q||JSON.stringify(c).toLowerCase().includes(q))}
+function cargasTable(rows,title){return `<div class="panel"><div class="toolbar"><h2>${title}</h2><input class="search" placeholder="Buscar..." oninput="search=this.value;render()" value="${search}"></div><table class="table"><thead><tr><th>OP</th><th>Cliente</th><th>Rota</th><th>Produto</th><th>Valores</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead><tbody>${rows.length?rows.map(c=>`<tr onclick="detailsCarga('${c.id}')"><td>${c.op}</td><td>${c.cliente||''}</td><td class="route">${c.origem||''} → ${c.destino||''}</td><td>${c.produto||''}<br><small>${c.quantidade||''}</small></td><td><span class="money">Emp: ${currency(c.valorEmpresa)}</span><span class="money margin">${c.margem}%</span><span class="money">Mot: ${currency(c.valorMotorista)}</span></td><td>${dateBR(c.data)}</td><td><span class="status ${statusClass(c.status)}">${c.status}</span></td><td onclick="event.stopPropagation()"><div class="actionsRow"><button class="green small" onclick="openAg('${c.id}')">Agendar</button><button class="btn small" onclick="openCarga('${c.id}')">Editar</button><button class="btn small" onclick="dupCarga('${c.id}')">Duplicar</button><button class="red small" onclick="delCarga('${c.id}')">Excluir</button></div></td></tr>`).join(''):`<tr><td colspan="8" style="text-align:center;color:#60708a">Nenhuma carga cadastrada</td></tr>`}</tbody></table></div>`}
+function openModal(html){document.getElementById('modalBox').innerHTML=html; document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function openCarga(id){let c=id?db.cargas.find(x=>x.id===id):{data:today(),margem:10,status:'Disponível'}; openModal(`<h2>${id?'Editar carga':'Nova carga'}</h2><div class="grid"><div class="field"><label>OP (automática se deixar em branco)</label><input id="op" value="${c.op||''}"></div><div class="field"><label>Cliente</label><input id="cliente" value="${c.cliente||''}"></div><div class="field"><label>Origem</label><input id="origem" value="${c.origem||''}"></div><div class="field"><label>Destino</label><input id="destino" value="${c.destino||''}"></div><div class="field"><label>Produto</label><input id="produto" value="${c.produto||''}"></div><div class="field"><label>Quantidade/Toneladas</label><input id="quantidade" value="${c.quantidade||''}"></div><div class="field"><label>Valor Empresa</label><input id="valorEmpresa" type="number" value="${c.valorEmpresa||''}" oninput="calcMot()"></div><div class="field"><label>Margem (%)</label><input id="margem" type="number" value="${c.margem??10}" oninput="calcMot()"></div><div class="field"><label>Valor Motorista</label><input id="valorMotorista" readonly value="${currency(c.valorMotorista||0)}"></div><div class="field"><label>Data Liberada</label><input id="data" type="date" value="${c.data||today()}"></div><div class="field"><label>Tipo Veículo</label><input id="tipoVeiculo" value="${c.tipoVeiculo||''}"></div><div class="field"><label>Status</label><select id="status">${['Disponível','Agendado','Manifestado','Carregado','Em trânsito','Finalizado'].map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field span2"><label>Observações</label><textarea id="obs">${c.obs||''}</textarea></div></div><div style="margin-top:14px"><button class="green" onclick="saveCarga('${id||''}')">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button></div>`); calcMot()}
+function calcMot(){let ve=Number(document.getElementById('valorEmpresa')?.value||0), mg=Number(document.getElementById('margem')?.value||0); let el=document.getElementById('valorMotorista'); if(el)el.value=currency(ve*(1-mg/100))}
+function saveCarga(id){let c=id?db.cargas.find(x=>x.id===id):{id:crypto.randomUUID(),op:document.getElementById('op').value||nextOp(),createdAt:Date.now()}; Object.assign(c,{op:document.getElementById('op').value||c.op||nextOp(),cliente:cliente.value,origem:origem.value,destino:destino.value,produto:produto.value,quantidade:quantidade.value,valorEmpresa:Number(valorEmpresa.value||0),margem:Number(margem.value||10),valorMotorista:Number(valorEmpresa.value||0)*(1-Number(margem.value||10)/100),data:data.value||today(),tipoVeiculo:tipoVeiculo.value,status:status.value,obs:obs.value}); if(!id)db.cargas.push(c); addHist(c.id,id?'Carga editada':'Carga criada'); closeModal(); render()}
+function delCarga(id){if(confirm('Excluir carga?')){db.cargas=db.cargas.filter(c=>c.id!==id);db.agendamentos=db.agendamentos.filter(a=>a.cargaId!==id);render()}}
+function dupCarga(id){let c=db.cargas.find(x=>x.id===id); if(!c)return; let n=Object.assign({},c,{id:crypto.randomUUID(),op:nextOp(),createdAt:Date.now(),status:'Disponível'}); db.cargas.push(n); addHist(n.id,'Carga duplicada da OP '+c.op); render();}
+function detailsCarga(id){let c=db.cargas.find(x=>x.id===id); let ag=db.agendamentos.find(a=>a.cargaId===id); let hist=db.historico.filter(h=>h.cargaId===id); openModal(`<h2>Detalhes da carga</h2><div class="grid">${[['OP',c.op],['Cliente',c.cliente],['Origem',c.origem],['Destino',c.destino],['Produto',c.produto],['Quantidade',c.quantidade],['Valor Empresa',currency(c.valorEmpresa)],['Margem',c.margem+'%'],['Valor Motorista',currency(c.valorMotorista)],['Data Liberada',dateBR(c.data)],['Tipo Veículo',c.tipoVeiculo||''],['Status',c.status]].map(x=>`<div class="readonly"><small>${x[0]}</small><b>${x[1]||'-'}</b></div>`).join('')}<div class="readonly span2"><small>Agendamento</small><b>${ag?`${ag.motorista} - ${ag.placa} - ${ag.telefone}`:'Sem agendamento'}</b></div><div class="readonly span2"><small>Histórico</small>${hist.length?hist.map(h=>`<div>${dateBR(h.data)} ${h.hora} - ${h.txt}</div>`).join(''):'Sem histórico'}</div></div><div style="margin-top:14px"><button class="btn" onclick="closeModal()">Fechar</button> <button class="primary" onclick="closeModal();openCarga('${id}')">Editar</button> <button class="green" onclick="closeModal();openAg('${id}')">Agendar</button></div>`)}
+function openAg(id){let c=db.cargas.find(x=>x.id===id); let motors=db.motoristas||[]; openModal(`<h2>Agendar carga</h2><p><b>${c.op} - ${c.origem} x ${c.destino}</b></p><div class="grid"><div class="field"><label>Motorista cadastrado</label><select id="motorSel" onchange="fillMotor()"><option value="">Selecionar...</option>${motors.map(m=>`<option value="${m.id}">${m.nome||m.placa}</option>`).join('')}</select></div><div class="field"><label>Motorista</label><input id="mot" value=""></div><div class="field"><label>Placa</label><input id="placa" value=""></div><div class="field"><label>Telefone</label><input id="tel" value=""></div><div class="field"><label>Data</label><input id="dtAg" type="date" value="${today()}"></div><div class="field span2"><label>Observações</label><textarea id="obsAg"></textarea></div></div><div style="margin-top:14px"><button class="green" onclick="saveAg('${id}')">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button></div>`)}
+function fillMotor(){let m=db.motoristas.find(x=>x.id===motorSel.value); if(m){mot.value=m.nome||'';placa.value=m.placa||'';tel.value=m.telefone||''}}
+function saveAg(cargaId){let c=db.cargas.find(x=>x.id===cargaId); let a={id:crypto.randomUUID(),cargaId,motorista:mot.value,placa:placa.value,telefone:tel.value,data:dtAg.value,obs:obsAg.value}; db.agendamentos=db.agendamentos.filter(x=>x.cargaId!==cargaId); db.agendamentos.push(a); let mf=db.manifestos.find(m=>m.cargaId===cargaId); if(!mf)db.manifestos.push({id:crypto.randomUUID(),cargaId,agendamentoId:a.id,agendado:true,manifestado:false,carregado:false,transito:false,finalizado:false}); c.status='Agendado'; addHist(cargaId,'Motorista agendado: '+a.motorista); closeModal(); render()}
+function agPage(m){m.innerHTML=topHtml('Agendamentos','Cargas agendadas')+`<div class="panel"><table class="table"><thead><tr><th>Motorista</th><th>Placa</th><th>Telefone</th><th>Data</th><th>Carga</th><th>Ação</th></tr></thead><tbody>${db.agendamentos.length?db.agendamentos.map(a=>{let c=db.cargas.find(x=>x.id===a.cargaId)||{};return`<tr><td>${a.motorista}</td><td>${a.placa}</td><td>${a.telefone}</td><td>${dateBR(a.data)}</td><td>${c.origem||''} x ${c.destino||''}</td><td><button class="green small" onclick="go('manifestos')">Manifesto</button></td></tr>`}).join(''):'<tr><td colspan="6" style="text-align:center">Nenhum agendamento</td></tr>'}</tbody></table></div>`}
+function manPage(m){
+  let lista=db.manifestos.map(f=>({f,a:db.agendamentos.find(x=>x.cargaId===f.cargaId)||{},c:db.cargas.find(x=>x.id===f.cargaId)||{}}))
+    .filter(x=>(x.a.motorista||'').toLowerCase().includes(manFilter.motorista.toLowerCase()))
+    .filter(x=>(x.a.placa||'').toLowerCase().includes(manFilter.placa.toLowerCase()))
+    .filter(x=>!manFilter.agendado || (manFilter.agendado==='sim'?x.f.agendado:!x.f.agendado))
+    .filter(x=>!manFilter.manifestado || (manFilter.manifestado==='sim'?x.f.manifestado:!x.f.manifestado))
+    .filter(x=>!manFilter.carregado || (manFilter.carregado==='sim'?x.f.carregado:!x.f.carregado))
+    .filter(x=>!manFilter.transito || (manFilter.transito==='sim'?x.f.transito:!x.f.transito))
+    .filter(x=>!manFilter.finalizado || (manFilter.finalizado==='sim'?x.f.finalizado:!x.f.finalizado));
+  const selectFilter=(k)=>`<select class="search" onchange="manFilter.${k}=this.value;render()"><option value="" ${manFilter[k]===''?'selected':''}>Todos</option><option value="sim" ${manFilter[k]==='sim'?'selected':''}>Marcado</option><option value="nao" ${manFilter[k]==='nao'?'selected':''}>Pendente</option></select>`;
+  const reset="manFilter={motorista:'',placa:'',agendado:'',manifestado:'',carregado:'',transito:'',finalizado:''};render()";
+  m.innerHTML=topHtml('Manifestos','Controle operacional')+`<div class="panel"><div class="tableWrap"><table class="table manifest-table"><thead><tr><th>Motorista</th><th>Placa</th><th>Agendado</th><th>Manifestado</th><th>Carregado</th><th>Em trânsito</th><th>Finalizado</th><th>Ação</th></tr><tr><th><input class="search" placeholder="Filtrar" value="${manFilter.motorista}" oninput="manFilter.motorista=this.value;render()"></th><th><input class="search" placeholder="Filtrar" value="${manFilter.placa}" oninput="manFilter.placa=this.value;render()"></th><th>${selectFilter('agendado')}</th><th>${selectFilter('manifestado')}</th><th>${selectFilter('carregado')}</th><th>${selectFilter('transito')}</th><th>${selectFilter('finalizado')}</th><th><button class="btn small" onclick="${reset}">Limpar</button></th></tr></thead><tbody>${lista.length?lista.map(({f,a})=>{const cell=(k,label)=>`<td><label class="step"><input id="mf_${f.id}_${k}" type="checkbox" ${f[k]?'checked':''} ${k==='agendado'?'disabled':''}> <span>${label}</span></label></td>`;return`<tr><td>${a.motorista||''}</td><td>${a.placa||''}</td>${cell('agendado','Agendado')}${cell('manifestado','Manifestado')}${cell('carregado','Carregado')}${cell('transito','Em trânsito')}${cell('finalizado','Finalizado')}<td><button class="green small manifest-save" onclick="saveManifesto('${f.id}')">Salvar</button></td></tr>`}).join(''):'<tr><td colspan="8" style="text-align:center">Nenhum manifesto</td></tr>'}</tbody></table></div><p class="sub">Marque as etapas e clique em <b>Salvar</b>. Se desmarcar uma etapa, as próximas serão desmarcadas ao salvar.</p></div>`
+}
+function saveManifesto(id){
+  let f=db.manifestos.find(x=>x.id===id); if(!f)return;
+  const get=k=>!!document.getElementById(`mf_${id}_${k}`)?.checked;
+  let novo={manifestado:get('manifestado'),carregado:get('carregado'),transito:get('transito'),finalizado:get('finalizado')};
+  if(novo.finalizado && !novo.transito){alert('Para finalizar, marque primeiro Em trânsito.'); return;}
+  if(novo.transito && !novo.carregado){alert('Para marcar Em trânsito, marque primeiro Carregado.'); return;}
+  if(novo.carregado && !novo.manifestado){alert('Para marcar Carregado, marque primeiro Manifestado.'); return;}
+  if(!novo.manifestado){novo.carregado=false; novo.transito=false; novo.finalizado=false;}
+  if(!novo.carregado){novo.transito=false; novo.finalizado=false;}
+  if(!novo.transito){novo.finalizado=false;}
+  f.agendado=true; f.manifestado=novo.manifestado; f.carregado=novo.carregado; f.transito=novo.transito; f.finalizado=novo.finalizado;
+  let c=db.cargas.find(x=>x.id===f.cargaId);
+  if(c){
+    if(f.finalizado)c.status='Finalizado';
+    else if(f.transito)c.status='Em trânsito';
+    else if(f.carregado)c.status='Carregado';
+    else if(f.manifestado)c.status='Manifestado';
+    else c.status='Agendado';
+    addHist(c.id,'Manifesto salvo: '+c.status);
+  }
+  normalize(); save(); alert('Manifesto salvo.'); render();
+}
+
+
+function pendencias(){let p=[]; db.cargas.forEach(c=>{let f=db.manifestos.find(x=>x.cargaId===c.id);
+  // Carga disponível não é pendência; é oportunidade de frete.
+  if(c.status==='Agendado'&&(!f||!f.manifestado))p.push({c,t:'Aguardando manifesto'});
+  if(c.status==='Manifestado'&&(!f||!f.carregado))p.push({c,t:'Aguardando carregamento'});
+  if(c.status==='Carregado'&&(!f||!f.transito))p.push({c,t:'Aguardando saída/em trânsito'});
+  if(c.status==='Em trânsito'&&(!f||!f.finalizado))p.push({c,t:'Aguardando finalização'});
+}); return p}
+function pendPage(m){let p=pendencias(); m.innerHTML=topHtml('Pendências','Clique para abrir ou resolver o item pendente')+`<div class="panel">${p.length?p.map(x=>`<div class="card" style="margin-bottom:10px"><b>OP ${x.c.op}</b><br>${x.c.origem} → ${x.c.destino}<br><span class="notice">⚠️ ${x.t}</span><br><br><button class="primary small" onclick="detailsCarga('${x.c.id}')">Abrir</button> <button class="green small" onclick="resolver('${x.c.id}')">Resolver</button></div>`).join(''):'Nenhuma pendência.'}</div>`}
+function resolver(id){let c=db.cargas.find(x=>x.id===id); if(c.status==='Disponível')openAg(id); else go('manifestos')}
+function adsPage(m){m.innerHTML=topHtml('Anúncios','Os anúncios usam sempre o Valor Motorista')+`<div class="panel">${db.cargas.length?sortedCargas().map(c=>`<div class="ad" id="ad_${c.id}">${adText(c)}</div><button class="btn small" onclick="copyAd('${c.id}')">Copiar</button> <button class="btn small" onclick="txtAd('${c.id}')">Baixar TXT</button><hr>`).join(''):'Nenhum anúncio.'}</div>`}
+function adText(c){return `🚛🚛 CARGA DISPONÍVEL 🚛🚛\n\n📍 ORIGEM: ${c.origem||''}\n📍 DESTINO: ${c.destino||''}\n\n🌾 PRODUTO: ${c.produto||''}\n⚖️ QUANTIDADE: ${c.quantidade||''}\n${c.tipoVeiculo?'🚛 VEÍCULO: '+c.tipoVeiculo+'\n':''}\n💰 FRETE: ${currency(c.valorMotorista)}\n\n📅 ${dateBR(c.data)}\n\n📲 CHAMAR NO PRIVADO`}
+function copyAd(id){let c=db.cargas.find(x=>x.id===id); navigator.clipboard?.writeText(adText(c)); db.anuncios.push({id:crypto.randomUUID(),cargaId:id,data:today(),tipo:'copiado'}); save(); alert('Anúncio copiado')}
+function txtAd(id){let c=db.cargas.find(x=>x.id===id); let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([adText(c)],{type:'text/plain'})); a.download=`anuncio_OP_${c.op}.txt`; a.click(); db.anuncios.push({id:crypto.randomUUID(),cargaId:id,data:today(),tipo:'txt'}); save()}
+function importPage(m){m.innerHTML=topHtml('Importação Inteligente','Cole texto, imagem com CTRL+V, arraste ou escolha arquivo')+`<div class="panel"><div class="grid"><div><div class="field"><label>Texto da carga</label><textarea id="impText" placeholder="Cole aqui texto do WhatsApp, e-mail ou sistema..."></textarea></div><div class="field"><label>Margem (%)</label><input id="impMarg" type="number" value="10"></div><button class="primary" onclick="previewImport()">Pré-visualizar</button> <button class="green" onclick="createImport()">Criar carga</button></div><div><div id="drop" class="drop" tabindex="0" onpaste="pasteImg(event)" ondragover="event.preventDefault()" ondrop="dropImg(event)">📥 Arraste arquivo aqui<br>ou clique e use CTRL+V<br><br><input type="file" onchange="fileImg(event)"></div></div></div><h2>Pré-visualização</h2><div id="prev" class="grid"><div class="readonly">Cole um texto e clique em Pré-visualizar.</div></div></div>`}
+let imp={}; function parseTxt(t){let lines=t.split(/\n+/).map(x=>x.trim()).filter(Boolean); let rota=lines.find(l=>/\s+x\s+|\s+X\s+|→/.test(l))||''; let [origem,destino]=rota.split(/\s+x\s+|\s+X\s+|→/); let val=(t.match(/R\$\s*([0-9.,]+)/i)||t.match(/\b([0-9]{2,4},\d{2})\b/)||[])[1]||0; let produto=lines.find(l=>/soja|milho|trigo|farelo|arroz/i.test(l))||''; let qtd=lines.find(l=>/ton|ve[ií]culo|carga/i.test(l))||''; let cliente=lines[0]&&!rota.includes(lines[0])?lines[0]:''; return{cliente,origem:origem||'',destino:destino||'',produto,quantidade:qtd,valorEmpresa:Number(String(val).replace('.','').replace(',','.'))||0,margem:Number(impMarg.value||10),data:today(),status:'Disponível'}}
+function previewImport(){imp=parseTxt(impText.value); imp.valorMotorista=imp.valorEmpresa*(1-imp.margem/100); prev.innerHTML=Object.entries({Cliente:imp.cliente,Origem:imp.origem,Destino:imp.destino,Produto:imp.produto,Quantidade:imp.quantidade,'Valor Empresa':currency(imp.valorEmpresa),Margem:imp.margem+'%','Valor Motorista':currency(imp.valorMotorista),Data:dateBR(imp.data)}).map(x=>`<div class="readonly"><small>${x[0]}</small><b>${x[1]||'Não identificado'}</b></div>`).join('')}
+function createImport(){if(!imp.valorEmpresa&&!imp.origem&&!imp.destino)previewImport(); db.cargas.push(Object.assign({id:crypto.randomUUID(),op:nextOp()},imp)); addHist(db.cargas.at(-1).id,'Carga criada por importação inteligente'); render(); go('cargas')}
+function showImg(file){let r=new FileReader(); r.onload=()=>{drop.innerHTML=`<img src="${r.result}"><p>Imagem anexada como referência local.</p>`}; r.readAsDataURL(file)}
+function fileImg(e){if(e.target.files[0])showImg(e.target.files[0])} function dropImg(e){e.preventDefault(); if(e.dataTransfer.files[0])showImg(e.dataTransfer.files[0])} function pasteImg(e){let f=[...e.clipboardData.items].find(i=>i.type.startsWith('image/')); if(f)showImg(f.getAsFile())}
+
+function rascunhosPage(m){
+  m.innerHTML=topHtml('Rascunhos','Bloco simples para anotar textos rápidos')+`<div class="panel"><div class="field"><label>Escreva aqui</label><textarea id="rascunhoTxt" style="min-height:420px" placeholder="Anote aqui fretes, telefones, ideias ou lembretes...">${escapeHtml(db.rascunho||'')}</textarea></div><br><button class="green" onclick="saveRascunho()">Salvar</button> <button class="btn" onclick="clearRascunho()">Limpar</button><p class="sub">O rascunho fica salvo neste navegador.</p></div>`
+}
+function saveRascunho(){db.rascunho=document.getElementById('rascunhoTxt').value; save(); alert('Rascunho salvo.')}
+function clearRascunho(){if(confirm('Limpar todo o rascunho?')){db.rascunho=''; save(); render()}}
+function escapeHtml(v){return String(v??'').replace(/[&<>"]/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]))}
+function niceLabel(f){return ({nome:'Nome',cidade:'Cidade',uf:'UF',contato:'Contato',cnpj:'CNPJ',localizacao:'Localização (link)',telefone:'Telefone',email:'E-mail',observacoes:'Observações',placa:'Placa',tipo:'Tipo',motorista:'Motorista',situacao:'Situação',tipoVeiculo:'Tipo veículo',titulo:'Título',descricao:'Descrição',data:'Data'}[f]||f)}
+function simplePage(m,key,title,fields){
+  const filter=simpleFilters[key]||'';
+  const q=filter.toLowerCase();
+  const rows=(db[key]||[]).filter(i=>!q||fields.some(f=>String(i[f]||'').toLowerCase().includes(q))).sort((a,b)=>String(a.nome||a.placa||a.titulo||'').localeCompare(String(b.nome||b.placa||b.titulo||''),'pt-BR'));
+  const filterHtml=['clientes','motoristas','veiculos'].includes(key)?`<input class="search" placeholder="Filtrar ${title.toLowerCase()}..." value="${escapeHtml(filter)}" oninput="simpleFilters['${key}']=this.value;render()">`:'';
+  m.innerHTML=topHtml(title,'Cadastro')+`<div class="panel"><div class="toolbar"><div>${filterHtml}</div><button class="primary" onclick="openSimple('${key}','${title}',${JSON.stringify(fields).replaceAll('"','&quot;')})">+ Novo</button></div><div class="tableWrap"><table class="table"><thead><tr>${fields.slice(0,6).map(f=>`<th>${niceLabel(f)}</th>`).join('')}<th>Ações</th></tr></thead><tbody>${rows.length?rows.map(i=>`<tr>${fields.slice(0,6).map(f=>`<td>${f==='localizacao'&&i[f]?`<a href="${i[f]}" target="_blank">Abrir Maps</a>`:escapeHtml(i[f]||'')}</td>`).join('')}<td><button class="btn small" onclick="editSimple('${key}','${i.id}',${JSON.stringify(fields).replaceAll('"','&quot;')},'${title}')">Editar</button> <button class="red small" onclick="delSimple('${key}','${i.id}')">Excluir</button></td></tr>`).join(''):'<tr><td colspan="7">Nenhum cadastro.</td></tr>'}</tbody></table></div></div>`
+}
+function openSimple(key,title,fields){openModal(`<h2>Novo ${title}</h2><div class="grid">${fields.map(f=>`<div class="field ${f==='observacoes'?'span2':''}"><label>${niceLabel(f)}</label>${f==='observacoes'?`<textarea id="s_${f}"></textarea>`:`<input id="s_${f}">`}</div>`).join('')}</div><br><button class="green" onclick="saveSimple('${key}',${JSON.stringify(fields).replaceAll('"','&quot;')})">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button>`) }
+function editSimple(key,id,fields,title){let item=db[key].find(x=>x.id===id); if(!item)return; openModal(`<h2>Editar ${title}</h2><div class="grid">${fields.map(f=>`<div class="field ${f==='observacoes'?'span2':''}"><label>${niceLabel(f)}</label>${f==='observacoes'?`<textarea id="s_${f}">${escapeHtml(item[f]||'')}</textarea>`:`<input id="s_${f}" value="${escapeHtml(item[f]||'')}">`}</div>`).join('')}</div><br><button class="green" onclick="updateSimple('${key}','${id}',${JSON.stringify(fields).replaceAll('"','&quot;')})">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button>`) }
+function saveSimple(key,fields){let obj={id:crypto.randomUUID()}; fields.forEach(f=>obj[f]=document.getElementById('s_'+f).value); db[key].push(obj); save(); closeModal(); render()}
+function updateSimple(key,id,fields){let obj=db[key].find(x=>x.id===id); if(!obj)return; fields.forEach(f=>obj[f]=document.getElementById('s_'+f).value); save(); closeModal(); render()}
+function delSimple(key,id){if(confirm('Excluir cadastro?')){db[key]=db[key].filter(x=>x.id!==id); save(); render()}}
+function reports(m){let totalTon=db.cargas.reduce((s,c)=>s+(parseFloat(String(c.quantidade).replace(',','.'))||0),0); m.innerHTML=topHtml('Relatórios','Resumo simples')+`<div class="cards"><div class="card">Cargas<b>${db.cargas.length}</b></div><div class="card">Toneladas aprox.<b>${totalTon}</b></div><div class="card">Anúncios<b>${db.anuncios.length}</b></div></div>`}
+function addHist(cargaId,txt){db.historico.push({id:crypto.randomUUID(),cargaId,txt,data:today(),hora:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})})}
+function backup(){let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'})); a.download='backup-dro-cargas.json'; a.click()}
+function restoreBackup(e){let f=e.target.files[0]; if(!f)return; let r=new FileReader(); r.onload=()=>{try{db=Object.assign(defaultDb(),JSON.parse(r.result)); normalize(); save(); alert('Backup restaurado.'); render()}catch(err){alert('Arquivo inválido')}}; r.readAsText(f)}
+if(sessionStorage.getItem('DRO_CARGAS_SESSAO')==='1'){document.getElementById('login').classList.remove('show');document.getElementById('login').style.display='none';page='dashboard';render();initFirebaseCloud();}else{document.getElementById('login').style.display='flex';document.getElementById('login').classList.add('show');}
+</script>
+</body></html>
