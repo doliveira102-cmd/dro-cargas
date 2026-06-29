@@ -2,14 +2,14 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DRO Cargas v5.0 Importação Inteligente</title>
+<title>DRO Cargas v5.1 IA Importação</title>
 <style>
 :root{--nav:#08213a;--blue:#2563eb;--green:#16a34a;--red:#ef4444;--bg:#f3f7fb;--card:#fff;--line:#d8e2ef;--txt:#142033;--muted:#60708a;--amber:#f59e0b;--purple:#7c3aed;--orange:#f97316}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--txt)}button,input,textarea,select{font:inherit}button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.btn{background:#e8eef7;color:#12213a}.primary{background:var(--blue);color:white}.green{background:var(--green);color:white}.red{background:var(--red);color:white}.dark{background:#071626;color:white}.ghost{background:#eef4fb}.small{padding:7px 10px;font-size:13px}.app{display:flex;min-height:100vh}.side{width:250px;background:var(--nav);color:white;position:fixed;left:0;top:0;bottom:0;transition:.2s;z-index:5;overflow:auto}.side.closed{width:72px}.brand{height:82px;display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid rgba(255,255,255,.12);position:relative}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2f80ed,#1aa286);display:grid;place-items:center;font-weight:900}.brand span{font-weight:900;font-size:20px;white-space:nowrap}.toggle{margin-left:auto;background:#29415e;color:white;border-radius:10px;padding:8px 10px;min-width:38px;z-index:9}.side.closed .toggle{position:absolute;right:-17px;top:23px;border:2px solid #fff;border-radius:50%;width:36px;height:36px;padding:0;background:#29415e;display:grid;place-items:center}.side:not(.closed) .toggle{display:block}.side.closed .brand span,.side.closed .label{display:none}.nav a{display:flex;align-items:center;gap:14px;margin:8px 10px;padding:12px 13px;border-radius:10px;color:white;text-decoration:none}.nav a.active,.nav a:hover{background:#173d63}.ico{font-size:20px;width:22px;text-align:center}.main{margin-left:250px;transition:.2s;width:calc(100% - 250px);padding:28px 32px}.side.closed+.main{margin-left:72px;width:calc(100% - 72px)}h1{margin:0;font-size:30px}.sub{color:var(--muted);margin:4px 0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:22px}.actions{display:flex;gap:10px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:14px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 10px 28px rgba(15,36,67,.06);cursor:pointer}.card b{font-size:34px;display:block;margin-top:8px}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:18px;box-shadow:0 10px 28px rgba(15,36,67,.06)}.panel h2{margin:0 0 12px}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.search{max-width:330px;width:100%;padding:13px;border:1px solid var(--line);border-radius:11px}.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}.table th{background:#f8fbff;text-align:left;color:#30435f;font-size:13px;text-transform:uppercase}.table th,.table td{padding:13px;border-bottom:1px solid var(--line);vertical-align:middle}.table tr:last-child td{border-bottom:0}.table tbody tr:hover{background:#f8fbff}.route{font-weight:900}.money{display:inline-block;background:#eef4ff;padding:7px 10px;border-radius:10px;font-weight:900;margin:2px}.margin{background:#fff3e6}.status{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:900;font-size:13px}.Disponivel{background:#dbeafe;color:#1d4ed8}.Agendado{background:#fef3c7;color:#92400e}.Manifestado{background:#ede9fe;color:#5b21b6}.Carregado{background:#dcfce7;color:#166534}.Transito{background:#ffedd5;color:#9a3412}.Finalizado{background:#dcfce7;color:#166534}.actionsRow{display:flex;gap:8px;flex-wrap:wrap}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:22px}.modal.show{display:flex}.box{background:white;border-radius:18px;padding:22px;max-width:900px;width:100%;max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:13px;color:#53637a;font-weight:800;margin:0 0 4px}.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:white}.field textarea{min-height:80px}.span2{grid-column:1/-1}.readonly{background:#f8fbff;border:1px solid var(--line);border-radius:12px;padding:13px}.readonly small{display:block;color:#60708a}.readonly b{display:block;margin-top:3px}.steps{display:flex;gap:10px;flex-wrap:wrap}.step{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#f8fbff}.step input{margin-right:7px}.notice{padding:12px;border-radius:12px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412}.drop{border:2px dashed #9bb5d6;border-radius:14px;padding:18px;text-align:center;background:#f8fbff;min-height:160px}.drop img{max-width:100%;max-height:170px}.ad{white-space:pre-wrap;background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}.hidden{display:none}.tableWrap{width:100%;overflow-x:auto}.manifest-table{min-width:1120px}.manifest-table th,.manifest-table td{white-space:nowrap;padding:10px 8px}.manifest-table .step{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;min-width:124px;padding:8px 10px;margin:0}.manifest-table .step input{margin:0}.manifest-table .search{max-width:none;width:100%;min-width:105px;padding:8px}.manifest-save{min-width:78px}.login-note{font-size:12px;color:#60708a}@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.side{width:72px}.side .brand span,.side .label{display:none}.main{margin-left:72px;width:calc(100% - 72px);padding:18px}.top{flex-direction:column}.table{font-size:13px}.table th,.table td{padding:9px}.actionsRow button{padding:7px 9px}.cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div id="login" class="modal" style="display:none"><div class="box" style="max-width:420px"><div style="display:flex;gap:12px;align-items:center;margin-bottom:18px"><div class="logo">DRO</div><div><h1 style="font-size:28px">DRO Cargas</h1><div class="sub" style="margin:0">Gestão inteligente de fretes</div></div></div><div class="field"><label>E-mail</label><input id="email" value="diego@drocargas.com"></div><div class="field" style="margin-top:10px"><label>Senha</label><input id="senha" type="password" value="123456"></div><button class="green" style="width:100%;margin-top:16px" onclick="login()">Entrar</button><p class="sub">Login inicial: diego@drocargas.com / 123456</p></div></div>
-<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v5.0 Importação</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
+<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v5.1 IA Importação</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
 <div id="modal" class="modal"><div class="box" id="modalBox"></div></div>
 <input id="restoreFile" type="file" accept="application/json" class="hidden" onchange="restoreBackup(event)">
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
@@ -333,30 +333,134 @@ function parseTxt(t){
   let lines=raw.split(/\n+/).map(cleanLine).filter(Boolean);
   let all=lines.join('\n');
   let flat=all.replace(/\n/g,' | ');
-  const findAfter=(labels)=>{for(const lab of labels){let r=new RegExp(lab+'\\s*[:=-]\\s*([^|\\n]+)','i'); let m=flat.match(r); if(m)return cleanLine(m[1]);} return '';};
+
+  const up=(v)=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();
+  const compact=(v)=>up(v).replace(/[^A-Z0-9]/g,'');
+  const U=up(all);
+  const C=compact(all);
+
+  const knownClientes=['AGROFEL','CARGILL','LDC','BUNGE','COTRIJUI','COTRIJAL','COTRISAL','COTRICAMPO','CAMERA','BIANCHINI','COOPERMIL','COOPATRIGO','CVALE','ROOS','UGGERI','GOLD GRAIN','AGROPAM','MASTER','TERGRASA'];
+  const knownProdutos=['SOJA','MILHO','TRIGO','FARELO','ARROZ','AVEIA','CEVADA','FERTILIZANTE','ADUBO','CALCARIO','CALCÁRIO'];
+  const knownTipos=['RODOTREM','BITREM','LS','TRUCK','CARRETA','GRANELEIRO','BASCULANTE','4 EIXO','9 EIXOS','7 EIXOS','6 EIXOS'];
+
+  const cityList=[
+    'CRUZ ALTA','RIO GRANDE','PORTO RIO GRANDE','CANOAS','PORTO ALEGRE','SANTA CRUZ','SANTA CRUZ DO SUL',
+    'AUGUSTO PESTANA','TUPANCIRETA','BOA VISTA DO INCRA','BAGE','BAGÉ','IJUI','IJUÍ','SANTO ANGELO','SANTO ÂNGELO',
+    'ENTRE IJUIS','ENTRE-IJUÍS','NAO-ME-TOQUE','NÃO-ME-TOQUE','SANTA BARBARA DO SUL','SANTA BÁRBARA DO SUL',
+    'PASSO FUNDO','ESTRELA','CAXIAS DO SUL','TENENTE PORTELA','CORONEL BICACO','SAO LUIZ GONZAGA','SÃO LUIZ GONZAGA',
+    'PALMEIRA DAS MISSOES','PALMEIRA DAS MISSÕES','TRES DE MAIO','TRÊS DE MAIO','SANTA ROSA','CATUIPE','CATUÍPE',
+    'IPIRANGA DO SUL','GARRUCHOS','SAO NICOLAU','SÃO NICOLAU','ALEGRIA','TAPERA','CARAZINHO','SOLEDADE'
+  ];
+  const destinationPriority=['PORTO RIO GRANDE','RIO GRANDE','CANOAS','PORTO ALEGRE','SANTA CRUZ','SANTA CRUZ DO SUL','ESTRELA','PASSO FUNDO','CAXIAS DO SUL'];
+
+  const findAfter=(labels)=>{
+    for(const lab of labels){
+      let r=new RegExp(lab+'\\s*[:=-]\\s*([^|\\n]+)','i');
+      let m=flat.match(r);
+      if(m)return cleanLine(m[1]);
+    }
+    return '';
+  };
+
+  let cliente=findAfter(['cliente','tomador','empresa','embarcador']);
+  if(!cliente){
+    let found=knownClientes.find(c=>C.includes(compact(c)));
+    if(found)cliente=found;
+  }
+  if(!cliente&&db.clientes&&db.clientes.length){
+    let known=db.clientes.find(c=>c.nome&&C.includes(compact(c.nome)));
+    if(known)cliente=known.nome;
+  }
+
+  let produto=findAfter(['produto','mercadoria','carga']);
+  if(!produto){
+    let found=knownProdutos.find(p=>C.includes(compact(p)));
+    if(found)produto=found;
+  }
+
+  let tipoVeiculo=findAfter(['ve[ií]culo','tipo','modal']);
+  if(!tipoVeiculo){
+    let found=knownTipos.find(v=>new RegExp('\\b'+up(v).replace(/\s+/g,'\\s*')+'\\b','i').test(U) || C.includes(compact(v)));
+    if(found)tipoVeiculo=found;
+  }
+
   let origem=findAfter(['origem','coleta','carregamento','embarque']);
   let destino=findAfter(['destino','entrega','descarga']);
   if(!origem||!destino){
-    let rota=lines.find(l=>/\s+(x|X)\s+|→|->|-/i.test(l)&&!/(r\$|frete|valor|empresa|motorista)/i.test(l))||'';
+    let rota=lines.find(l=>/\s+(x|X)\s+|→|->/i.test(l)&&!/(r\$|frete|valor|empresa|motorista)/i.test(l))||'';
     let parts=rota.split(/\s+(?:x|X)\s+|\s*→\s*|\s*->\s*/);
     if(parts.length>=2){origem=origem||cleanLine(parts[0]); destino=destino||cleanLine(parts.slice(1).join(' '));}
   }
-  let produto=findAfter(['produto','mercadoria','carga'])||((all.match(/\b(soja|milho|trigo|farelo|arroz|aveia|cevada|fertilizante|adubo|calc[aá]rio)\b/i)||[])[1]||'');
-  let quantidade=findAfter(['quantidade','toneladas','peso'])||((all.match(/(\d+[\.,]?\d*)\s*(ton|tons|toneladas|tn)\b/i)||[]).slice(1,3).join(' ')||'');
-  let tipoVeiculo=findAfter(['ve[ií]culo','tipo'])||((all.match(/\b(LS|bitrem|rodotrem|truck|carreta|graneleiro|basculante|4\s*eixo|9\s*eixos?)\b/i)||[])[1]||'');
-  let cliente=findAfter(['cliente','empresa','embarcador']);
-  if(!cliente&&db.clientes&&db.clientes.length){let known=db.clientes.find(c=>c.nome&&all.toLowerCase().includes(String(c.nome).toLowerCase())); if(known)cliente=known.nome;}
-  if(!cliente){let idx=lines.findIndex(l=>(origem&&l.includes(origem))||(destino&&l.includes(destino))); cliente=(idx>0?lines[idx-1]:lines[0])||''; if(/(origem|destino|produto|r\$|frete|valor)/i.test(cliente))cliente='';}
+
+  // Localiza cidades mesmo quando o OCR junta palavras, ex.: AGROFELAUGUSTOPESTANA.
+  const cityHits=[];
+  for(const city of cityList){
+    const cc=compact(city);
+    let pos=C.indexOf(cc);
+    if(pos>=0)cityHits.push({city:city.replace('BAGE','BAGÉ').replace('IJUI','IJUÍ'),pos});
+  }
+  cityHits.sort((a,b)=>a.pos-b.pos);
+
+  if(!destino){
+    let d=destinationPriority.find(c=>cityHits.some(h=>compact(h.city)===compact(c)));
+    if(d)destino=d;
+  }
+  if(!origem){
+    const destC=compact(destino);
+    const clientPos=cliente?C.indexOf(compact(cliente)):-1;
+    let candidates=cityHits.filter(h=>compact(h.city)!==destC);
+    if(clientPos>=0)candidates=candidates.filter(h=>h.pos>clientPos);
+    // Evita cidades de destino comuns como origem quando houver outra opção.
+    let nonDest=candidates.filter(h=>!destinationPriority.some(d=>compact(d)===compact(h.city)));
+    origem=(nonDest[0]||candidates[0]||{}).city||'';
+  }
+
+  // Quantidade: prioriza TON/TONS, depois número perto do produto, evitando OP e datas.
+  let quantidade=findAfter(['quantidade','toneladas','peso','tamo','tamanho']);
+  if(!quantidade){
+    let m=all.match(/(\d{2,4}(?:[,.]\d+)?)\s*(TON|TONS|TONELADAS|TN)\b/i);
+    if(m)quantidade=m[1]+' TONS';
+  }
+  if(!quantidade&&produto){
+    const prodIdx=C.indexOf(compact(produto));
+    let nums=[...U.matchAll(/\b(\d{2,4})(?!\d)(?:\s*(?:TON|TONS|TN))?\b/g)]
+      .map(m=>({n:Number(m[1]),idx:m.index,val:m[1]}))
+      .filter(x=>x.n>=10&&x.n<=999)
+      .filter(x=>!String(x.val).match(/^20\d{2}$/)); // evita ano
+    if(prodIdx>=0)nums.sort((a,b)=>Math.abs(a.idx-prodIdx)-Math.abs(b.idx-prodIdx));
+    if(nums[0])quantidade=nums[0].val+' TONS';
+  }
+
   let valorEmpresa=0, valorMotorista=0;
   let emp=(flat.match(/(?:emp(?:resa)?|cliente|frete)\s*[:=-]?\s*r?\$?\s*([0-9\.]+,?\d{0,2})/i)||[])[1];
   let mot=(flat.match(/(?:mot(?:orista)?|pagar|motor)\s*[:=-]?\s*r?\$?\s*([0-9\.]+,?\d{0,2})/i)||[])[1];
   if(emp)valorEmpresa=numBR(emp); if(mot)valorMotorista=numBR(mot);
-  if(!valorEmpresa){let vals=[...all.matchAll(/R\$\s*([0-9\.]+,?\d{0,2})/gi)].map(m=>numBR(m[1])); if(vals.length){valorEmpresa=Math.max(...vals); if(vals.length>1)valorMotorista=Math.min(...vals);}}
+
+  const vals=[...all.matchAll(/R\$\s*([0-9\.]+,?\d{0,2})/gi)].map(m=>numBR(m[1])).filter(v=>v>0);
+  if(!valorEmpresa && vals.length){valorEmpresa=Math.max(...vals); if(vals.length>1)valorMotorista=Math.min(...vals);}
+  // Se aparecerem valores soltos no final da linha, tenta capturar como valor motorista.
+  if(!valorMotorista){
+    let loose=[...U.matchAll(/\b(8[0-9]|9[0-9]|10[0-9]|11[0-9]|12[0-9]|13[0-9])\b/g)].map(m=>Number(m[1]));
+    if(loose.length)valorMotorista=loose[loose.length-1];
+  }
+
   let margem=Number(document.getElementById('impMarg')?.value||10);
-  if(valorEmpresa&&!valorMotorista)valorMotorista=valorEmpresa*(1-margem/100);
+  if(valorMotorista&&!valorEmpresa)valorEmpresa=Math.round((valorMotorista/(1-margem/100))*100)/100;
+  if(valorEmpresa&&!valorMotorista)valorMotorista=Math.round(valorEmpresa*(1-margem/100)*100)/100;
   if(valorEmpresa&&valorMotorista&&valorEmpresa>0)margem=Math.round((1-(valorMotorista/valorEmpresa))*1000)/10;
-  return{cliente,origem,destino,produto:String(produto||'').toUpperCase(),quantidade,valorEmpresa,margem,valorMotorista,data:today(),tipoVeiculo,status:'Disponível',obs:''};
+
+  // OP: guarda em observação quando encontrada.
+  let opMatch=U.match(/\b(?:OP|COTA)\s*[:#-]?\s*([0-9]{3,6}[A-Z]{0,3})\b/i) || U.match(/\b([0-9]{3,5}[A-Z]{1,3})\b/);
+  let opObs=opMatch?('OP/Cota identificada: '+opMatch[1]):'';
+
+  // Fallback final para evitar "Agendamento Carga cheia" virar cliente.
+  if(cliente && /AGENDAMENTO|CARGA CHEIA|COTA|DATA|MODAL/i.test(cliente) && knownClientes.some(c=>C.includes(compact(c)))){
+    cliente=knownClientes.find(c=>C.includes(compact(c)))||'';
+  }
+
+  return{cliente,origem,destino,produto:String(produto||'').toUpperCase(),quantidade,valorEmpresa,margem,valorMotorista,data:today(),tipoVeiculo,status:'Disponível',obs:opObs};
 }
+
 function previewImport(){
   let txt=document.getElementById('impText')?.value||'';
   imp=parseTxt(txt);
