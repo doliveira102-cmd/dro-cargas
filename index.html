@@ -2,18 +2,20 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DRO Cargas v4.2 Firebase</title>
+<title>DRO Cargas v5.0 Importação Inteligente</title>
 <style>
 :root{--nav:#08213a;--blue:#2563eb;--green:#16a34a;--red:#ef4444;--bg:#f3f7fb;--card:#fff;--line:#d8e2ef;--txt:#142033;--muted:#60708a;--amber:#f59e0b;--purple:#7c3aed;--orange:#f97316}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--txt)}button,input,textarea,select{font:inherit}button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.btn{background:#e8eef7;color:#12213a}.primary{background:var(--blue);color:white}.green{background:var(--green);color:white}.red{background:var(--red);color:white}.dark{background:#071626;color:white}.ghost{background:#eef4fb}.small{padding:7px 10px;font-size:13px}.app{display:flex;min-height:100vh}.side{width:250px;background:var(--nav);color:white;position:fixed;left:0;top:0;bottom:0;transition:.2s;z-index:5;overflow:auto}.side.closed{width:72px}.brand{height:82px;display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid rgba(255,255,255,.12);position:relative}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2f80ed,#1aa286);display:grid;place-items:center;font-weight:900}.brand span{font-weight:900;font-size:20px;white-space:nowrap}.toggle{margin-left:auto;background:#29415e;color:white;border-radius:10px;padding:8px 10px;min-width:38px;z-index:9}.side.closed .toggle{position:absolute;right:-17px;top:23px;border:2px solid #fff;border-radius:50%;width:36px;height:36px;padding:0;background:#29415e;display:grid;place-items:center}.side:not(.closed) .toggle{display:block}.side.closed .brand span,.side.closed .label{display:none}.nav a{display:flex;align-items:center;gap:14px;margin:8px 10px;padding:12px 13px;border-radius:10px;color:white;text-decoration:none}.nav a.active,.nav a:hover{background:#173d63}.ico{font-size:20px;width:22px;text-align:center}.main{margin-left:250px;transition:.2s;width:calc(100% - 250px);padding:28px 32px}.side.closed+.main{margin-left:72px;width:calc(100% - 72px)}h1{margin:0;font-size:30px}.sub{color:var(--muted);margin:4px 0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:22px}.actions{display:flex;gap:10px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:14px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 10px 28px rgba(15,36,67,.06);cursor:pointer}.card b{font-size:34px;display:block;margin-top:8px}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:18px;box-shadow:0 10px 28px rgba(15,36,67,.06)}.panel h2{margin:0 0 12px}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.search{max-width:330px;width:100%;padding:13px;border:1px solid var(--line);border-radius:11px}.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}.table th{background:#f8fbff;text-align:left;color:#30435f;font-size:13px;text-transform:uppercase}.table th,.table td{padding:13px;border-bottom:1px solid var(--line);vertical-align:middle}.table tr:last-child td{border-bottom:0}.table tbody tr:hover{background:#f8fbff}.route{font-weight:900}.money{display:inline-block;background:#eef4ff;padding:7px 10px;border-radius:10px;font-weight:900;margin:2px}.margin{background:#fff3e6}.status{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:900;font-size:13px}.Disponivel{background:#dbeafe;color:#1d4ed8}.Agendado{background:#fef3c7;color:#92400e}.Manifestado{background:#ede9fe;color:#5b21b6}.Carregado{background:#dcfce7;color:#166534}.Transito{background:#ffedd5;color:#9a3412}.Finalizado{background:#dcfce7;color:#166534}.actionsRow{display:flex;gap:8px;flex-wrap:wrap}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:22px}.modal.show{display:flex}.box{background:white;border-radius:18px;padding:22px;max-width:900px;width:100%;max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:13px;color:#53637a;font-weight:800;margin:0 0 4px}.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:white}.field textarea{min-height:80px}.span2{grid-column:1/-1}.readonly{background:#f8fbff;border:1px solid var(--line);border-radius:12px;padding:13px}.readonly small{display:block;color:#60708a}.readonly b{display:block;margin-top:3px}.steps{display:flex;gap:10px;flex-wrap:wrap}.step{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#f8fbff}.step input{margin-right:7px}.notice{padding:12px;border-radius:12px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412}.drop{border:2px dashed #9bb5d6;border-radius:14px;padding:18px;text-align:center;background:#f8fbff;min-height:160px}.drop img{max-width:100%;max-height:170px}.ad{white-space:pre-wrap;background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}.hidden{display:none}.tableWrap{width:100%;overflow-x:auto}.manifest-table{min-width:1120px}.manifest-table th,.manifest-table td{white-space:nowrap;padding:10px 8px}.manifest-table .step{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;min-width:124px;padding:8px 10px;margin:0}.manifest-table .step input{margin:0}.manifest-table .search{max-width:none;width:100%;min-width:105px;padding:8px}.manifest-save{min-width:78px}.login-note{font-size:12px;color:#60708a}@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.side{width:72px}.side .brand span,.side .label{display:none}.main{margin-left:72px;width:calc(100% - 72px);padding:18px}.top{flex-direction:column}.table{font-size:13px}.table th,.table td{padding:9px}.actionsRow button{padding:7px 9px}.cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div id="login" class="modal" style="display:none"><div class="box" style="max-width:420px"><div style="display:flex;gap:12px;align-items:center;margin-bottom:18px"><div class="logo">DRO</div><div><h1 style="font-size:28px">DRO Cargas</h1><div class="sub" style="margin:0">Gestão inteligente de fretes</div></div></div><div class="field"><label>E-mail</label><input id="email" value="diego@drocargas.com"></div><div class="field" style="margin-top:10px"><label>Senha</label><input id="senha" type="password" value="123456"></div><button class="green" style="width:100%;margin-top:16px" onclick="login()">Entrar</button><p class="sub">Login inicial: diego@drocargas.com / 123456</p></div></div>
-<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v4.2 Firebase</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
+<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v5.0 Importação</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
 <div id="modal" class="modal"><div class="box" id="modalBox"></div></div>
 <input id="restoreFile" type="file" accept="application/json" class="hidden" onchange="restoreBackup(event)">
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 const KEY='DRO_CARGAS_DATA'; const MASTER='DRO_CARGAS_MASTER'; const OLD=['DRO_CARGAS_MASTER','DRO_CARGAS_DATA','droCargasData','DRO_CARGAS_V19','DRO_CARGAS_V20','dro-cargas'];
 const firebaseConfig={
@@ -237,12 +239,142 @@ function adsPage(m){m.innerHTML=topHtml('Anúncios','Os anúncios usam sempre o 
 function adText(c){return `🚛🚛 CARGA DISPONÍVEL 🚛🚛\n\n📍 ORIGEM: ${c.origem||''}\n📍 DESTINO: ${c.destino||''}\n\n🌾 PRODUTO: ${c.produto||''}\n⚖️ QUANTIDADE: ${c.quantidade||''}\n${c.tipoVeiculo?'🚛 VEÍCULO: '+c.tipoVeiculo+'\n':''}\n💰 FRETE: ${currency(c.valorMotorista)}\n\n📅 ${dateBR(c.data)}\n\n📲 CHAMAR NO PRIVADO`}
 function copyAd(id){let c=db.cargas.find(x=>x.id===id); navigator.clipboard?.writeText(adText(c)); db.anuncios.push({id:crypto.randomUUID(),cargaId:id,data:today(),tipo:'copiado'}); save(); alert('Anúncio copiado')}
 function txtAd(id){let c=db.cargas.find(x=>x.id===id); let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([adText(c)],{type:'text/plain'})); a.download=`anuncio_OP_${c.op}.txt`; a.click(); db.anuncios.push({id:crypto.randomUUID(),cargaId:id,data:today(),tipo:'txt'}); save()}
-function importPage(m){m.innerHTML=topHtml('Importação Inteligente','Cole texto, imagem com CTRL+V, arraste ou escolha arquivo')+`<div class="panel"><div class="grid"><div><div class="field"><label>Texto da carga</label><textarea id="impText" placeholder="Cole aqui texto do WhatsApp, e-mail ou sistema..."></textarea></div><div class="field"><label>Margem (%)</label><input id="impMarg" type="number" value="10"></div><button class="primary" onclick="previewImport()">Pré-visualizar</button> <button class="green" onclick="createImport()">Criar carga</button></div><div><div id="drop" class="drop" tabindex="0" onpaste="pasteImg(event)" ondragover="event.preventDefault()" ondrop="dropImg(event)">📥 Arraste arquivo aqui<br>ou clique e use CTRL+V<br><br><input type="file" onchange="fileImg(event)"></div></div></div><h2>Pré-visualização</h2><div id="prev" class="grid"><div class="readonly">Cole um texto e clique em Pré-visualizar.</div></div></div>`}
-let imp={}; function parseTxt(t){let lines=t.split(/\n+/).map(x=>x.trim()).filter(Boolean); let rota=lines.find(l=>/\s+x\s+|\s+X\s+|→/.test(l))||''; let [origem,destino]=rota.split(/\s+x\s+|\s+X\s+|→/); let val=(t.match(/R\$\s*([0-9.,]+)/i)||t.match(/\b([0-9]{2,4},\d{2})\b/)||[])[1]||0; let produto=lines.find(l=>/soja|milho|trigo|farelo|arroz/i.test(l))||''; let qtd=lines.find(l=>/ton|ve[ií]culo|carga/i.test(l))||''; let cliente=lines[0]&&!rota.includes(lines[0])?lines[0]:''; return{cliente,origem:origem||'',destino:destino||'',produto,quantidade:qtd,valorEmpresa:Number(String(val).replace('.','').replace(',','.'))||0,margem:Number(impMarg.value||10),data:today(),status:'Disponível'}}
-function previewImport(){imp=parseTxt(impText.value); imp.valorMotorista=imp.valorEmpresa*(1-imp.margem/100); prev.innerHTML=Object.entries({Cliente:imp.cliente,Origem:imp.origem,Destino:imp.destino,Produto:imp.produto,Quantidade:imp.quantidade,'Valor Empresa':currency(imp.valorEmpresa),Margem:imp.margem+'%','Valor Motorista':currency(imp.valorMotorista),Data:dateBR(imp.data)}).map(x=>`<div class="readonly"><small>${x[0]}</small><b>${x[1]||'Não identificado'}</b></div>`).join('')}
-function createImport(){if(!imp.valorEmpresa&&!imp.origem&&!imp.destino)previewImport(); db.cargas.push(Object.assign({id:crypto.randomUUID(),op:nextOp()},imp)); addHist(db.cargas.at(-1).id,'Carga criada por importação inteligente'); render(); go('cargas')}
-function showImg(file){let r=new FileReader(); r.onload=()=>{drop.innerHTML=`<img src="${r.result}"><p>Imagem anexada como referência local.</p>`}; r.readAsDataURL(file)}
-function fileImg(e){if(e.target.files[0])showImg(e.target.files[0])} function dropImg(e){e.preventDefault(); if(e.dataTransfer.files[0])showImg(e.dataTransfer.files[0])} function pasteImg(e){let f=[...e.clipboardData.items].find(i=>i.type.startsWith('image/')); if(f)showImg(f.getAsFile())}
+function importPage(m){
+  m.innerHTML=topHtml('Importação Inteligente','Entrada única: cole texto, print, imagem, PDF ou arquivo')+`<div class="panel">
+  <div id="smartDrop" class="drop" tabindex="0" onpaste="smartPaste(event)" ondragover="event.preventDefault();this.style.background='#eef6ff'" ondragleave="this.style.background='#f8fbff'" ondrop="smartDrop(event)" style="min-height:230px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px">
+    <div style="font-size:42px">📥</div>
+    <h2 style="margin:0">Cole, arraste ou solte qualquer anúncio aqui</h2>
+    <div class="sub" style="margin:0;text-align:center">Texto do WhatsApp, print, imagem, PDF ou arquivo. O DRO identifica sozinho.</div>
+    <input id="smartFile" type="file" accept="image/*,application/pdf,text/plain,.txt" style="display:none" onchange="smartFile(event)">
+    <button class="primary" onclick="document.getElementById('smartFile').click()">Selecionar arquivo/foto</button>
+  </div>
+  <div class="grid" style="margin-top:14px">
+    <div class="field span2"><label>Conteúdo identificado</label><textarea id="impText" placeholder="Cole aqui ou use a área acima..." onpaste="smartPaste(event)" oninput="previewImport()" style="min-height:140px"></textarea></div>
+    <div class="field"><label>Margem padrão (%)</label><input id="impMarg" type="number" value="10" oninput="previewImport()"></div>
+    <div class="readonly"><small>Status</small><b id="importStatus">Aguardando conteúdo...</b></div>
+  </div>
+  <h2 style="margin-top:18px">Pré-visualização editável</h2>
+  <div id="prev" class="grid"><div class="readonly span2">Cole texto, imagem ou PDF para o DRO analisar automaticamente.</div></div>
+  <div style="margin-top:14px"><button class="green" onclick="createImport()">✔ Criar carga</button> <button class="btn" onclick="clearSmartImport()">Limpar</button></div>
+  </div>`;
+}
+let imp={};
+function setImportStatus(txt){let el=document.getElementById('importStatus'); if(el)el.textContent=txt;}
+async function smartPaste(e){
+  const items=[...(e.clipboardData?.items||[])];
+  const img=items.find(i=>i.type.startsWith('image/'));
+  if(img){e.preventDefault(); await processSmartFile(img.getAsFile()); return;}
+  const text=e.clipboardData?.getData('text/plain');
+  if(text){setTimeout(()=>{previewImport();},80); return;}
+}
+async function smartDrop(e){
+  e.preventDefault();
+  let z=document.getElementById('smartDrop'); if(z)z.style.background='#f8fbff';
+  if(e.dataTransfer.files&&e.dataTransfer.files.length){await processSmartFile(e.dataTransfer.files[0]); return;}
+  const text=e.dataTransfer.getData('text/plain');
+  if(text){document.getElementById('impText').value=text; previewImport();}
+}
+async function smartFile(e){if(e.target.files&&e.target.files[0])await processSmartFile(e.target.files[0]); e.target.value='';}
+async function processSmartFile(file){
+  setImportStatus('Analisando '+(file.name||'arquivo')+'...');
+  const type=file.type||'';
+  if(type.startsWith('image/')){await readImageSmart(file); return;}
+  if(type==='application/pdf'||/\.pdf$/i.test(file.name||'')){await readPdfSmart(file); return;}
+  await readTextSmart(file);
+}
+async function readTextSmart(file){
+  const txt=await file.text();
+  document.getElementById('impText').value=txt;
+  setImportStatus('Texto identificado automaticamente.');
+  previewImport();
+}
+async function readImageSmart(file){
+  const dataUrl=await new Promise(res=>{let r=new FileReader(); r.onload=()=>res(r.result); r.readAsDataURL(file)});
+  const z=document.getElementById('smartDrop');
+  if(z)z.innerHTML=`<img src="${dataUrl}" style="max-height:180px"><b>Imagem recebida. Fazendo leitura automática...</b>`;
+  try{
+    if(!window.Tesseract)throw new Error('OCR indisponível');
+    const ret=await Tesseract.recognize(file,'por+eng',{logger:m=>{if(m.status)setImportStatus('OCR: '+m.status+(m.progress?` ${Math.round(m.progress*100)}%`:''));}});
+    const txt=(ret.data&&ret.data.text)||'';
+    document.getElementById('impText').value=txt;
+    setImportStatus(txt.trim()?'Imagem lida automaticamente.':'Imagem recebida, mas pouco texto foi encontrado.');
+    previewImport();
+  }catch(err){
+    console.error(err);
+    setImportStatus('Imagem recebida. OCR não conseguiu ler; cole o texto se tiver.');
+  }
+}
+async function readPdfSmart(file){
+  try{
+    if(!window.pdfjsLib)throw new Error('PDF.js indisponível');
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const buf=await file.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+    let out=[];
+    for(let i=1;i<=pdf.numPages;i++){
+      setImportStatus(`Lendo PDF página ${i}/${pdf.numPages}...`);
+      const page=await pdf.getPage(i);
+      const txt=await page.getTextContent();
+      out.push(txt.items.map(x=>x.str).join(' '));
+    }
+    document.getElementById('impText').value=out.join('\n');
+    setImportStatus('PDF lido automaticamente.');
+    previewImport();
+  }catch(err){
+    console.error(err);
+    setImportStatus('Não consegui ler este PDF automaticamente.');
+  }
+}
+function clearSmartImport(){imp={}; let t=document.getElementById('impText'); if(t)t.value=''; let p=document.getElementById('prev'); if(p)p.innerHTML='<div class="readonly span2">Cole texto, imagem ou PDF para o DRO analisar automaticamente.</div>'; setImportStatus('Aguardando conteúdo...');}
+function cleanLine(x){return String(x||'').replace(/\s+/g,' ').trim();}
+function numBR(v){let s=String(v||'').replace(/[^0-9,\.]/g,''); if(!s)return 0; if(s.includes(',')&&s.includes('.'))s=s.replace(/\./g,'').replace(',','.'); else if(s.includes(','))s=s.replace(',','.'); return Number(s)||0;}
+function parseTxt(t){
+  let raw=String(t||'').replace(/\r/g,'\n');
+  let lines=raw.split(/\n+/).map(cleanLine).filter(Boolean);
+  let all=lines.join('\n');
+  let flat=all.replace(/\n/g,' | ');
+  const findAfter=(labels)=>{for(const lab of labels){let r=new RegExp(lab+'\\s*[:=-]\\s*([^|\\n]+)','i'); let m=flat.match(r); if(m)return cleanLine(m[1]);} return '';};
+  let origem=findAfter(['origem','coleta','carregamento','embarque']);
+  let destino=findAfter(['destino','entrega','descarga']);
+  if(!origem||!destino){
+    let rota=lines.find(l=>/\s+(x|X)\s+|→|->|-/i.test(l)&&!/(r\$|frete|valor|empresa|motorista)/i.test(l))||'';
+    let parts=rota.split(/\s+(?:x|X)\s+|\s*→\s*|\s*->\s*/);
+    if(parts.length>=2){origem=origem||cleanLine(parts[0]); destino=destino||cleanLine(parts.slice(1).join(' '));}
+  }
+  let produto=findAfter(['produto','mercadoria','carga'])||((all.match(/\b(soja|milho|trigo|farelo|arroz|aveia|cevada|fertilizante|adubo|calc[aá]rio)\b/i)||[])[1]||'');
+  let quantidade=findAfter(['quantidade','toneladas','peso'])||((all.match(/(\d+[\.,]?\d*)\s*(ton|tons|toneladas|tn)\b/i)||[]).slice(1,3).join(' ')||'');
+  let tipoVeiculo=findAfter(['ve[ií]culo','tipo'])||((all.match(/\b(LS|bitrem|rodotrem|truck|carreta|graneleiro|basculante|4\s*eixo|9\s*eixos?)\b/i)||[])[1]||'');
+  let cliente=findAfter(['cliente','empresa','embarcador']);
+  if(!cliente&&db.clientes&&db.clientes.length){let known=db.clientes.find(c=>c.nome&&all.toLowerCase().includes(String(c.nome).toLowerCase())); if(known)cliente=known.nome;}
+  if(!cliente){let idx=lines.findIndex(l=>(origem&&l.includes(origem))||(destino&&l.includes(destino))); cliente=(idx>0?lines[idx-1]:lines[0])||''; if(/(origem|destino|produto|r\$|frete|valor)/i.test(cliente))cliente='';}
+  let valorEmpresa=0, valorMotorista=0;
+  let emp=(flat.match(/(?:emp(?:resa)?|cliente|frete)\s*[:=-]?\s*r?\$?\s*([0-9\.]+,?\d{0,2})/i)||[])[1];
+  let mot=(flat.match(/(?:mot(?:orista)?|pagar|motor)\s*[:=-]?\s*r?\$?\s*([0-9\.]+,?\d{0,2})/i)||[])[1];
+  if(emp)valorEmpresa=numBR(emp); if(mot)valorMotorista=numBR(mot);
+  if(!valorEmpresa){let vals=[...all.matchAll(/R\$\s*([0-9\.]+,?\d{0,2})/gi)].map(m=>numBR(m[1])); if(vals.length){valorEmpresa=Math.max(...vals); if(vals.length>1)valorMotorista=Math.min(...vals);}}
+  let margem=Number(document.getElementById('impMarg')?.value||10);
+  if(valorEmpresa&&!valorMotorista)valorMotorista=valorEmpresa*(1-margem/100);
+  if(valorEmpresa&&valorMotorista&&valorEmpresa>0)margem=Math.round((1-(valorMotorista/valorEmpresa))*1000)/10;
+  return{cliente,origem,destino,produto:String(produto||'').toUpperCase(),quantidade,valorEmpresa,margem,valorMotorista,data:today(),tipoVeiculo,status:'Disponível',obs:''};
+}
+function previewImport(){
+  let txt=document.getElementById('impText')?.value||'';
+  imp=parseTxt(txt);
+  const fields=[['cliente','Cliente'],['origem','Origem'],['destino','Destino'],['produto','Produto'],['quantidade','Quantidade'],['valorEmpresa','Valor Empresa'],['margem','Margem (%)'],['valorMotorista','Valor Motorista'],['tipoVeiculo','Tipo de veículo'],['data','Data']];
+  let p=document.getElementById('prev'); if(!p)return;
+  p.innerHTML=fields.map(([k,label])=>`<div class="field"><label>${label}</label><input id="imp_${k}" ${k==='data'?'type="date"':(k.startsWith('valor')||k==='margem'?'type="number" step="0.01"':'')} value="${escapeHtml(imp[k]??'')}"></div>`).join('')+`<div class="field span2"><label>Observações</label><textarea id="imp_obs">${escapeHtml(imp.obs||'')}</textarea></div>`;
+  setImportStatus('Prévia gerada. Confira e clique em Criar carga.');
+}
+function readImp(k){let el=document.getElementById('imp_'+k); return el?el.value:(imp[k]||'');}
+function createImport(){
+  if(!document.getElementById('imp_cliente'))previewImport();
+  let carga={id:crypto.randomUUID(),op:nextOp(),createdAt:Date.now(),cliente:readImp('cliente'),origem:readImp('origem'),destino:readImp('destino'),produto:readImp('produto'),quantidade:readImp('quantidade'),valorEmpresa:Number(readImp('valorEmpresa')||0),margem:Number(readImp('margem')||10),valorMotorista:Number(readImp('valorMotorista')||0),tipoVeiculo:readImp('tipoVeiculo'),data:readImp('data')||today(),status:'Disponível',obs:document.getElementById('imp_obs')?.value||''};
+  if(!carga.origem&&!carga.destino&&!carga.produto&&!carga.cliente){alert('Não identifiquei dados suficientes para criar a carga.'); return;}
+  db.cargas.push(carga); addHist(carga.id,'Carga criada por importação inteligente'); save(); alert('Carga criada pela Importação Inteligente.'); go('cargas');
+}
+// Compatibilidade com funções antigas de imagem
+function showImg(file){processSmartFile(file)}
+function fileImg(e){if(e.target.files[0])processSmartFile(e.target.files[0])} function dropImg(e){smartDrop(e)} function pasteImg(e){smartPaste(e)}
 
 function rascunhosPage(m){
   m.innerHTML=topHtml('Rascunhos','Bloco simples para anotar textos rápidos')+`<div class="panel"><div class="field"><label>Escreva aqui</label><textarea id="rascunhoTxt" style="min-height:420px" placeholder="Anote aqui fretes, telefones, ideias ou lembretes...">${escapeHtml(db.rascunho||'')}</textarea></div><br><button class="green" onclick="saveRascunho()">Salvar</button> <button class="btn" onclick="clearRascunho()">Limpar</button><p class="sub">O rascunho fica salvo neste navegador.</p></div>`
