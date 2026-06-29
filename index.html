@@ -2,14 +2,14 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DRO Cargas v5.2 Importação Multi Cargas</title>
+<title>DRO Cargas v6.1 Importação Universal Completa</title>
 <style>
 :root{--nav:#08213a;--blue:#2563eb;--green:#16a34a;--red:#ef4444;--bg:#f3f7fb;--card:#fff;--line:#d8e2ef;--txt:#142033;--muted:#60708a;--amber:#f59e0b;--purple:#7c3aed;--orange:#f97316}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--txt)}button,input,textarea,select{font:inherit}button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.btn{background:#e8eef7;color:#12213a}.primary{background:var(--blue);color:white}.green{background:var(--green);color:white}.red{background:var(--red);color:white}.dark{background:#071626;color:white}.ghost{background:#eef4fb}.small{padding:7px 10px;font-size:13px}.app{display:flex;min-height:100vh}.side{width:250px;background:var(--nav);color:white;position:fixed;left:0;top:0;bottom:0;transition:.2s;z-index:5;overflow:auto}.side.closed{width:72px}.brand{height:82px;display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid rgba(255,255,255,.12);position:relative}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2f80ed,#1aa286);display:grid;place-items:center;font-weight:900}.brand span{font-weight:900;font-size:20px;white-space:nowrap}.toggle{margin-left:auto;background:#29415e;color:white;border-radius:10px;padding:8px 10px;min-width:38px;z-index:9}.side.closed .toggle{position:absolute;right:-17px;top:23px;border:2px solid #fff;border-radius:50%;width:36px;height:36px;padding:0;background:#29415e;display:grid;place-items:center}.side:not(.closed) .toggle{display:block}.side.closed .brand span,.side.closed .label{display:none}.nav a{display:flex;align-items:center;gap:14px;margin:8px 10px;padding:12px 13px;border-radius:10px;color:white;text-decoration:none}.nav a.active,.nav a:hover{background:#173d63}.ico{font-size:20px;width:22px;text-align:center}.main{margin-left:250px;transition:.2s;width:calc(100% - 250px);padding:28px 32px}.side.closed+.main{margin-left:72px;width:calc(100% - 72px)}h1{margin:0;font-size:30px}.sub{color:var(--muted);margin:4px 0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:22px}.actions{display:flex;gap:10px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:14px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 10px 28px rgba(15,36,67,.06);cursor:pointer}.card b{font-size:34px;display:block;margin-top:8px}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:18px;box-shadow:0 10px 28px rgba(15,36,67,.06)}.panel h2{margin:0 0 12px}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.search{max-width:330px;width:100%;padding:13px;border:1px solid var(--line);border-radius:11px}.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}.table th{background:#f8fbff;text-align:left;color:#30435f;font-size:13px;text-transform:uppercase}.table th,.table td{padding:13px;border-bottom:1px solid var(--line);vertical-align:middle}.table tr:last-child td{border-bottom:0}.table tbody tr:hover{background:#f8fbff}.route{font-weight:900}.money{display:inline-block;background:#eef4ff;padding:7px 10px;border-radius:10px;font-weight:900;margin:2px}.margin{background:#fff3e6}.status{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:900;font-size:13px}.Disponivel{background:#dbeafe;color:#1d4ed8}.Agendado{background:#fef3c7;color:#92400e}.Manifestado{background:#ede9fe;color:#5b21b6}.Carregado{background:#dcfce7;color:#166534}.Transito{background:#ffedd5;color:#9a3412}.Finalizado{background:#dcfce7;color:#166534}.actionsRow{display:flex;gap:8px;flex-wrap:wrap}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:22px}.modal.show{display:flex}.box{background:white;border-radius:18px;padding:22px;max-width:900px;width:100%;max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:13px;color:#53637a;font-weight:800;margin:0 0 4px}.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:white}.field textarea{min-height:80px}.span2{grid-column:1/-1}.readonly{background:#f8fbff;border:1px solid var(--line);border-radius:12px;padding:13px}.readonly small{display:block;color:#60708a}.readonly b{display:block;margin-top:3px}.steps{display:flex;gap:10px;flex-wrap:wrap}.step{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#f8fbff}.step input{margin-right:7px}.notice{padding:12px;border-radius:12px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412}.drop{border:2px dashed #9bb5d6;border-radius:14px;padding:18px;text-align:center;background:#f8fbff;min-height:160px}.drop img{max-width:100%;max-height:170px}.ad{white-space:pre-wrap;background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}.hidden{display:none}.tableWrap{width:100%;overflow-x:auto}.manifest-table{min-width:1120px}.manifest-table th,.manifest-table td{white-space:nowrap;padding:10px 8px}.manifest-table .step{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;min-width:124px;padding:8px 10px;margin:0}.manifest-table .step input{margin:0}.manifest-table .search{max-width:none;width:100%;min-width:105px;padding:8px}.manifest-save{min-width:78px}.login-note{font-size:12px;color:#60708a}@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.side{width:72px}.side .brand span,.side .label{display:none}.main{margin-left:72px;width:calc(100% - 72px);padding:18px}.top{flex-direction:column}.table{font-size:13px}.table th,.table td{padding:9px}.actionsRow button{padding:7px 9px}.cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div id="login" class="modal" style="display:none"><div class="box" style="max-width:420px"><div style="display:flex;gap:12px;align-items:center;margin-bottom:18px"><div class="logo">DRO</div><div><h1 style="font-size:28px">DRO Cargas</h1><div class="sub" style="margin:0">Gestão inteligente de fretes</div></div></div><div class="field"><label>E-mail</label><input id="email" value="diego@drocargas.com"></div><div class="field" style="margin-top:10px"><label>Senha</label><input id="senha" type="password" value="123456"></div><button class="green" style="width:100%;margin-top:16px" onclick="login()">Entrar</button><p class="sub">Login inicial: diego@drocargas.com / 123456</p></div></div>
-<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v5.2 Multi Cargas</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
+<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v6.1 Universal</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
 <div id="modal" class="modal"><div class="box" id="modalBox"></div></div>
 <input id="restoreFile" type="file" accept="application/json" class="hidden" onchange="restoreBackup(event)">
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
@@ -328,95 +328,158 @@ async function readPdfSmart(file){
 function clearSmartImport(){imp={}; let t=document.getElementById('impText'); if(t)t.value=''; let p=document.getElementById('prev'); if(p)p.innerHTML='<div class="readonly span2">Cole texto, imagem ou PDF para o DRO analisar automaticamente.</div>'; setImportStatus('Aguardando conteúdo...');}
 function cleanLine(x){return String(x||'').replace(/\s+/g,' ').trim();}
 function numBR(v){let s=String(v||'').replace(/[^0-9,\.]/g,''); if(!s)return 0; if(s.includes(',')&&s.includes('.'))s=s.replace(/\./g,'').replace(',','.'); else if(s.includes(','))s=s.replace(',','.'); return Number(s)||0;}
-let impRows=[];
-function toDateInputFromBR(s){let m=String(s||'').match(/(\d{2})\/(\d{2})\/(\d{4})/); return m?`${m[3]}-${m[2]}-${m[1]}`:today()}
-function splitCols(line){return String(line||'').split(/\t+| {2,}/).map(cleanLine).filter(Boolean)}
-function firstMoneyAfter(txt){let m=String(txt||'').match(/(?:R\$\s*)?([0-9]{2,4}(?:[\.,]\d{1,2})?)\b/); return m?numBR(m[1]):0}
-function normalizeProd(s){s=cleanLine(s).toUpperCase(); let m=s.match(/(SOJA(?:\s+(?:BENEFICIADA|EM\s+GR[ÃA]OS|GRANEL|A\s+FIXAR|FIXO))?|FARELO\s+DE\s+SOJA[^0-9|]*|MILHO|TRIGO|ARROZ|FERTILIZANTE|ADUBO|CALC[ÁA]RIO)/i); return m?cleanLine(m[1]).toUpperCase():s}
-function parseTableRow(line){
-  const original=cleanLine(line);
-  if(!/\d{2}\/\d{2}\/\d{4}/.test(original))return null;
-  if(!/(SOJA|FARELO|MILHO|TRIGO|ARROZ|FERTILIZANTE|ADUBO|CALC)/i.test(original))return null;
-  const margem=Number(document.getElementById('impMarg')?.value||10);
-  const date=toDateInputFromBR(original);
-  let cols=splitCols(line);
-  let idx=cols.findIndex(c=>/\d{2}\/\d{2}\/\d{4}/.test(c));
-  let row=null;
-  if(cols.length>=8 && idx>=0){
-    // Tentativa principal: leitura de tabela com colunas preservadas.
-    let cliente=cols[idx+3]||cols[idx+2]||'';
-    let origem=cols[idx+4]||'';
-    let destino=cols[idx+5]||'';
-    let produto=cols[idx+6]||'';
-    let valor=firstMoneyAfter(cols[idx+7]||cols[idx+8]||'');
-    row={cliente,origem,destino,produto:normalizeProd(produto),quantidade:'',valorEmpresa:valor,margem,valorMotorista:valor?valor*(1-margem/100):0,data:date,tipoVeiculo:cols[idx+1]||'',status:'Disponível',obs:'Importado por OCR: '+original.slice(0,220)};
-  } else {
-    // Fallback para OCR que junta a linha inteira.
-    let txt=original.replace(/\s+/g,' ');
-    let produtoMatch=txt.match(/(SOJA(?:\s+(?:BENEFICIADA\s*-\s*FIXO|EM\s+GR[ÃA]OS\s*-\s*A\s+FIXAR|GRANEL))?|FARELO\s+DE\s+SOJA\s+PRO\s*45,?5?\s*MI?|FARELO\s+DE\s+SOJA|MILHO|TRIGO|ARROZ)/i);
-    let produto=produtoMatch?normalizeProd(produtoMatch[1]):'';
-    let beforeProd=produtoMatch?txt.slice(0,produtoMatch.index).trim():txt;
-    let afterProd=produtoMatch?txt.slice(produtoMatch.index+produtoMatch[0].length).trim():'';
-    // valor do frete normalmente vem após o produto e antes do turno
-    let valor=0;
-    let nums=[...afterProd.matchAll(/\b([0-9]{2,4})(?:[\.,]\d{1,2})?\b/g)].map(m=>numBR(m[1])).filter(n=>n>0 && n<5000);
-    if(nums.length)valor=nums[0];
-    let quantidade='';
-    let qt=(txt.match(/\b(\d{2,4})\s*(TONS?|TN|TONELADAS)\b/i)||[]); if(qt[1])quantidade=qt[1]+' TONS';
-    // Remove começo técnico: cota, op, data, modal e CN.
-    let core=beforeProd.replace(/^.*?\d{2}\/\d{2}\/\d{4}\s*\d{2}:?\d{2}\s*/,'');
-    core=core.replace(/^(RODO|ROD0|RODO\s+|ROD0\s+)\s*/i,'');
-    core=core.replace(/^\d+\s*\([^)]*\)\s*/,'');
-    // Lista de localidades/partes mais comuns nos prints. Ajuda quando o OCR cola tudo.
-    const locais=['RIO GRANDE','BLANCHINI-RIO GRANDE','BUNGE-RIO GRANDE','PORTO RIO GRANDE','SANTA CRUZ','CANOAS','ESTRELA','PASSO FUNDO','BOCCHI - STO. EXPEDITO','BOCCHI - MUITOS CAPOES','MUITOS CAPOES','GRANJA PINHEIROS-GRAO PARA','TRES TENTOS-VACARIA','JOCELITO BOEIRA RODRIGUES','AUGUSTO PESTANA','CRUZ ALTA','BAGE','BOA VISTA DO INCRA','TUPANCIRETA'];
-    let found=[];
-    for(const l of locais){let pos=core.toUpperCase().indexOf(l); if(pos>=0)found.push({l,pos});}
-    found.sort((a,b)=>a.pos-b.pos);
-    let cliente='',origem='',destino='';
-    if(found.length>=2){
-      origem=found[found.length-2].l;
-      destino=found[found.length-1].l;
-      cliente=cleanLine(core.slice(0,found[0].pos));
-      if(!cliente && found.length>=3)cliente=found[0].l;
-    } else {
-      // separa por hífens/setas quando possível
-      let parts=core.split(/\s+→\s+|\s+->\s+|\s+x\s+/i).map(cleanLine).filter(Boolean);
-      if(parts.length>=2){origem=parts[0]; destino=parts[1]; cliente=parts[0];}
-      else {cliente=cleanLine(core.split(/\s{2,}/)[0]||'');}
-    }
-    if(!cliente && db.clientes&&db.clientes.length){let known=db.clientes.find(c=>c.nome&&txt.toLowerCase().includes(String(c.nome).toLowerCase())); if(known)cliente=known.nome;}
-    row={cliente,origem,destino,produto,quantidade,valorEmpresa:valor,margem,valorMotorista:valor?valor*(1-margem/100):0,data:date,tipoVeiculo:(txt.match(/\b(LS|BITREM|RODOTREM|TRUCK|GRANELEIRO|BASCULANTE|RODO)\b/i)||[])[1]||'',status:'Disponível',obs:'Importado por OCR: '+original.slice(0,220)};
-  }
-  // limpeza final
-  ['cliente','origem','destino','produto','quantidade','tipoVeiculo'].forEach(k=>row[k]=cleanLine(row[k]||''));
-  if(!row.cliente && row.origem)row.cliente='-';
-  if(!row.produto && !row.origem && !row.destino)return null;
-  return row;
+let impList=[];
+const DRO_PRODUCTS=['SOJA A GRANEL','SOJA BENEFICIADA','SOJA','MILHO','TRIGO','FARELO DE SOJA','FARELO','ARROZ','DDG','FERTILIZANTE','ADUBO','CALCÁRIO','CALCARIO'];
+const DRO_VEHICLES=['9 EIXOS','7 EIXOS','6 EIXOS','BITREM','RODOTREM','LS','GRANELEIRO','BASCULANTE','CARRETA','TRUCK','4 EIXO','4 EIXOS'];
+const DRO_DESTINOS=['RIO GRANDE','PORTO RIO GRANDE','PORTO DE RIO GRANDE','CANOAS','CAPÃO DO LEÃO','CAPAO DO LEAO','PARANAGUÁ','PARANAGUA','ESTRELA','PASSO FUNDO','PORTO ALEGRE'];
+function onlyClean(s){
+  return String(s||'')
+    .replace(/[🚨🌱📍🏁💰🚛🟢🔴🟡⚠️✅❌]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
 }
-function parseMultipleTxt(t){
-  let raw=String(t||'').replace(/\r/g,'\n');
-  let lines=raw.split(/\n+/).map(cleanLine).filter(Boolean);
-  // Une quebras ruins do OCR: uma linha de tabela sempre contém data; se houver produto em linha seguinte, junta.
-  let candidates=[];
-  for(let i=0;i<lines.length;i++){
-    let l=lines[i];
-    if(/\d{2}\/\d{2}\/\d{4}/.test(l)){
-      let combo=l;
-      for(let j=i+1;j<Math.min(lines.length,i+3);j++){
-        if(!/\d{2}\/\d{2}\/\d{4}/.test(lines[j])) combo+=' '+lines[j];
-        if(/(SOJA|FARELO|MILHO|TRIGO|ARROZ)/i.test(combo))break;
+function upperClean(s){return onlyClean(s).toUpperCase();}
+function pickProduct(txt){
+  const u=upperClean(txt);
+  for(const p of DRO_PRODUCTS){ if(u.includes(p)) return p; }
+  return '';
+}
+function pickVehicle(txt){
+  const u=upperClean(txt);
+  for(const v of DRO_VEHICLES){ if(new RegExp('\\b'+v.replace(/\s+/g,'\\s*')+'\\b','i').test(u)) return v; }
+  let m=u.match(/\b(\d)\s*EIXOS?\b/); return m?m[1]+' EIXOS':'';
+}
+function pickMoney(txt){
+  const s=String(txt||'');
+  let m=s.match(/R\$\s*([0-9]{1,4}(?:[\.,][0-9]{1,2})?)/i);
+  if(m)return numBR(m[1]);
+  let m2=s.match(/\bFRETE\s*[:=-]?\s*([0-9]{2,4}(?:[\.,][0-9]{1,2})?)/i);
+  if(m2)return numBR(m2[1]);
+  return 0;
+}
+function pickQuantity(txt){
+  const u=upperClean(txt);
+  let m=u.match(/\b([0-9]{1,4}(?:[\.,][0-9])?)\s*(TONS?|TN|T)\b/);
+  return m?m[1].replace('.',',')+' TONS':'';
+}
+function fixPlace(s){
+  s=upperClean(s)
+    .replace(/^ORIGEM[:\s-]*/,'')
+    .replace(/^DESTINO[:\s-]*/,'')
+    .replace(/^DE[:\s-]*/,'')
+    .replace(/^PARA[:\s-]*/,'')
+    .replace(/\s+-\s*RS$/,' - RS')
+    .replace(/\bPORTO RIO GRANDE\b/g,'RIO GRANDE')
+    .trim();
+  return s;
+}
+function getLineAfterIcon(rawLines, iconRegex){
+  for(let i=0;i<rawLines.length;i++){
+    if(iconRegex.test(rawLines[i])){
+      const same=onlyClean(rawLines[i].replace(iconRegex,''));
+      if(same && !/^(ORIGEM|DESTINO|CARREGAMENTO|CARGA)$/i.test(same)) return same;
+      for(let j=i+1;j<Math.min(i+3, rawLines.length);j++){
+        const v=onlyClean(rawLines[j]);
+        if(v && !/^(ORIGEM|DESTINO|CARREGAMENTO|CARGA)$/i.test(v)) return v;
       }
-      let r=parseTableRow(combo); if(r)candidates.push(r);
     }
   }
-  // remove duplicadas muito parecidas
-  let seen=new Set(), out=[];
-  for(const r of candidates){let key=[r.data,r.cliente,r.origem,r.destino,r.produto,r.valorEmpresa].join('|').toUpperCase(); if(!seen.has(key)){seen.add(key); out.push(r);}}
-  return out;
+  return '';
+}
+function parseWhatsAppTxt(t){
+  const rawLines=String(t||'').replace(/\r/g,'\n').split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  const lines=rawLines.map(onlyClean).filter(Boolean);
+  const joined=lines.join('\n');
+  const u=upperClean(joined);
+  let produto=pickProduct(joined);
+  let tipoVeiculo=pickVehicle(joined);
+  let quantidade=pickQuantity(joined);
+  let valorEmpresa=pickMoney(joined);
+  let margem=Number(document.getElementById('impMarg')?.value||10);
+  let valorMotorista=valorEmpresa?valorEmpresa*(1-margem/100):0;
+  let origem='', destino='';
+  origem=getLineAfterIcon(rawLines,/📍|ORIGEM/i);
+  destino=getLineAfterIcon(rawLines,/🏁|DESTINO/i);
+  if(!origem||!destino){
+    const locs=lines.filter(l=>/-\s*[A-Z]{2}\b/i.test(l) && !/R\$|FRETE|EIXOS|SOJA|MILHO|TRIGO|FARELO|CARREGAMENTO/i.test(l));
+    if(locs.length>=2){ origem=origem||locs[0]; destino=destino||locs[1]; }
+  }
+  if(!origem||!destino){
+    let rota=lines.find(l=>/\s+(?:X|x)\s+|→|->/.test(l));
+    if(rota){
+      let parts=rota.split(/\s+(?:X|x)\s+|\s*→\s*|\s*->\s*/);
+      if(parts.length>=2){origem=origem||parts[0]; destino=destino||parts.slice(1).join(' ');}
+    }
+  }
+  let cliente='';
+  if(db.clientes&&db.clientes.length){
+    const known=db.clientes.find(c=>c.nome&&u.includes(String(c.nome).toUpperCase()));
+    if(known)cliente=known.nome;
+  }
+  return {cliente,origem:fixPlace(origem),destino:fixPlace(destino),produto,quantidade,valorEmpresa,margem,valorMotorista,data:today(),tipoVeiculo,status:'Disponível',obs:''};
+}
+function splitTableColumns(line){
+  return String(line||'').replace(/\t/g,'  ').split(/\s{2,}/).map(onlyClean).filter(Boolean);
+}
+function parseTableRows(t){
+  const raw=String(t||'').replace(/\r/g,'\n');
+  const lines=raw.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  const rows=[];
+  for(const line of lines){
+    const u=upperClean(line);
+    if(!/\d{2}\/\d{2}\/\d{4}/.test(line)) continue;
+    if(!pickProduct(line)) continue;
+    let cols=splitTableColumns(line);
+    let date=(line.match(/\d{2}\/\d{2}\/\d{4}/)||[])[0]||today();
+    let produto=pickProduct(line);
+    let valorEmpresa=0;
+    const afterProd=u.split(produto)[1]||'';
+    const frete=(afterProd.match(/\b([0-9]{2,4})(?:\s|$)/)||[])[1];
+    if(frete)valorEmpresa=numBR(frete);
+    if(!valorEmpresa)valorEmpresa=pickMoney(line);
+    let margem=Number(document.getElementById('impMarg')?.value||10);
+    let valorMotorista=valorEmpresa?valorEmpresa*(1-margem/100):0;
+    let cliente='', origem='', destino='';
+    if(cols.length>=8){
+      // Normalmente: Data | Modal | CN | Cliente | Tomador | Origem | Destino | Produto | Frete | Turno
+      const pidx=cols.findIndex(c=>upperClean(c).includes(produto));
+      if(pidx>=0){
+        destino=cols[pidx-1]||'';
+        origem=cols[pidx-2]||'';
+        cliente=cols[pidx-4]||cols[pidx-3]||'';
+      }
+    }
+    if(!destino){
+      const knownDest=DRO_DESTINOS.find(d=>u.includes(d));
+      if(knownDest)destino=knownDest;
+    }
+    if(!origem && destino){
+      const before=u.split(upperClean(destino))[0];
+      const pieces=before.split(/\s{2,}|\|/).map(onlyClean).filter(Boolean);
+      origem=pieces[pieces.length-1]||'';
+    }
+    if(!cliente && db.clientes&&db.clientes.length){
+      const known=db.clientes.find(c=>c.nome&&u.includes(String(c.nome).toUpperCase()));
+      if(known)cliente=known.nome;
+    }
+    if(!cliente && cols.length>=4)cliente=cols[3];
+    rows.push({cliente:fixPlace(cliente),origem:fixPlace(origem),destino:fixPlace(destino),produto,quantidade:'',valorEmpresa,margem,valorMotorista,data:date.split('/').reverse().join('-'),tipoVeiculo:pickVehicle(line),status:'Disponível',obs:''});
+  }
+  return rows.filter(r=>r.produto || r.origem || r.destino || r.valorEmpresa);
 }
 function parseTxt(t){
-  let multi=parseMultipleTxt(t);
-  if(multi.length>=2)return multi[0];
+  // Mantém compatibilidade: retorna a primeira carga identificada.
+  const list=parseMultiTxt(t);
+  return list[0]||{cliente:'',origem:'',destino:'',produto:'',quantidade:'',valorEmpresa:0,margem:Number(document.getElementById('impMarg')?.value||10),valorMotorista:0,data:today(),tipoVeiculo:'',status:'Disponível',obs:''};
+}
+function parseMultiTxt(t){
+  const txt=String(t||'');
+  let rows=parseTableRows(txt);
+  if(rows.length>1)return rows;
+  const w=parseWhatsAppTxt(txt);
+  if(w.origem||w.destino||w.produto||w.valorEmpresa)return [w];
+  if(rows.length===1)return rows;
+  // Fallback antigo para texto solto
   let raw=String(t||'').replace(/\r/g,'\n');
   let lines=raw.split(/\n+/).map(cleanLine).filter(Boolean);
   let all=lines.join('\n');
@@ -425,60 +488,53 @@ function parseTxt(t){
   let origem=findAfter(['origem','coleta','carregamento','embarque']);
   let destino=findAfter(['destino','entrega','descarga']);
   if(!origem||!destino){
-    let rota=lines.find(l=>/\s+(x|X)\s+|→|->/i.test(l)&&!/(r\$|frete|valor|empresa|motorista)/i.test(l))||'';
+    let rota=lines.find(l=>/\s+(x|X)\s+|→|->|-/i.test(l)&&!/(r\$|frete|valor|empresa|motorista)/i.test(l))||'';
     let parts=rota.split(/\s+(?:x|X)\s+|\s*→\s*|\s*->\s*/);
     if(parts.length>=2){origem=origem||cleanLine(parts[0]); destino=destino||cleanLine(parts.slice(1).join(' '));}
   }
-  let produto=findAfter(['produto','mercadoria','carga'])||((all.match(/\b(soja|milho|trigo|farelo|arroz|aveia|cevada|fertilizante|adubo|calc[aá]rio)\b/i)||[])[1]||'');
-  let quantidade=findAfter(['quantidade','toneladas','peso'])||((all.match(/(\d+[\.,]?\d*)\s*(ton|tons|toneladas|tn)\b/i)||[]).slice(1,3).join(' ')||'');
-  let tipoVeiculo=findAfter(['ve[ií]culo','tipo'])||((all.match(/\b(LS|bitrem|rodotrem|truck|carreta|graneleiro|basculante|4\s*eixo|9\s*eixos?)\b/i)||[])[1]||'');
+  let produto=pickProduct(all);
+  let quantidade=pickQuantity(all);
+  let tipoVeiculo=pickVehicle(all);
   let cliente=findAfter(['cliente','empresa','embarcador']);
   if(!cliente&&db.clientes&&db.clientes.length){let known=db.clientes.find(c=>c.nome&&all.toLowerCase().includes(String(c.nome).toLowerCase())); if(known)cliente=known.nome;}
-  if(!cliente){let idx=lines.findIndex(l=>(origem&&l.includes(origem))||(destino&&l.includes(destino))); cliente=(idx>0?lines[idx-1]:lines[0])||''; if(/(origem|destino|produto|r\$|frete|valor)/i.test(cliente))cliente='';}
-  let valorEmpresa=0, valorMotorista=0;
-  let emp=(flat.match(/(?:emp(?:resa)?|cliente|frete)\s*[:=-]?\s*r?\$?\s*([0-9\.]+,?\d{0,2})/i)||[])[1];
-  let mot=(flat.match(/(?:mot(?:orista)?|pagar|motor)\s*[:=-]?\s*r?\$?\s*([0-9\.]+,?\d{0,2})/i)||[])[1];
-  if(emp)valorEmpresa=numBR(emp); if(mot)valorMotorista=numBR(mot);
-  if(!valorEmpresa){let vals=[...all.matchAll(/R\$\s*([0-9\.]+,?\d{0,2})/gi)].map(m=>numBR(m[1])); if(vals.length){valorEmpresa=Math.max(...vals); if(vals.length>1)valorMotorista=Math.min(...vals);}}
+  let valorEmpresa=pickMoney(all), valorMotorista=0;
   let margem=Number(document.getElementById('impMarg')?.value||10);
-  if(valorEmpresa&&!valorMotorista)valorMotorista=valorEmpresa*(1-margem/100);
-  if(valorEmpresa&&valorMotorista&&valorEmpresa>0)margem=Math.round((1-(valorMotorista/valorEmpresa))*1000)/10;
-  return{cliente,origem,destino,produto:String(produto||'').toUpperCase(),quantidade,valorEmpresa,margem,valorMotorista,data:today(),tipoVeiculo,status:'Disponível',obs:''};
+  if(valorEmpresa)valorMotorista=valorEmpresa*(1-margem/100);
+  return [{cliente,origem:fixPlace(origem),destino:fixPlace(destino),produto,quantidade,valorEmpresa,margem,valorMotorista,data:today(),tipoVeiculo,status:'Disponível',obs:''}];
 }
 function previewImport(){
   let txt=document.getElementById('impText')?.value||'';
-  impRows=parseMultipleTxt(txt);
+  impList=parseMultiTxt(txt);
+  imp=impList[0]||{};
   let p=document.getElementById('prev'); if(!p)return;
-  if(impRows.length>=2){
-    p.className='span2';
-    p.innerHTML=`<div class="notice">Identifiquei <b>${impRows.length}</b> cargas nesta imagem. Confira abaixo e clique em Criar cargas.</div><div class="tableWrap"><table class="table"><thead><tr><th>Cliente</th><th>Origem</th><th>Destino</th><th>Produto</th><th>Qtd</th><th>Frete</th><th>Data</th></tr></thead><tbody>${impRows.map((r,i)=>`<tr><td><input class="search" id="imp_${i}_cliente" value="${escapeHtml(r.cliente)}"></td><td><input class="search" id="imp_${i}_origem" value="${escapeHtml(r.origem)}"></td><td><input class="search" id="imp_${i}_destino" value="${escapeHtml(r.destino)}"></td><td><input class="search" id="imp_${i}_produto" value="${escapeHtml(r.produto)}"></td><td><input class="search" id="imp_${i}_quantidade" value="${escapeHtml(r.quantidade)}"></td><td><input class="search" type="number" id="imp_${i}_valorEmpresa" value="${r.valorEmpresa||0}"></td><td><input class="search" type="date" id="imp_${i}_data" value="${r.data||today()}"></td></tr>`).join('')}</tbody></table></div>`;
-    setImportStatus(`Prévia gerada com ${impRows.length} cargas. Confira e clique em Criar cargas.`);
-    return;
+  if(impList.length>1){
+    p.className='';
+    p.innerHTML=`<div class="notice"><b>Foram encontradas ${impList.length} cargas.</b> Confira, desmarque o que não quiser e clique em Criar cargas.</div>`+
+    impList.map((c,i)=>`<div class="panel" style="margin-top:10px"><label style="font-weight:900"><input type="checkbox" id="imp_${i}_ok" checked> Criar carga ${i+1}</label><div class="grid" style="margin-top:8px">${[['cliente','Cliente'],['origem','Origem'],['destino','Destino'],['produto','Produto'],['quantidade','Quantidade'],['valorEmpresa','Valor Empresa'],['margem','Margem (%)'],['valorMotorista','Valor Motorista'],['tipoVeiculo','Tipo veículo'],['data','Data']].map(([k,label])=>`<div class="field"><label>${label}</label><input id="imp_${i}_${k}" ${k==='data'?'type="date"':(k.startsWith('valor')||k==='margem'?'type="number" step="0.01"':'')} value="${escapeHtml(c[k]??'')}"></div>`).join('')}</div></div>`).join('');
+  }else{
+    p.className='grid';
+    const fields=[['cliente','Cliente'],['origem','Origem'],['destino','Destino'],['produto','Produto'],['quantidade','Quantidade'],['valorEmpresa','Valor Empresa'],['margem','Margem (%)'],['valorMotorista','Valor Motorista'],['tipoVeiculo','Tipo de veículo'],['data','Data']];
+    p.innerHTML=fields.map(([k,label])=>`<div class="field"><label>${label}</label><input id="imp_${k}" ${k==='data'?'type="date"':(k.startsWith('valor')||k==='margem'?'type="number" step="0.01"':'')} value="${escapeHtml(imp[k]??'')}"></div>`).join('')+`<div class="field span2"><label>Observações</label><textarea id="imp_obs">${escapeHtml(imp.obs||'')}</textarea></div>`;
   }
-  p.className='grid';
-  imp=parseTxt(txt);
-  const fields=[['cliente','Cliente'],['origem','Origem'],['destino','Destino'],['produto','Produto'],['quantidade','Quantidade'],['valorEmpresa','Valor Empresa'],['margem','Margem (%)'],['valorMotorista','Valor Motorista'],['tipoVeiculo','Tipo de veículo'],['data','Data']];
-  p.innerHTML=fields.map(([k,label])=>`<div class="field"><label>${label}</label><input id="imp_${k}" ${k==='data'?'type="date"':(k.startsWith('valor')||k==='margem'?'type="number" step="0.01"':'')} value="${escapeHtml(imp[k]??'')}"></div>`).join('')+`<div class="field span2"><label>Observações</label><textarea id="imp_obs">${escapeHtml(imp.obs||'')}</textarea></div>`;
-  setImportStatus('Prévia gerada. Confira e clique em Criar carga.');
+  setImportStatus(impList.length>1?`Prévia gerada com ${impList.length} cargas.`:'Prévia gerada. Confira e clique em Criar carga.');
 }
 function readImp(k){let el=document.getElementById('imp_'+k); return el?el.value:(imp[k]||'');}
-function readImpRow(i,k){let el=document.getElementById(`imp_${i}_${k}`); return el?el.value:(impRows[i]?.[k]||'');}
+function readMultiImp(i,k){let el=document.getElementById(`imp_${i}_${k}`); return el?el.value:(impList[i]?.[k]||'');}
 function createImport(){
-  let txt=document.getElementById('impText')?.value||'';
-  impRows=parseMultipleTxt(txt);
-  if(impRows.length>=2){
-    let created=0;
-    impRows.forEach((r,i)=>{
-      let ve=Number(readImpRow(i,'valorEmpresa')||0), margem=Number(document.getElementById('impMarg')?.value||10);
-      let carga={id:crypto.randomUUID(),op:nextOp(),createdAt:Date.now(),cliente:readImpRow(i,'cliente'),origem:readImpRow(i,'origem'),destino:readImpRow(i,'destino'),produto:readImpRow(i,'produto'),quantidade:readImpRow(i,'quantidade'),valorEmpresa:ve,margem,valorMotorista:ve?ve*(1-margem/100):0,tipoVeiculo:r.tipoVeiculo||'',data:readImpRow(i,'data')||today(),status:'Disponível',obs:r.obs||'Importado por OCR em lote'};
-      if(carga.cliente||carga.origem||carga.destino||carga.produto){db.cargas.push(carga); addHist(carga.id,'Carga criada por importação inteligente em lote'); created++;}
+  if(!document.getElementById('imp_cliente') && !document.getElementById('imp_0_cliente'))previewImport();
+  if(impList.length>1){
+    let criadas=0;
+    impList.forEach((_,i)=>{
+      if(!document.getElementById(`imp_${i}_ok`)?.checked)return;
+      let carga={id:crypto.randomUUID(),op:nextOp(),createdAt:Date.now(),cliente:readMultiImp(i,'cliente'),origem:readMultiImp(i,'origem'),destino:readMultiImp(i,'destino'),produto:readMultiImp(i,'produto'),quantidade:readMultiImp(i,'quantidade'),valorEmpresa:Number(readMultiImp(i,'valorEmpresa')||0),margem:Number(readMultiImp(i,'margem')||10),valorMotorista:Number(readMultiImp(i,'valorMotorista')||0),tipoVeiculo:readMultiImp(i,'tipoVeiculo'),data:readMultiImp(i,'data')||today(),status:'Disponível',obs:''};
+      if(carga.origem||carga.destino||carga.produto||carga.cliente||carga.valorEmpresa){db.cargas.push(carga); addHist(carga.id,'Carga criada por importação inteligente universal'); criadas++;}
     });
-    save(); alert(created+' cargas criadas pela Importação Inteligente.'); go('cargas'); return;
+    if(!criadas){alert('Nenhuma carga selecionada ou identificada.');return;}
+    save(); alert(criadas+' cargas criadas pela Importação Inteligente.'); go('cargas'); return;
   }
-  if(!document.getElementById('imp_cliente'))previewImport();
   let carga={id:crypto.randomUUID(),op:nextOp(),createdAt:Date.now(),cliente:readImp('cliente'),origem:readImp('origem'),destino:readImp('destino'),produto:readImp('produto'),quantidade:readImp('quantidade'),valorEmpresa:Number(readImp('valorEmpresa')||0),margem:Number(readImp('margem')||10),valorMotorista:Number(readImp('valorMotorista')||0),tipoVeiculo:readImp('tipoVeiculo'),data:readImp('data')||today(),status:'Disponível',obs:document.getElementById('imp_obs')?.value||''};
   if(!carga.origem&&!carga.destino&&!carga.produto&&!carga.cliente){alert('Não identifiquei dados suficientes para criar a carga.'); return;}
-  db.cargas.push(carga); addHist(carga.id,'Carga criada por importação inteligente'); save(); alert('Carga criada pela Importação Inteligente.'); go('cargas');
+  db.cargas.push(carga); addHist(carga.id,'Carga criada por importação inteligente universal'); save(); alert('Carga criada pela Importação Inteligente.'); go('cargas');
 }
 // Compatibilidade com funções antigas de imagem
 function showImg(file){processSmartFile(file)}
