@@ -2,22 +2,25 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DRO Cargas v7.0 OCR por Posição</title>
+<title>DRO Cargas v7.1 Ordem G10</title>
 <style>
-:root{--nav:#08213a;--blue:#2563eb;--green:#16a34a;--red:#ef4444;--bg:#f3f7fb;--card:#fff;--line:#d8e2ef;--txt:#142033;--muted:#60708a;--amber:#f59e0b;--purple:#7c3aed;--orange:#f97316}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--txt)}button,input,textarea,select{font:inherit}button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.btn{background:#e8eef7;color:#12213a}.primary{background:var(--blue);color:white}.green{background:var(--green);color:white}.red{background:var(--red);color:white}.dark{background:#071626;color:white}.ghost{background:#eef4fb}.small{padding:7px 10px;font-size:13px}.app{display:flex;min-height:100vh}.side{width:250px;background:var(--nav);color:white;position:fixed;left:0;top:0;bottom:0;transition:.2s;z-index:5;overflow:auto}.side.closed{width:72px}.brand{height:82px;display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid rgba(255,255,255,.12);position:relative}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2f80ed,#1aa286);display:grid;place-items:center;font-weight:900}.brand span{font-weight:900;font-size:20px;white-space:nowrap}.toggle{margin-left:auto;background:#29415e;color:white;border-radius:10px;padding:8px 10px;min-width:38px;z-index:9}.side.closed .toggle{position:absolute;right:-17px;top:23px;border:2px solid #fff;border-radius:50%;width:36px;height:36px;padding:0;background:#29415e;display:grid;place-items:center}.side:not(.closed) .toggle{display:block}.side.closed .brand span,.side.closed .label{display:none}.nav a{display:flex;align-items:center;gap:14px;margin:8px 10px;padding:12px 13px;border-radius:10px;color:white;text-decoration:none}.nav a.active,.nav a:hover{background:#173d63}.ico{font-size:20px;width:22px;text-align:center}.main{margin-left:250px;transition:.2s;width:calc(100% - 250px);padding:28px 32px}.side.closed+.main{margin-left:72px;width:calc(100% - 72px)}h1{margin:0;font-size:30px}.sub{color:var(--muted);margin:4px 0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:22px}.actions{display:flex;gap:10px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:14px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 10px 28px rgba(15,36,67,.06);cursor:pointer}.card b{font-size:34px;display:block;margin-top:8px}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:18px;box-shadow:0 10px 28px rgba(15,36,67,.06)}.panel h2{margin:0 0 12px}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.search{max-width:330px;width:100%;padding:13px;border:1px solid var(--line);border-radius:11px}.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}.table th{background:#f8fbff;text-align:left;color:#30435f;font-size:13px;text-transform:uppercase}.table th,.table td{padding:13px;border-bottom:1px solid var(--line);vertical-align:middle}.table tr:last-child td{border-bottom:0}.table tbody tr:hover{background:#f8fbff}.route{font-weight:900}.money{display:inline-block;background:#eef4ff;padding:7px 10px;border-radius:10px;font-weight:900;margin:2px}.margin{background:#fff3e6}.status{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:900;font-size:13px}.Disponivel{background:#dbeafe;color:#1d4ed8}.Agendado{background:#fef3c7;color:#92400e}.Manifestado{background:#ede9fe;color:#5b21b6}.Carregado{background:#dcfce7;color:#166534}.Transito{background:#ffedd5;color:#9a3412}.Finalizado{background:#dcfce7;color:#166534}.actionsRow{display:flex;gap:8px;flex-wrap:wrap}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:22px}.modal.show{display:flex}.box{background:white;border-radius:18px;padding:22px;max-width:900px;width:100%;max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:13px;color:#53637a;font-weight:800;margin:0 0 4px}.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:white}.field textarea{min-height:80px}.span2{grid-column:1/-1}.readonly{background:#f8fbff;border:1px solid var(--line);border-radius:12px;padding:13px}.readonly small{display:block;color:#60708a}.readonly b{display:block;margin-top:3px}.steps{display:flex;gap:10px;flex-wrap:wrap}.step{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#f8fbff}.step input{margin-right:7px}.notice{padding:12px;border-radius:12px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412}.drop{border:2px dashed #9bb5d6;border-radius:14px;padding:18px;text-align:center;background:#f8fbff;min-height:160px}.drop img{max-width:100%;max-height:170px}.ad{white-space:pre-wrap;background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}.hidden{display:none}.tableWrap{width:100%;overflow-x:auto}.manifest-table{min-width:1120px}.manifest-table th,.manifest-table td{white-space:nowrap;padding:10px 8px}.manifest-table .step{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;min-width:124px;padding:8px 10px;margin:0}.manifest-table .step input{margin:0}.manifest-table .search{max-width:none;width:100%;min-width:105px;padding:8px}.manifest-save{min-width:78px}.login-note{font-size:12px;color:#60708a}@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.side{width:72px}.side .brand span,.side .label{display:none}.main{margin-left:72px;width:calc(100% - 72px);padding:18px}.top{flex-direction:column}.table{font-size:13px}.table th,.table td{padding:9px}.actionsRow button{padding:7px 9px}.cards{grid-template-columns:1fr}}
+:root{--nav:#08213a;--blue:#2563eb;--green:#16a34a;--red:#ef4444;--bg:#f3f7fb;--card:#fff;--line:#d8e2ef;--txt:#142033;--muted:#60708a;--amber:#f59e0b;--purple:#7c3aed;--orange:#f97316}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--txt)}button,input,textarea,select{font:inherit}button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.btn{background:#e8eef7;color:#12213a}.primary{background:var(--blue);color:white}.green{background:var(--green);color:white}.red{background:var(--red);color:white}.dark{background:#071626;color:white}.ghost{background:#eef4fb}.small{padding:7px 10px;font-size:13px}.app{display:flex;min-height:100vh}.side{width:250px;background:var(--nav);color:white;position:fixed;left:0;top:0;bottom:0;transition:.2s;z-index:5;overflow:auto}.side.closed{width:72px}.brand{height:82px;display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid rgba(255,255,255,.12);position:relative}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2f80ed,#1aa286);display:grid;place-items:center;font-weight:900}.brand span{font-weight:900;font-size:20px;white-space:nowrap}.toggle{margin-left:auto;background:#29415e;color:white;border-radius:10px;padding:8px 10px;min-width:38px;z-index:9}.side.closed .toggle{position:absolute;right:-17px;top:23px;border:2px solid #fff;border-radius:50%;width:36px;height:36px;padding:0;background:#29415e;display:grid;place-items:center}.side:not(.closed) .toggle{display:block}.side.closed .brand span,.side.closed .label{display:none}.nav a{display:flex;align-items:center;gap:14px;margin:8px 10px;padding:12px 13px;border-radius:10px;color:white;text-decoration:none}.nav a.active,.nav a:hover{background:#173d63}.ico{font-size:20px;width:22px;text-align:center}.main{margin-left:250px;transition:.2s;width:calc(100% - 250px);padding:28px 32px}.side.closed+.main{margin-left:72px;width:calc(100% - 72px)}h1{margin:0;font-size:30px}.sub{color:var(--muted);margin:4px 0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:22px}.actions{display:flex;gap:10px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:14px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 10px 28px rgba(15,36,67,.06);cursor:pointer}.card b{font-size:34px;display:block;margin-top:8px}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:18px;box-shadow:0 10px 28px rgba(15,36,67,.06)}.panel h2{margin:0 0 12px}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.search{max-width:330px;width:100%;padding:13px;border:1px solid var(--line);border-radius:11px}.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}.table th{background:#f8fbff;text-align:left;color:#30435f;font-size:13px;text-transform:uppercase}.table th,.table td{padding:13px;border-bottom:1px solid var(--line);vertical-align:middle}.table tr:last-child td{border-bottom:0}.table tbody tr:hover{background:#f8fbff}.route{font-weight:900}.money{display:inline-block;background:#eef4ff;padding:7px 10px;border-radius:10px;font-weight:900;margin:2px}.margin{background:#fff3e6}.status{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:900;font-size:13px}.Disponivel{background:#dbeafe;color:#1d4ed8}.Agendado{background:#fef3c7;color:#92400e}.Manifestado{background:#ede9fe;color:#5b21b6}.Carregado{background:#dcfce7;color:#166534}.Transito{background:#ffedd5;color:#9a3412}.Finalizado{background:#dcfce7;color:#166534}.actionsRow{display:flex;gap:8px;flex-wrap:wrap}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:22px}.modal.show{display:flex}.box{background:white;border-radius:18px;padding:22px;max-width:900px;width:100%;max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:13px;color:#53637a;font-weight:800;margin:0 0 4px}.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:white}.field textarea{min-height:80px}.span2{grid-column:1/-1}.readonly{background:#f8fbff;border:1px solid var(--line);border-radius:12px;padding:13px}.readonly small{display:block;color:#60708a}.readonly b{display:block;margin-top:3px}.steps{display:flex;gap:10px;flex-wrap:wrap}.step{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#f8fbff}.step input{margin-right:7px}.notice{padding:12px;border-radius:12px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412}.drop{border:2px dashed #9bb5d6;border-radius:14px;padding:18px;text-align:center;background:#f8fbff;min-height:160px}.drop img{max-width:100%;max-height:170px}.ad{white-space:pre-wrap;background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}.hidden{display:none}.tableWrap{width:100%;overflow-x:auto}.manifest-table{min-width:1120px}.manifest-table th,.manifest-table td{white-space:nowrap;padding:10px 8px}.manifest-table .step{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;min-width:124px;padding:8px 10px;margin:0}.manifest-table .step input{margin:0}.manifest-table .search{max-width:none;width:100%;min-width:105px;padding:8px}.manifest-save{min-width:78px}.login-note{font-size:12px;color:#60708a}
+.orderDoc{background:white;color:#111;border:1px solid var(--line);padding:24px;max-width:850px;margin:16px auto;font-family:Arial,sans-serif;font-size:14px;line-height:1.35}.orderDoc h2{text-align:center;margin:0 0 12px;font-size:22px}.orderDoc .center{text-align:center}.orderDoc .company{font-weight:700;text-align:center;margin-bottom:8px}.orderDoc table{width:100%;border-collapse:collapse;margin:8px 0}.orderDoc td,.orderDoc th{border:1px solid #222;padding:6px;vertical-align:top}.orderDoc .noBorder td{border:0;padding:2px 4px}.orderActions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0}@media print{body *{visibility:hidden}.orderDoc,.orderDoc *{visibility:visible}.orderDoc{position:absolute;left:0;top:0;width:100%;max-width:none;border:0;margin:0}.side,.top,.panel:not(.printable){display:none!important}}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.side{width:72px}.side .brand span,.side .label{display:none}.main{margin-left:72px;width:calc(100% - 72px);padding:18px}.top{flex-direction:column}.table{font-size:13px}.table th,.table td{padding:9px}.actionsRow button{padding:7px 9px}.cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div id="login" class="modal" style="display:none"><div class="box" style="max-width:420px"><div style="display:flex;gap:12px;align-items:center;margin-bottom:18px"><div class="logo">DRO</div><div><h1 style="font-size:28px">DRO Cargas</h1><div class="sub" style="margin:0">Gestão inteligente de fretes</div></div></div><div class="field"><label>E-mail</label><input id="email" value="diego@drocargas.com"></div><div class="field" style="margin-top:10px"><label>Senha</label><input id="senha" type="password" value="123456"></div><button class="green" style="width:100%;margin-top:16px" onclick="login()">Entrar</button><p class="sub">Login inicial: diego@drocargas.com / 123456</p></div></div>
-<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v7.0 OCR Posição</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
+<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v7.1 Ordem G10</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
 <div id="modal" class="modal"><div class="box" id="modalBox"></div></div>
 <input id="restoreFile" type="file" accept="application/json" class="hidden" onchange="restoreBackup(event)">
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
 const KEY='DRO_CARGAS_DATA'; const MASTER='DRO_CARGAS_MASTER'; const OLD=['DRO_CARGAS_MASTER','DRO_CARGAS_DATA','droCargasData','DRO_CARGAS_V19','DRO_CARGAS_V20','dro-cargas'];
-let page='dashboard', search='', editId=null; let simpleFilters={clientes:'',motoristas:'',veiculos:''}; let manFilter={motorista:'',placa:'',agendado:'',manifestado:'',carregado:'',transito:'',finalizado:''};
+let page='dashboard', search='', editId=null; let orderCargaId='', orderMotoristaId='', orderVeiculoId=''; let simpleFilters={clientes:'',motoristas:'',veiculos:''}; let manFilter={motorista:'',placa:'',agendado:'',manifestado:'',carregado:'',transito:'',finalizado:''};
 let db=load();
-const pages=[['dashboard','🏠','Dashboard'],['rascunhos','📝','Rascunhos'],['agenda','🗓️','Agenda'],['cargas','🚛','Cargas'],['importar','📥','Importação Inteligente'],['agendamentos','📋','Agendamentos'],['manifestos','📄','Manifestos'],['clientes','👥','Clientes'],['motoristas','👤','Motoristas'],['veiculos','🚚','Veículos'],['anuncios','📣','Anúncios'],['relatorios','📊','Relatórios']];
+const pages=[['dashboard','🏠','Dashboard'],['rascunhos','📝','Rascunhos'],['agenda','🗓️','Agenda'],['cargas','🚛','Cargas'],['importar','📥','Importação Inteligente'],['agendamentos','📋','Agendamentos'],['manifestos','📄','Manifestos'],['ordemg10','🧾','Ordem G10'],['clientes','👥','Clientes'],['motoristas','👤','Motoristas'],['veiculos','🚚','Veículos'],['anuncios','📣','Anúncios'],['relatorios','📊','Relatórios']];
 function defaultDb(){return{cargas:[],agendamentos:[],manifestos:[],clientes:[],motoristas:[],veiculos:[],anuncios:[],agenda:[],historico:[],rascunho:'',lastOp:0,version:'4.0'}}
 function load(){let d=null; for(const k of OLD){let o=localStorage.getItem(k); if(o){d=o; break}} try{let x=d?JSON.parse(d):defaultDb(); return Object.assign(defaultDb(),x)}catch(e){return defaultDb()}}
 function save(){const payload=JSON.stringify(db); localStorage.setItem(KEY,payload); localStorage.setItem(MASTER,payload); try{localStorage.setItem('DRO_CARGAS_V35_ULTIMO',payload)}catch(e){}}
@@ -26,7 +29,7 @@ function logout(){sessionStorage.removeItem('DRO_CARGAS_SESSAO'); document.getEl
 function toggleSide(){let s=document.getElementById('side'); s.classList.toggle('closed'); s.querySelector('.toggle').textContent=s.classList.contains('closed')?'▶':'◀'}
 function go(p){page=p; search=''; render()}
 function renderNav(){document.getElementById('nav').innerHTML=pages.map(p=>`<a title="${p[2]}" class="${page==p[0]?'active':''}" onclick="go('${p[0]}')"><span class="ico">${p[1]}</span><span class="label">${p[2]}</span></a>`).join('')}
-function render(){normalize(); save(); renderNav(); const m=document.getElementById('main'); const title=pages.find(x=>x[0]==page)?.[2]||''; if(page==='dashboard') return dashboard(m); if(page==='rascunhos') return rascunhosPage(m); if(page==='cargas') return cargasPage(m); if(page==='agendamentos') return agPage(m); if(page==='manifestos') return manPage(m); if(page==='anuncios') return adsPage(m); if(page==='pendencias') return pendPage(m); if(page==='importar') return importPage(m); if(page==='clientes') return simplePage(m,'clientes','Clientes',['nome','cidade','uf','contato','cnpj','localizacao','telefone','email','observacoes']); if(page==='motoristas') return simplePage(m,'motoristas','Motoristas',['nome','telefone','placa','cidade','tipoVeiculo','observacoes']); if(page==='veiculos') return simplePage(m,'veiculos','Veículos',['placa','tipo','motorista','cidade','situacao']); if(page==='agenda') return simplePage(m,'agenda','Agenda',['titulo','descricao','data']); if(page==='relatorios') return reports(m);}
+function render(){normalize(); save(); renderNav(); const m=document.getElementById('main'); const title=pages.find(x=>x[0]==page)?.[2]||''; if(page==='dashboard') return dashboard(m); if(page==='rascunhos') return rascunhosPage(m); if(page==='cargas') return cargasPage(m); if(page==='agendamentos') return agPage(m); if(page==='manifestos') return manPage(m); if(page==='ordemg10') return ordemG10Page(m); if(page==='anuncios') return adsPage(m); if(page==='pendencias') return pendPage(m); if(page==='importar') return importPage(m); if(page==='clientes') return simplePage(m,'clientes','Clientes',['nome','cidade','uf','contato','cnpj','localizacao','telefone','email','observacoes']); if(page==='motoristas') return simplePage(m,'motoristas','Motoristas',['nome','nomeWhatsapp','telefone','cpf','rg','cnh','municipio','uf','veiculoId','placa','observacoes']); if(page==='veiculos') return simplePage(m,'veiculos','Veículos',['placaCavalo','placaCarreta','tipo','motorista','proprietario','cpfCnpjProprietario','municipio','uf','rntrc','observacoes']); if(page==='agenda') return simplePage(m,'agenda','Agenda',['titulo','descricao','data']); if(page==='relatorios') return reports(m);}
 function topHtml(title,sub='Resumo operacional do DRO Cargas'){return `<div class="top"><div><h1>${title}</h1><div class="sub">${sub}</div></div><div class="actions"><button class="btn" onclick="backup()">Backup JSON</button><button class="btn" onclick="document.getElementById('restoreFile').click()">Restaurar Backup</button><button class="primary" onclick="openCarga()">+ Nova Carga</button><button class="ghost" onclick="go('importar')">📥 Importação Inteligente</button><button class="dark" onclick="logout()">Sair</button></div></div>`}
 function statusClass(s){return String(s||'Disponível').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace('Em transito','Transito')}
 function dateBR(d){if(!d)return''; if(d.includes('/'))return d; let [y,m,da]=d.split('-'); return y&&m&&da?`${da}/${m}/${y}`:d}
@@ -72,7 +75,7 @@ function counts(){let c=db.cargas; return{disp:c.filter(x=>x.status==='Disponív
 function dashboard(m){let ct=counts(); m.innerHTML=topHtml('Dashboard')+`<div class="cards"><div class="card" onclick="search='Disponível';go('cargas')">Disponíveis<b>${ct.disp}</b></div><div class="card" onclick="search='Agendado';go('cargas')">Agendadas<b>${ct.agen}</b></div><div class="card" onclick="search='Manifestado';go('cargas')">Manifestadas<b>${ct.mani}</b></div><div class="card" onclick="search='Finalizado';go('cargas')">Finalizadas<b>${ct.fin}</b></div><div class="card" onclick="go('manifestos')">Pendências<b>${ct.pend}</b></div></div>`+cargasTable(sortedCargas().slice(0,10),'Últimas cargas')}
 function cargasPage(m){m.innerHTML=topHtml('Cargas','Cadastro e controle de cargas')+cargasTable(filteredCargas(),'Cargas')}
 function filteredCargas(){let q=search.toLowerCase(); return sortedCargas().filter(c=>!q||JSON.stringify(c).toLowerCase().includes(q))}
-function cargasTable(rows,title){return `<div class="panel"><div class="toolbar"><h2>${title}</h2><input class="search" placeholder="Buscar..." oninput="search=this.value;render()" value="${search}"></div><table class="table"><thead><tr><th>OP</th><th>Cliente</th><th>Rota</th><th>Produto</th><th>Valores</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead><tbody>${rows.length?rows.map(c=>`<tr onclick="detailsCarga('${c.id}')"><td>${c.op}</td><td>${c.cliente||''}</td><td class="route">${c.origem||''} → ${c.destino||''}</td><td>${c.produto||''}<br><small>${c.quantidade||''}</small></td><td><span class="money">Emp: ${currency(c.valorEmpresa)}</span><span class="money margin">${c.margem}%</span><span class="money">Mot: ${currency(c.valorMotorista)}</span></td><td>${dateBR(c.data)}</td><td><span class="status ${statusClass(c.status)}">${c.status}</span></td><td onclick="event.stopPropagation()"><div class="actionsRow"><button class="green small" onclick="openAg('${c.id}')">Agendar</button><button class="btn small" onclick="openCarga('${c.id}')">Editar</button><button class="btn small" onclick="dupCarga('${c.id}')">Duplicar</button><button class="red small" onclick="delCarga('${c.id}')">Excluir</button></div></td></tr>`).join(''):`<tr><td colspan="8" style="text-align:center;color:#60708a">Nenhuma carga cadastrada</td></tr>`}</tbody></table></div>`}
+function cargasTable(rows,title){return `<div class="panel"><div class="toolbar"><h2>${title}</h2><input class="search" placeholder="Buscar..." oninput="search=this.value;render()" value="${search}"></div><table class="table"><thead><tr><th>OP</th><th>Cliente</th><th>Rota</th><th>Produto</th><th>Valores</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead><tbody>${rows.length?rows.map(c=>`<tr onclick="detailsCarga('${c.id}')"><td>${c.op}</td><td>${c.cliente||''}</td><td class="route">${c.origem||''} → ${c.destino||''}</td><td>${c.produto||''}<br><small>${c.quantidade||''}</small></td><td><span class="money">Emp: ${currency(c.valorEmpresa)}</span><span class="money margin">${c.margem}%</span><span class="money">Mot: ${currency(c.valorMotorista)}</span></td><td>${dateBR(c.data)}</td><td><span class="status ${statusClass(c.status)}">${c.status}</span></td><td onclick="event.stopPropagation()"><div class="actionsRow"><button class="green small" onclick="openAg('${c.id}')">Agendar</button><button class="primary small" onclick="openOrderFromCarga('${c.id}')">Ordem G10</button><button class="btn small" onclick="openCarga('${c.id}')">Editar</button><button class="btn small" onclick="dupCarga('${c.id}')">Duplicar</button><button class="red small" onclick="delCarga('${c.id}')">Excluir</button></div></td></tr>`).join(''):`<tr><td colspan="8" style="text-align:center;color:#60708a">Nenhuma carga cadastrada</td></tr>`}</tbody></table></div>`}
 function openModal(html){document.getElementById('modalBox').innerHTML=html; document.getElementById('modal').classList.add('show')}
 function closeModal(){document.getElementById('modal').classList.remove('show')}
 function openCarga(id){let c=id?db.cargas.find(x=>x.id===id):{data:today(),margem:10,status:'Disponível'}; openModal(`<h2>${id?'Editar carga':'Nova carga'}</h2><div class="grid"><div class="field"><label>OP (automática se deixar em branco)</label><input id="op" value="${c.op||''}"></div><div class="field"><label>Cliente</label><input id="cliente" value="${c.cliente||''}"></div><div class="field"><label>Origem</label><input id="origem" value="${c.origem||''}"></div><div class="field"><label>Destino</label><input id="destino" value="${c.destino||''}"></div><div class="field"><label>Produto</label><input id="produto" value="${c.produto||''}"></div><div class="field"><label>Quantidade/Toneladas</label><input id="quantidade" value="${c.quantidade||''}"></div><div class="field"><label>Valor Empresa</label><input id="valorEmpresa" type="number" value="${c.valorEmpresa||''}" oninput="calcMot()"></div><div class="field"><label>Margem (%)</label><input id="margem" type="number" value="${c.margem??10}" oninput="calcMot()"></div><div class="field"><label>Valor Motorista</label><input id="valorMotorista" readonly value="${currency(c.valorMotorista||0)}"></div><div class="field"><label>Data Liberada</label><input id="data" type="date" value="${c.data||today()}"></div><div class="field"><label>Tipo Veículo</label><input id="tipoVeiculo" value="${c.tipoVeiculo||''}"></div><div class="field"><label>Status</label><select id="status">${['Disponível','Agendado','Manifestado','Carregado','Em trânsito','Finalizado'].map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field span2"><label>Observações</label><textarea id="obs">${c.obs||''}</textarea></div></div><div style="margin-top:14px"><button class="green" onclick="saveCarga('${id||''}')">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button></div>`); calcMot()}
@@ -319,161 +322,82 @@ function createImport(){
 }
 function valImp(i,k){let e=document.getElementById(`imp_${i}_${k}`); return e?e.value:''}
 function clearImport(){impList=[]; let t=document.getElementById('impText'); if(t)t.value=''; let p=document.getElementById('prev'); if(p)p.innerHTML='<div class="readonly span2">Cole ou envie um print para analisar.</div>'; impSetStatus('Aguardando conteúdo...')}
-
-function imageToCanvas(file){
-  return new Promise((resolve,reject)=>{
-    const img=new Image();
-    img.onload=()=>{
-      const canvas=document.createElement('canvas');
-      canvas.width=img.naturalWidth||img.width;
-      canvas.height=img.naturalHeight||img.height;
-      const ctx=canvas.getContext('2d',{willReadFrequently:true});
-      ctx.drawImage(img,0,0);
-      resolve({img,canvas,ctx,width:canvas.width,height:canvas.height});
-    };
-    img.onerror=reject;
-    const reader=new FileReader();
-    reader.onload=()=>{img.src=reader.result;};
-    reader.onerror=reject;
-    reader.readAsDataURL(file);
-  });
-}
-function detectBlueBandsFromCanvas(ctx,width,height){
-  // Detecta as linhas azuis da coluna Data dos VLogs. Isso evita importar linhas vermelhas.
-  // Não depende do texto: olha a cor de fundo azul/ciano da linha.
-  const data=ctx.getImageData(0,0,width,height).data;
-  let rows=[];
-  for(let y=0;y<height;y++){
-    let count=0;
-    for(let x=0;x<Math.min(width,220);x++){
-      const i=(y*width+x)*4, r=data[i], g=data[i+1], b=data[i+2];
-      // Azul/ciano dos VLogs, tolerante a compressão e zoom.
-      if(b>120 && g>110 && r<90 && (b-r)>60 && (g-r)>50) count++;
-    }
-    if(count>18) rows.push(y);
-  }
-  if(!rows.length){
-    // às vezes a coluna Data fica um pouco mais para a direita conforme o recorte
-    for(let y=0;y<height;y++){
-      let count=0;
-      for(let x=0;x<Math.min(width,320);x++){
-        const i=(y*width+x)*4, r=data[i], g=data[i+1], b=data[i+2];
-        if(b>120 && g>110 && r<100 && (b-r)>45 && (g-r)>35) count++;
-      }
-      if(count>18) rows.push(y);
-    }
-  }
-  if(!rows.length)return [];
-  let bands=[], start=rows[0], last=rows[0];
-  for(let i=1;i<rows.length;i++){
-    if(rows[i]-last>2){bands.push([start,last]); start=rows[i];}
-    last=rows[i];
-  }
-  bands.push([start,last]);
-  // transforma o retângulo do chip azul numa faixa inteira da linha
-  return bands
-    .filter(b=>b[1]-b[0]>=6)
-    .map(b=>{
-      const mid=(b[0]+b[1])/2;
-      return {y0:Math.max(0,mid-12), y1:Math.min(height,mid+18), mid};
-    });
-}
-function wordsFromTesseract(ret){
-  const words=(ret && ret.data && ret.data.words) || [];
-  return words.map(w=>{
-    const bbox=w.bbox||{};
-    return {text:String(w.text||'').trim(), x0:bbox.x0??w.x0??0, y0:bbox.y0??w.y0??0, x1:bbox.x1??w.x1??0, y1:bbox.y1??w.y1??0};
-  }).filter(w=>w.text && w.text.length>0);
-}
-function joinWords(ws){return ws.sort((a,b)=>a.x0-b.x0).map(w=>w.text).join(' ').replace(/\s+/g,' ').trim();}
-function wordsInBand(words,band){return words.filter(w=>((w.y0+w.y1)/2)>=band.y0 && ((w.y0+w.y1)/2)<=band.y1);}
-function parseBlueRowsByPosition(words,bands,width){
-  if(!bands || !bands.length || !words || !words.length) return [];
-  const mg=Number(document.getElementById('impMarg')?.value||10);
-  let cargas=[];
-  for(const band of bands){
-    let row=wordsInBand(words,band);
-    // remove cabeçalho/botão, mantém palavras úteis
-    row=row.filter(w=>!/^Cota|Op\.?|Data|Modal|CN|Cliente|Tomador|Origem|Destino|Produto|Frete|Turno|A[cç][aã]o$/i.test(w.text));
-    if(row.length<5) continue;
-    const byX=(a,b)=>a.x0-b.x0;
-    const col=(a,b)=>joinWords(row.filter(w=>w.x0>=a*width && w.x0<b*width).sort(byX));
-    // posições aproximadas do layout VLog, proporcionais ao print
-    let cliente=cleanOCR(col(0.205,0.355));
-    let tomador=cleanOCR(col(0.355,0.500));
-    let origem=cleanOCR(col(0.500,0.635));
-    let destino=cleanOCR(col(0.635,0.785));
-    let produto=cleanOCR(col(0.785,0.930));
-    let freteTxt=cleanOCR(col(0.920,0.995));
-    // fallback para recortes com colunas deslocadas
-    if(!extractProduct(produto)){
-      produto=cleanOCR(col(0.760,0.930));
-      freteTxt=cleanOCR(col(0.900,0.995));
-    }
-    let produtoFinal=extractProduct(produto)||extractProduct(joinWords(row));
-    let freteMatch=freteTxt.match(/\b(\d{2,4})(?:[,.]\d{1,2})?\b/);
-    let valor=freteMatch?numBR(freteMatch[1]):0;
-    if(!valor){
-      // pega o último número plausível da linha, evitando data, modal e CN
-      const nums=row.filter(w=>w.x0>0.88*width).map(w=>w.text).join(' ').match(/\b\d{2,4}\b/g)||[];
-      valor=nums.length?Number(nums[0]):0;
-    }
-    // Limpeza de "BOCCHI-" e OCR grudado
-    cliente=cliente.replace(/\s*-\s*$/,'').trim();
-    origem=origem.replace(/\s*-\s*$/,'').trim();
-    destino=destino.replace(/\s*-\s*$/,'').trim();
-    const c=buildCarga(cliente||findKnownCompany(joinWords(row)), origem, destino, produtoFinal, valor, '');
-    if((c.origem||c.destino||c.cliente) && c.produto && c.valorEmpresa){
-      c.obs='Criada por Importação Inteligente - linha azul';
-      cargas.push(c);
-    }
-  }
-  return cargas;
-}
-function renderPreviewFromList(list,statusMsg){
-  impList=list||[];
-  let prev=document.getElementById('prev'); if(!prev)return;
-  if(!impList.length){prev.innerHTML='<div class="notice span2">Nenhuma carga encontrada. Você pode ajustar o texto lido acima e clicar em Analisar.</div>'; impSetStatus('Nenhuma carga válida encontrada.'); return;}
-  impSetStatus(statusMsg || `${impList.length} carga(s) encontrada(s). Confira antes de salvar.`);
-  prev.innerHTML=impList.map((c,i)=>`<div class="panel span2" style="box-shadow:none;margin:0"><label style="font-weight:900"><input type="checkbox" id="imp_sel_${i}" checked> Criar carga ${i+1}</label><div class="grid" style="margin-top:10px">
-    ${impField(i,'cliente','Cliente',c.cliente)}${impField(i,'origem','Origem',c.origem)}${impField(i,'destino','Destino',c.destino)}${impField(i,'produto','Produto',c.produto)}
-    ${impField(i,'quantidade','Quantidade',c.quantidade)}${impField(i,'valorEmpresa','Valor Empresa',c.valorEmpresa,'number')}${impField(i,'margem','Margem (%)',c.margem,'number')}${impField(i,'valorMotorista','Valor Motorista',c.valorMotorista,'number')}${impField(i,'tipoVeiculo','Tipo veículo',c.tipoVeiculo)}${impField(i,'data','Data',c.data,'date')}
-  </div></div>`).join('');
-}
-
 async function showImg(file){
-  let r=new FileReader();
-  r.onload=async()=>{
-    drop.innerHTML=`<img src="${r.result}"><p>Imagem recebida. Fazendo OCR por posição...</p>`;
+  let r=new FileReader(); r.onload=async()=>{
+    drop.innerHTML=`<img src="${r.result}"><p>Imagem recebida. Fazendo OCR...</p>`;
     if(window.Tesseract){
       try{
-        impSetStatus('Lendo imagem e detectando linhas azuis...');
-        const canvasObj=await imageToCanvas(file);
-        const blueBands=detectBlueBandsFromCanvas(canvasObj.ctx,canvasObj.width,canvasObj.height);
+        impSetStatus('Lendo imagem...');
         const ret=await Tesseract.recognize(file,'por+eng');
         document.getElementById('impText').value=(ret.data&&ret.data.text)||'';
-        const words=wordsFromTesseract(ret);
-        const posCargas=parseBlueRowsByPosition(words,blueBands,canvasObj.width);
-        if(posCargas.length){
-          renderPreviewFromList(posCargas,`${posCargas.length} linha(s) azul(is) encontrada(s). Confira antes de salvar.`);
-        }else{
-          // fallback antigo por texto
-          previewImport();
-          if(blueBands.length && (!impList || !impList.length)) impSetStatus('Detectei linha azul, mas o OCR não separou as colunas. Tente um print com mais zoom ou recorte mais próximo da tabela.');
-        }
-      }catch(e){
-        console.error(e);
-        impSetStatus('Não consegui ler a imagem. Cole o texto manualmente.');
-      }
-    }else{
-      impSetStatus('OCR indisponível. Cole o texto manualmente.');
-    }
-  };
-  r.readAsDataURL(file);
+        previewImport();
+      }catch(e){console.error(e); impSetStatus('Não consegui ler a imagem. Cole o texto manualmente.');}
+    }else{impSetStatus('OCR indisponível. Cole o texto manualmente.')}
+  }; r.readAsDataURL(file)
 }
 function fileImg(e){if(e.target.files[0])showImg(e.target.files[0])}
 function dropImg(e){e.preventDefault(); if(e.dataTransfer.files[0])showImg(e.dataTransfer.files[0])}
 function pasteImg(e){let f=[...e.clipboardData.items].find(i=>i.type.startsWith('image/')); if(f){e.preventDefault();showImg(f.getAsFile())}else{setTimeout(previewImport,80)}}
+
+
+function openOrderFromCarga(id){orderCargaId=id||''; page='ordemg10'; render()}
+function setOrderCarga(id){orderCargaId=id; render()}
+function setOrderMotorista(id){orderMotoristaId=id; render()}
+function setOrderVeiculo(id){orderVeiculoId=id; render()}
+function selectedOrderData(){
+  let c=db.cargas.find(x=>x.id===orderCargaId)||db.cargas[0]||{};
+  if(!orderCargaId&&c.id)orderCargaId=c.id;
+  let m=db.motoristas.find(x=>x.id===orderMotoristaId)||db.motoristas[0]||{};
+  if(!orderMotoristaId&&m.id)orderMotoristaId=m.id;
+  let v=db.veiculos.find(x=>x.id===orderVeiculoId)||{};
+  if(!v.id&&m.veiculoId)v=db.veiculos.find(x=>x.id===m.veiculoId)||{};
+  if(!v.id&&m.placa)v=db.veiculos.find(x=>String(x.placaCavalo||x.placa||'').toUpperCase()===String(m.placa||'').toUpperCase())||{};
+  if(!v.id&&db.veiculos[0])v=db.veiculos[0];
+  if(!orderVeiculoId&&v.id)orderVeiculoId=v.id;
+  return {c,m,v};
+}
+function selectOpts(arr,sel,labelFn){return arr.map(x=>`<option value="${x.id}" ${x.id===sel?'selected':''}>${escapeHtml(labelFn(x))}</option>`).join('')}
+function ordemG10Page(m){
+  const d=selectedOrderData(), c=d.c, mot=d.m, vei=d.v;
+  m.innerHTML=topHtml('Ordem G10','Autorização de carregamento com dados do motorista e veículo')+`<div class="panel printable">
+    <div class="grid">
+      <div class="field"><label>Carga</label><select onchange="setOrderCarga(this.value)"><option value="">Selecionar...</option>${selectOpts(db.cargas,orderCargaId,x=>`OP ${x.op||''} - ${x.origem||''} x ${x.destino||''}`)}</select></div>
+      <div class="field"><label>Motorista</label><select onchange="setOrderMotorista(this.value)"><option value="">Selecionar...</option>${selectOpts(db.motoristas,orderMotoristaId,x=>`${x.nome||''}${x.nomeWhatsapp?' / WhatsApp: '+x.nomeWhatsapp:''}`)}</select></div>
+      <div class="field"><label>Veículo</label><select onchange="setOrderVeiculo(this.value)"><option value="">Selecionar...</option>${selectOpts(db.veiculos,orderVeiculoId,x=>`${x.placaCavalo||x.placa||''} / ${x.placaCarreta||''} - ${x.proprietario||''}`)}</select></div>
+      <div class="readonly"><small>Nome do PDF</small><b id="orderFileName">ORDEM G10 PLACA ${escapeHtml(placaOrdem(vei))}.pdf</b></div>
+    </div>
+    <h2 style="margin-top:18px">Preencher dados da ordem</h2>
+    <div class="grid" oninput="updateOrderPreview()">
+      ${orderField('remetente','Remetente',c.cliente||'')}${orderField('localOrigem','Local origem',c.origem||'')}
+      ${orderField('destinatario','Destinatário',c.cliente||'')}${orderField('localDestino','Local destino',c.destino||'')}
+      ${orderField('pedido','Pedido','')}${orderField('produto','Produto',c.produto||'')}
+      ${orderField('quantidade','Quantidade',c.quantidade||'')}${orderField('frete','Frete motorista',c.valorMotorista||c.valorEmpresa||'','number')}
+      <div class="field span2"><label>Observação</label><textarea id="ord_observacao">${escapeHtml(c.obs||'')}</textarea></div>
+    </div>
+    <div class="orderActions"><button class="green" onclick="saveOrderPdf()">Salvar PDF</button><button class="btn" onclick="printOrder()">Imprimir</button></div>
+    <div id="orderPreview">${orderDocHTML(orderDataFromObjects(c,mot,vei))}</div>
+  </div>`;
+  updateOrderPreview();
+}
+function orderField(id,label,val,type='text'){return `<div class="field"><label>${label}</label><input id="ord_${id}" type="${type}" value="${escapeHtml(val??'')}"></div>`}
+function placaOrdem(vei){return String(vei.placaCavalo||vei.placa||'SEM-PLACA').toUpperCase().replace(/[^A-Z0-9]/g,'')}
+function orderDataFromObjects(c,mot,vei){return {
+  remetente:c.cliente||'', localOrigem:c.origem||'', destinatario:c.cliente||'', localDestino:c.destino||'', pedido:'', produto:c.produto||'', quantidade:c.quantidade||'', frete:c.valorMotorista||c.valorEmpresa||'', observacao:c.obs||'',
+  cavalo:vei.placaCavalo||vei.placa||mot.placa||'', carreta:vei.placaCarreta||'', proprietario:vei.proprietario||'', cpfCnpjProprietario:vei.cpfCnpjProprietario||'', municipio:vei.municipio||vei.cidade||mot.municipio||mot.cidade||'', uf:vei.uf||mot.uf||'', motorista:mot.nome||'', nomeWhatsapp:mot.nomeWhatsapp||'', cnh:mot.cnh||'', rg:mot.rg||'', cpf:mot.cpf||'', telefone:mot.telefone||''
+}}
+function getOrd(id){let e=document.getElementById('ord_'+id); return e?e.value:''}
+function currentOrderData(){let {c,m,v}=selectedOrderData(); let d=orderDataFromObjects(c,m,v); ['remetente','localOrigem','destinatario','localDestino','pedido','produto','quantidade','frete','observacao'].forEach(k=>{let val=getOrd(k); if(val!==''||document.getElementById('ord_'+k))d[k]=val}); return d}
+function updateOrderPreview(){let el=document.getElementById('orderPreview'); if(el)el.innerHTML=orderDocHTML(currentOrderData()); let fn=document.getElementById('orderFileName'); if(fn){let {v}=selectedOrderData(); fn.textContent=`ORDEM G10 PLACA ${placaOrdem(v)}.pdf`;}}
+function orderDocHTML(d){return `<div class="orderDoc" id="orderDoc"><h2>AUTORIZAÇÃO DE CARREGAMENTO</h2>
+  <div class="company">G10 - TRANSPORTES LTDA<br>BR 392 KM 10 SALA 17, 1 - BARRA, RIO GRANDE - RS<br>FONE: (53) 3230-3713 &nbsp;&nbsp; RIO GRANDE<br>CNPJ: 07.569.161/0012-00 &nbsp;&nbsp; IE: 1000298180</div>
+  <table><tr><td><b>REMETENTE</b> ${escapeHtml(d.remetente)}</td><td><b>LOCAL</b> ${escapeHtml(d.localOrigem)}</td></tr><tr><td><b>DESTINATÁRIO</b> ${escapeHtml(d.destinatario)}</td><td><b>LOCAL</b> ${escapeHtml(d.localDestino)}</td></tr></table>
+  <div class="center"><b>AUTORIZAMOS O CARREGAMENTO DO SEGUINTE VEÍCULO</b></div>
+  <table><tr><td><b>CAVALO</b> ${escapeHtml(d.cavalo)}</td><td><b>S.REB.</b> ${escapeHtml(d.carreta)}</td></tr><tr><td colspan="2"><b>PROPRIETÁRIO</b> ${escapeHtml(d.proprietario)} &nbsp;&nbsp; <b>CPF/CNPJ</b> ${escapeHtml(d.cpfCnpjProprietario)}</td></tr><tr><td><b>ENDEREÇO MUNICÍPIO</b></td><td>${escapeHtml(d.municipio)} ${d.uf?'- '+escapeHtml(d.uf):''}</td></tr><tr><td colspan="2"><b>MOTORISTA</b> ${escapeHtml(d.motorista)} ${d.nomeWhatsapp?`<br><b>NOME WHATSAPP</b> ${escapeHtml(d.nomeWhatsapp)}`:''}</td></tr><tr><td><b>CART. HAB. Nº</b> ${escapeHtml(d.cnh)}</td><td><b>RG</b> ${escapeHtml(d.rg)} &nbsp;&nbsp; <b>CPF</b> ${escapeHtml(d.cpf)}</td></tr><tr><td colspan="2"><b>TELEFONE</b> ${escapeHtml(d.telefone)}</td></tr></table>
+  <div><b>OBSERVAÇÃO:</b> ${escapeHtml(d.observacao)}</div>
+  <div class="center" style="margin-top:10px"><b>DADOS DO CARREGAMENTO</b></div>
+  <table><tr><th>PEDIDO</th><th>PRODUTO</th><th>FRETE MOTORISTA</th></tr><tr><td>${escapeHtml(d.pedido)}</td><td>${escapeHtml(d.produto)} ${d.quantidade?escapeHtml(d.quantidade):''}</td><td>${escapeHtml(d.frete)}</td></tr></table></div>`}
+function saveOrderPdf(){updateOrderPreview(); let {v}=selectedOrderData(); let filename=`ORDEM G10 PLACA ${placaOrdem(v)}.pdf`; let doc=document.getElementById('orderDoc'); if(!doc)return alert('Ordem não encontrada.'); if(window.html2pdf){html2pdf().set({margin:8,filename,html2canvas:{scale:2},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(doc).save();}else{alert('Gerador de PDF não carregou. Use Imprimir > Salvar como PDF.'); window.print();}}
+function printOrder(){updateOrderPreview(); window.print()}
 
 
 function rascunhosPage(m){
@@ -482,7 +406,7 @@ function rascunhosPage(m){
 function saveRascunho(){db.rascunho=document.getElementById('rascunhoTxt').value; save(); alert('Rascunho salvo.')}
 function clearRascunho(){if(confirm('Limpar todo o rascunho?')){db.rascunho=''; save(); render()}}
 function escapeHtml(v){return String(v??'').replace(/[&<>"]/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]))}
-function niceLabel(f){return ({nome:'Nome',cidade:'Cidade',uf:'UF',contato:'Contato',cnpj:'CNPJ',localizacao:'Localização (link)',telefone:'Telefone',email:'E-mail',observacoes:'Observações',placa:'Placa',tipo:'Tipo',motorista:'Motorista',situacao:'Situação',tipoVeiculo:'Tipo veículo',titulo:'Título',descricao:'Descrição',data:'Data'}[f]||f)}
+function niceLabel(f){return ({nome:'Nome',nomeWhatsapp:'Nome no WhatsApp',cidade:'Cidade',municipio:'Município',uf:'UF',contato:'Contato',cnpj:'CNPJ',localizacao:'Localização (link)',telefone:'Telefone',email:'E-mail',observacoes:'Observações',placa:'Placa',placaCavalo:'Placa Cavalo',placaCarreta:'Placa Carreta / S. Reb.',tipo:'Tipo',motorista:'Motorista',situacao:'Situação',tipoVeiculo:'Tipo veículo',titulo:'Título',descricao:'Descrição',data:'Data',cpf:'CPF',rg:'RG',cnh:'CNH',veiculoId:'Veículo vinculado',proprietario:'Proprietário',cpfCnpjProprietario:'CPF/CNPJ Proprietário',rntrc:'RNTRC'}[f]||f)}
 function simplePage(m,key,title,fields){
   const filter=simpleFilters[key]||'';
   const q=filter.toLowerCase();
