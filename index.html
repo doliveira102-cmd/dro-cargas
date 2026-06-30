@@ -2,14 +2,14 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DRO Cargas v6.6 Importação Segura</title>
+<title>DRO Cargas v6.7 Importação Corrigida</title>
 <style>
 :root{--nav:#08213a;--blue:#2563eb;--green:#16a34a;--red:#ef4444;--bg:#f3f7fb;--card:#fff;--line:#d8e2ef;--txt:#142033;--muted:#60708a;--amber:#f59e0b;--purple:#7c3aed;--orange:#f97316}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--txt)}button,input,textarea,select{font:inherit}button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.btn{background:#e8eef7;color:#12213a}.primary{background:var(--blue);color:white}.green{background:var(--green);color:white}.red{background:var(--red);color:white}.dark{background:#071626;color:white}.ghost{background:#eef4fb}.small{padding:7px 10px;font-size:13px}.app{display:flex;min-height:100vh}.side{width:250px;background:var(--nav);color:white;position:fixed;left:0;top:0;bottom:0;transition:.2s;z-index:5;overflow:auto}.side.closed{width:72px}.brand{height:82px;display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid rgba(255,255,255,.12);position:relative}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2f80ed,#1aa286);display:grid;place-items:center;font-weight:900}.brand span{font-weight:900;font-size:20px;white-space:nowrap}.toggle{margin-left:auto;background:#29415e;color:white;border-radius:10px;padding:8px 10px;min-width:38px;z-index:9}.side.closed .toggle{position:absolute;right:-17px;top:23px;border:2px solid #fff;border-radius:50%;width:36px;height:36px;padding:0;background:#29415e;display:grid;place-items:center}.side:not(.closed) .toggle{display:block}.side.closed .brand span,.side.closed .label{display:none}.nav a{display:flex;align-items:center;gap:14px;margin:8px 10px;padding:12px 13px;border-radius:10px;color:white;text-decoration:none}.nav a.active,.nav a:hover{background:#173d63}.ico{font-size:20px;width:22px;text-align:center}.main{margin-left:250px;transition:.2s;width:calc(100% - 250px);padding:28px 32px}.side.closed+.main{margin-left:72px;width:calc(100% - 72px)}h1{margin:0;font-size:30px}.sub{color:var(--muted);margin:4px 0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:22px}.actions{display:flex;gap:10px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:14px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 10px 28px rgba(15,36,67,.06);cursor:pointer}.card b{font-size:34px;display:block;margin-top:8px}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:18px;box-shadow:0 10px 28px rgba(15,36,67,.06)}.panel h2{margin:0 0 12px}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.search{max-width:330px;width:100%;padding:13px;border:1px solid var(--line);border-radius:11px}.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}.table th{background:#f8fbff;text-align:left;color:#30435f;font-size:13px;text-transform:uppercase}.table th,.table td{padding:13px;border-bottom:1px solid var(--line);vertical-align:middle}.table tr:last-child td{border-bottom:0}.table tbody tr:hover{background:#f8fbff}.route{font-weight:900}.money{display:inline-block;background:#eef4ff;padding:7px 10px;border-radius:10px;font-weight:900;margin:2px}.margin{background:#fff3e6}.status{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:900;font-size:13px}.Disponivel{background:#dbeafe;color:#1d4ed8}.Agendado{background:#fef3c7;color:#92400e}.Manifestado{background:#ede9fe;color:#5b21b6}.Carregado{background:#dcfce7;color:#166534}.Transito{background:#ffedd5;color:#9a3412}.Finalizado{background:#dcfce7;color:#166534}.actionsRow{display:flex;gap:8px;flex-wrap:wrap}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:22px}.modal.show{display:flex}.box{background:white;border-radius:18px;padding:22px;max-width:900px;width:100%;max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:13px;color:#53637a;font-weight:800;margin:0 0 4px}.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:white}.field textarea{min-height:80px}.span2{grid-column:1/-1}.readonly{background:#f8fbff;border:1px solid var(--line);border-radius:12px;padding:13px}.readonly small{display:block;color:#60708a}.readonly b{display:block;margin-top:3px}.steps{display:flex;gap:10px;flex-wrap:wrap}.step{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#f8fbff}.step input{margin-right:7px}.notice{padding:12px;border-radius:12px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412}.drop{border:2px dashed #9bb5d6;border-radius:14px;padding:18px;text-align:center;background:#f8fbff;min-height:160px}.drop img{max-width:100%;max-height:170px}.ad{white-space:pre-wrap;background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}.hidden{display:none}.tableWrap{width:100%;overflow-x:auto}.manifest-table{min-width:1120px}.manifest-table th,.manifest-table td{white-space:nowrap;padding:10px 8px}.manifest-table .step{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;min-width:124px;padding:8px 10px;margin:0}.manifest-table .step input{margin:0}.manifest-table .search{max-width:none;width:100%;min-width:105px;padding:8px}.manifest-save{min-width:78px}.login-note{font-size:12px;color:#60708a}@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.side{width:72px}.side .brand span,.side .label{display:none}.main{margin-left:72px;width:calc(100% - 72px);padding:18px}.top{flex-direction:column}.table{font-size:13px}.table th,.table td{padding:9px}.actionsRow button{padding:7px 9px}.cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div id="login" class="modal" style="display:none"><div class="box" style="max-width:420px"><div style="display:flex;gap:12px;align-items:center;margin-bottom:18px"><div class="logo">DRO</div><div><h1 style="font-size:28px">DRO Cargas</h1><div class="sub" style="margin:0">Gestão inteligente de fretes</div></div></div><div class="field"><label>E-mail</label><input id="email" value="diego@drocargas.com"></div><div class="field" style="margin-top:10px"><label>Senha</label><input id="senha" type="password" value="123456"></div><button class="green" style="width:100%;margin-top:16px" onclick="login()">Entrar</button><p class="sub">Login inicial: diego@drocargas.com / 123456</p></div></div>
-<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v6.6 Importação Segura</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
+<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v6.7 Import Corrigida</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
 <div id="modal" class="modal"><div class="box" id="modalBox"></div></div>
 <input id="restoreFile" type="file" accept="application/json" class="hidden" onchange="restoreBackup(event)">
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -154,84 +154,143 @@ function importPage(m){m.innerHTML=topHtml('Importação Inteligente','Cole text
 </div>`}
 let impList=[];
 function impSetStatus(t){let e=document.getElementById('impStatus'); if(e)e.textContent=t}
+function normalizeTextBasic(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();}
 function cleanOCR(s){
   return String(s||'')
     .replace(/\r/g,'\n')
     .replace(/[|]+/g,'\n')
     .replace(/—|–/g,' → ')
-    .replace(/([A-ZÁÉÍÓÚÃÕÇ])([A-ZÁÉÍÓÚÃÕÇ]{2,})(RS|PR|SC|SP|GO|MT|MS)\b/g,'$1$2/$3')
-    .replace(/SOJAAGRANEL/gi,'SOJA A GRANEL')
-    .replace(/SOJAA GRANEL/gi,'SOJA A GRANEL')
-    .replace(/FARELEDESOJA/gi,'FARELO DE SOJA')
-    .replace(/FARELODESOJA/gi,'FARELO DE SOJA')
-    .replace(/PORTORIOGRANDE/gi,'PORTO RIO GRANDE')
-    .replace(/RIOGRANDE/gi,'RIO GRANDE')
+    .replace(/\bCOTR1SAL\b/gi,'COTRISAL')
+    .replace(/\bAGROFELAUGUSTO\b/gi,'AGROFEL AUGUSTO')
     .replace(/AGROFEL([A-ZÁÉÍÓÚÃÕÇ])/g,'AGROFEL $1')
     .replace(/COTRISAL([A-ZÁÉÍÓÚÃÕÇ])/g,'COTRISAL $1')
     .replace(/OLEOPLAN([A-ZÁÉÍÓÚÃÕÇ])/g,'OLEOPLAN $1')
+    .replace(/BOCCHI([A-ZÁÉÍÓÚÃÕÇ])/g,'BOCCHI $1')
+    .replace(/SOJA\s*A?\s*GRANEL|SOJAAGRANEL/gi,'SOJA A GRANEL')
+    .replace(/SOJA\s*BENEFICIADA/gi,'SOJA BENEFICIADA')
+    .replace(/FARELO\s*DE\s*SOJA|FARELEDESOJA|FARELODESOJA/gi,'FARELO DE SOJA')
+    .replace(/PORTO\s*RIO\s*GRANDE|PORTORIOGRANDE/gi,'PORTO RIO GRANDE')
+    .replace(/RIOGRANDE/gi,'RIO GRANDE')
+    .replace(/CAPA[OD]O\s*DO\s*LEAO|CAPADDOLEAO|CAPAO\s*DO\s*LEAO/gi,'CAPAO DO LEAO')
+    .replace(/STO\.?\s*EXPEDITO/gi,'STO. EXPEDITO')
     .replace(/\s+/g,' ')
     .trim();
 }
 function titleCaseFrete(s){return String(s||'').replace(/\s+/g,' ').trim().toUpperCase();}
 function numBR(v){let s=String(v||'').replace(/[^0-9,\.]/g,''); if(!s)return 0; if(s.includes(',')&&s.includes('.'))s=s.replace(/\./g,'').replace(',','.'); else if(s.includes(','))s=s.replace(',','.'); return Number(s)||0}
-function extractProduct(t){let m=String(t||'').match(/\b(SOJA(?:\s+A\s+GRANEL|\s+BENEFICIADA)?|MILHO|TRIGO|FARELO(?:\s+DE\s+SOJA)?|ARROZ|DDG|UREIA|FERTILIZANTE|CALC[ÁA]RIO)\b/i); return m?titleCaseFrete(m[1]):''}
+function extractProduct(t){let m=String(t||'').match(/\b(SOJA\s+A\s+GRANEL|SOJA\s+BENEFICIADA(?:\s*-?\s*FIXO)?|FARELO\s+DE\s+SOJA(?:\s+PRO\s*45,?5\s*MI?)?|FARELO|MILHO|TRIGO|ARROZ|DDG|UREIA|FERTILIZANTE|CALC[ÁA]RIO)\b/i); return m?titleCaseFrete(m[1].replace(/\s*-\s*FIXO/i,' - FIXO')):''}
 function extractVehicle(t){let m=String(t||'').match(/\b(SOMENTE\s+)?(\d+\s*EIXOS?|LS|BITREM|RODOTREM|TRUCK|GRANELEIRO|BASCULANTE|CA[CÇ]AMBA)\b/i); return m?titleCaseFrete(m[0].replace(/^SOMENTE\s+/i,'')):''}
 function extractValue(t){let m=String(t||'').match(/R\$\s*([0-9.]+,?\d{0,2})/i) || String(t||'').match(/\b([0-9]{2,4},\d{2})\b/); return m?numBR(m[1]):0}
+function findKnownCompany(t){let raw=normalizeTextBasic(t); let known=['AGROFEL','COTRISAL','CARGILL','BUNGE','LDC','OLEOPLAN','COFCO','BOCCHI','BIANCHINI','MOINHO NORDESTE','CAMIL','ADM','GRANJA PINHEIROS']; return known.find(k=>raw.includes(k))||'';}
+function validRoutePart(s){s=cleanOCR(s); return s && !/^(RODO|BR|CN|MODAL|DATA|COTA|OP|PRODUTO|FRETE|TURNO|AS|DISP|USO)$/i.test(s);}
+function splitRouteWhats(line){
+  let routeLine=cleanOCR(line).replace(/\s+X\s+/i,' x ');
+  let parts=routeLine.split(/\s+x\s+|\s*→\s*/i);
+  if(parts.length<2)parts=routeLine.split(/\s+-\s+(?=[A-ZÁÉÍÓÚÃÕÇ].*\/RS|[A-ZÁÉÍÓÚÃÕÇ].*\/PR|[A-ZÁÉÍÓÚÃÕÇ].*\/SC)/i);
+  if(parts.length>=2)return [cleanOCR(parts[0]), cleanOCR(parts.slice(1).join(' '))];
+  return ['',''];
+}
 function parseWhatsapp(t){
   let raw=cleanOCR(t), lines=String(t||'').split(/\n+/).map(x=>cleanOCR(x)).filter(Boolean);
   let value=extractValue(raw), product=extractProduct(raw), vehicle=extractVehicle(raw);
-  let routeLine=lines.find(l=>/(\/RS|\/PR|\/SC|\/SP|\/GO|\/MT|\/MS).*(\sx\s|→|\s-\s).*(\/RS|\/PR|\/SC|\/SP|\/GO|\/MT|\/MS)/i.test(l)) || lines.find(l=>/\sx\s|→/.test(l)) || '';
-  let origem='', destino='', cliente='';
-  if(routeLine){
-    let parts=routeLine.split(/\s+x\s+|\s+X\s+|\s*→\s*/i);
-    if(parts.length<2)parts=routeLine.split(/\s+-\s+/);
-    origem=cleanOCR(parts[0]||'');
-    destino=cleanOCR(parts.slice(1).join(' ')||'');
-  } else {
+  let routeLine=lines.find(l=>/(\/RS|\/PR|\/SC|\/SP|\/GO|\/MT|\/MS).*(\sx\s|→|\s-\s).*(\/RS|\/PR|\/SC|\/SP|\/GO|\/MT|\/MS)/i.test(l)) || lines.find(l=>/\sx\s|→/.test(l)) || raw;
+  let [origem,destino]=splitRouteWhats(routeLine);
+  if(!origem||!destino){
     let pin=lines.findIndex(l=>/📍|ORIGEM/i.test(l));
     let flag=lines.findIndex(l=>/🏁|DESTINO/i.test(l));
     if(pin>=0)origem=cleanOCR(lines[pin].replace(/📍|ORIGEM:?/ig,''));
     if(flag>=0)destino=cleanOCR(lines[flag].replace(/🏁|DESTINO:?/ig,''));
   }
-  let known=['COTRISAL','AGROFEL','CARGILL','BUNGE','LDC','OLEOPLAN','COFCO','BICHINI','BIANCHINI','MOINHO NORDESTE','CAMIL','ADM'];
-  cliente=known.find(k=>raw.toUpperCase().includes(k))||'';
+  let cliente=findKnownCompany(raw);
   return {cliente,origem,destino,produto:product,quantidade:'',valorEmpresa:value,margem:Number(document.getElementById('impMarg')?.value||10),valorMotorista:value*(1-Number(document.getElementById('impMarg')?.value||10)/100),data:today(),tipoVeiculo:vehicle,status:'Disponível',obs:''};
 }
 function tableSegments(t){
-  let s=cleanOCR(t);
-  let parts=s.split(/(?=\b(?:\d+\s+)?(?:BR\s+)?RODO\s+\d{4,6}\b)/i).map(x=>x.trim()).filter(x=>/\bRODO\s+\d{4,6}\b/i.test(x));
-  if(parts.length>1)return parts;
-  let lines=String(t||'').split(/\n+/).map(cleanOCR).filter(Boolean);
-  return lines.filter(l=>/\bRODO\b/i.test(l)&&/\b(SOJA|FARELO|MILHO|TRIGO|ARROZ)\b/i.test(l));
+  let raw=String(t||'').replace(/\r/g,'\n');
+  let byLine=raw.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  let rows=byLine.filter(l=>/\bRODO\b/i.test(l)&&/\b(SOJA|FARELO|MILHO|TRIGO|ARROZ)\b/i.test(l));
+  if(rows.length>=2)return rows;
+  let compact=raw.replace(/\n/g,' ').replace(/\s+/g,' ');
+  let parts=compact.split(/(?=\b(?:aa\s+|\d+\s+|BR\s+)?RODO\s+\d{3,6}\b)/i).map(x=>x.trim()).filter(x=>/\bRODO\s+\d{3,6}\b/i.test(x));
+  return parts;
+}
+function splitColumnsPreserve(seg){
+  let line=String(seg||'').replace(/\t/g,'    ').replace(/\r/g,' ').trim();
+  let cols=line.split(/\s{2,}/).map(cleanOCR).filter(Boolean);
+  if(cols.length>=8)return cols;
+  return [];
+}
+function parseTableByColumns(seg){
+  let cols=splitColumnsPreserve(seg); if(!cols.length)return null;
+  let idx=cols.findIndex(c=>/^RODO$/i.test(c)||/RODO\s+\d/i.test(c));
+  let cnIdx=cols.findIndex(c=>/^\d{3,6}(\s*\(?\d+\)?)?$/.test(c));
+  let start = idx>=0 ? idx+2 : (cnIdx>=0?cnIdx+1:0);
+  // Remove colunas iniciais de ícones/data/modal/cn quando existirem
+  let fields=cols.slice(start);
+  if(fields.length<5)return null;
+  let productIndex=fields.findIndex(f=>extractProduct(f));
+  if(productIndex<4)return null;
+  let value=0;
+  let valCol=fields[productIndex+1]||'';
+  if(/\b\d{2,4}\b/.test(valCol))value=Number((valCol.match(/\b(\d{2,4})\b/)||[])[1])||0;
+  return buildCarga(fields[0], fields[2], fields[3], extractProduct(fields[productIndex]), value, '');
+}
+function buildCarga(cliente,origem,destino,produto,valor,veiculo){
+  let mg=Number(document.getElementById('impMarg')?.value||10), ve=Number(valor||0);
+  return {cliente:titleCaseFrete(cliente),origem:titleCaseFrete(origem),destino:titleCaseFrete(destino),produto:titleCaseFrete(produto),quantidade:'',valorEmpresa:ve,margem:mg,valorMotorista:ve*(1-mg/100),data:today(),tipoVeiculo:titleCaseFrete(veiculo||''),status:'Disponível',obs:''};
+}
+function tokenizePlaces(s){
+  s=cleanOCR(s);
+  const prefixes=['AGROFEL','BOCCHI','COTRISAL','ILTON SCHIO BALZAN','GRANJA PINHEIROS-GRAO PARA','GRANJA PINHEIROS','JONATAN CEREZER BULIGON','MAURICIO SILVEIRA COSTA','TRES TENTOS-VACARIA','JOCELITO BOEIRA RODRIGUES','RIO PARDO - GRANELEIRA','PORTO RIO GRANDE - RS','PORTO RIO GRANDE','BIANCHINI-RIO GRANDE','CAPAO DO LEAO'];
+  let found=[];
+  for(const p of prefixes){let re=new RegExp(p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),m; while((m=re.exec(s)))found.push({p:cleanOCR(m[0]),i:m.index});}
+  found.sort((a,b)=>a.i-b.i);
+  // cria blocos iniciando em prefixos conhecidos
+  let blocks=[];
+  for(let i=0;i<found.length;i++){
+    let a=found[i], b=found[i+1];
+    let txt=s.slice(a.i,b?b.i:undefined).trim();
+    if(txt && !blocks.includes(txt))blocks.push(txt);
+  }
+  return blocks.map(cleanOCR).filter(validRoutePart);
 }
 function parseTableLine(seg){
+  let byCols=parseTableByColumns(seg); if(byCols && isStrongUseful(byCols))return byCols;
   let s=cleanOCR(seg);
-  let value=0;
-  let nums=[...s.matchAll(/\b([0-9]{2,4})(?:\s*(?:07:|08:|19:|AS|Qt|Disp|Uso)|\s*$)/gi)].map(m=>Number(m[1])).filter(n=>n>0);
-  if(nums.length)value=nums[nums.length-1];
   let product=extractProduct(s);
-  let beforeProduct=product?s.split(new RegExp(product.replace(/\s+/g,'\\s+'),'i'))[0]:s;
-  let afterRodo=(beforeProduct.match(/\bRODO\s+\d{4,6}\s+(.+)/i)||[])[1]||beforeProduct;
-  let chunks=afterRodo.split(/\s{2,}| → | - /).map(cleanOCR).filter(Boolean);
-  // fallback: tenta reconhecer pela repetição de nomes do portal
-  let cliente=chunks[0]||'';
-  let origem=chunks[chunks.length-2]||'';
-  let destino=chunks[chunks.length-1]||'';
-  if(chunks.length>=4){cliente=chunks[0]; origem=chunks[chunks.length-2]; destino=chunks[chunks.length-1];}
-  if(!origem && /PORTO RIO GRANDE|RIO GRANDE/i.test(s))destino='PORTO RIO GRANDE - RS';
-  return {cliente:titleCaseFrete(cliente),origem:titleCaseFrete(origem),destino:titleCaseFrete(destino),produto:product,quantidade:'',valorEmpresa:value,margem:Number(document.getElementById('impMarg')?.value||10),valorMotorista:value*(1-Number(document.getElementById('impMarg')?.value||10)/100),data:today(),tipoVeiculo:'',status:'Disponível',obs:''};
+  let value=0;
+  if(product){
+    let pEsc=product.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/\s+/g,'\\s+');
+    let m=s.match(new RegExp(pEsc+'\\s+(?:PRO\\s*45,?5\\s*MI\\s*)?(\\d{2,4})\\b','i'));
+    if(m)value=Number(m[1])||0;
+  }
+  if(!value){let nums=[...s.matchAll(/\b(\d{2,4})(?=\s*(?:07:|08:|19:|AS|$))/gi)].map(m=>Number(m[1])).filter(n=>n>=20&&n<=999); if(nums.length)value=nums[0];}
+  let beforeProduct=product?s.split(new RegExp(product.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/\s+/g,'\\s+'),'i'))[0]:s;
+  let afterRodo=(beforeProduct.match(/\bRODO\s+\d{3,6}\s*(?:\(?\s*\d{4,6}\s*\)?)?\s+(.+)/i)||[])[1]||beforeProduct;
+  afterRodo=afterRodo.replace(/^\d{1,2}\s+/,'').replace(/^BR\s+/i,'');
+  let blocks=tokenizePlaces(afterRodo);
+  let cliente='', origem='', destino='';
+  if(blocks.length>=4){cliente=blocks[0]; origem=blocks[blocks.length-2]; destino=blocks[blocks.length-1];}
+  else if(blocks.length===3){cliente=blocks[0]; origem=blocks[1]; destino=blocks[2];}
+  else if(blocks.length===2){origem=blocks[0]; destino=blocks[1]; cliente=findKnownCompany(s);}
+  else {cliente=findKnownCompany(s);}
+  // destinos comuns no fim do registro
+  let destMatch=s.match(/\b(PORTO RIO GRANDE\s*-\s*RS|BIANCHINI\s*-?\s*RIO GRANDE|GRANJA PINHEIROS\s*-?\s*GRAO PARA|AGROFEL\s+CAPAO DO LEAO|BOCCHI\s*-?\s*MUITOS CAPOES)\b/i);
+  if(destMatch)destino=cleanOCR(destMatch[1]);
+  if(!origem && blocks.length>=2)origem=blocks[blocks.length-2];
+  return buildCarga(cliente,origem,destino,product,value,'');
 }
-function isUseful(c){return !!(c.origem||c.destino||c.produto||c.valorEmpresa||c.cliente)}
+function isStrongUseful(c){return !!((c.origem&&c.destino) || (c.produto&&c.valorEmpresa) || (c.cliente&&c.produto&&c.destino));}
+function isUseful(c){return isStrongUseful(c) || !!(c.origem||c.destino||c.produto||c.valorEmpresa||c.cliente)}
 function parseImportAll(t){
   let text=String(t||'');
   let segs=tableSegments(text);
   let out=[];
   if(segs.length>=2 || (segs.length===1 && /\bRODO\b/i.test(text))){
-    out=segs.map(parseTableLine).filter(isUseful);
+    out=segs.map(parseTableLine).filter(isStrongUseful);
   } else {
     out=[parseWhatsapp(text)].filter(isUseful);
   }
-  if(!out.length && text.trim())out=[parseWhatsapp(text)];
+  if(!out.length && text.trim())out=[parseWhatsapp(text)].filter(isUseful);
   return out;
 }
 function previewImport(){
