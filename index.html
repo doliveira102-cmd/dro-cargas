@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DRO Cargas v7.4 Ordem G10 2 Vias</title>
+<title>DRO Cargas v7.5 Ordem G10 PDF Ajustado</title>
 <style>
 :root{--nav:#08213a;--blue:#2563eb;--green:#16a34a;--red:#ef4444;--bg:#f3f7fb;--card:#fff;--line:#d8e2ef;--txt:#142033;--muted:#60708a;--amber:#f59e0b;--purple:#7c3aed;--orange:#f97316}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--txt)}button,input,textarea,select{font:inherit}button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.btn{background:#e8eef7;color:#12213a}.primary{background:var(--blue);color:white}.green{background:var(--green);color:white}.red{background:var(--red);color:white}.dark{background:#071626;color:white}.ghost{background:#eef4fb}.small{padding:7px 10px;font-size:13px}.app{display:flex;min-height:100vh}.side{width:250px;background:var(--nav);color:white;position:fixed;left:0;top:0;bottom:0;transition:.2s;z-index:5;overflow:auto}.side.closed{width:72px}.brand{height:82px;display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid rgba(255,255,255,.12);position:relative}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2f80ed,#1aa286);display:grid;place-items:center;font-weight:900}.brand span{font-weight:900;font-size:20px;white-space:nowrap}.toggle{margin-left:auto;background:#29415e;color:white;border-radius:10px;padding:8px 10px;min-width:38px;z-index:9}.side.closed .toggle{position:absolute;right:-17px;top:23px;border:2px solid #fff;border-radius:50%;width:36px;height:36px;padding:0;background:#29415e;display:grid;place-items:center}.side:not(.closed) .toggle{display:block}.side.closed .brand span,.side.closed .label{display:none}.nav a{display:flex;align-items:center;gap:14px;margin:8px 10px;padding:12px 13px;border-radius:10px;color:white;text-decoration:none}.nav a.active,.nav a:hover{background:#173d63}.ico{font-size:20px;width:22px;text-align:center}.main{margin-left:250px;transition:.2s;width:calc(100% - 250px);padding:28px 32px}.side.closed+.main{margin-left:72px;width:calc(100% - 72px)}h1{margin:0;font-size:30px}.sub{color:var(--muted);margin:4px 0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:22px}.actions{display:flex;gap:10px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:14px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 10px 28px rgba(15,36,67,.06);cursor:pointer}.card b{font-size:34px;display:block;margin-top:8px}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:18px;box-shadow:0 10px 28px rgba(15,36,67,.06)}.panel h2{margin:0 0 12px}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.search{max-width:330px;width:100%;padding:13px;border:1px solid var(--line);border-radius:11px}.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}.table th{background:#f8fbff;text-align:left;color:#30435f;font-size:13px;text-transform:uppercase}.table th,.table td{padding:13px;border-bottom:1px solid var(--line);vertical-align:middle}.table tr:last-child td{border-bottom:0}.table tbody tr:hover{background:#f8fbff}.route{font-weight:900}.money{display:inline-block;background:#eef4ff;padding:7px 10px;border-radius:10px;font-weight:900;margin:2px}.margin{background:#fff3e6}.status{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:900;font-size:13px}.Disponivel{background:#dbeafe;color:#1d4ed8}.Agendado{background:#fef3c7;color:#92400e}.Manifestado{background:#ede9fe;color:#5b21b6}.Carregado{background:#dcfce7;color:#166534}.Transito{background:#ffedd5;color:#9a3412}.Finalizado{background:#dcfce7;color:#166534}.actionsRow{display:flex;gap:8px;flex-wrap:wrap}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:22px}.modal.show{display:flex}.box{background:white;border-radius:18px;padding:22px;max-width:900px;width:100%;max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:13px;color:#53637a;font-weight:800;margin:0 0 4px}.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:white}.field textarea{min-height:80px}.span2{grid-column:1/-1}.readonly{background:#f8fbff;border:1px solid var(--line);border-radius:12px;padding:13px}.readonly small{display:block;color:#60708a}.readonly b{display:block;margin-top:3px}.steps{display:flex;gap:10px;flex-wrap:wrap}.step{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#f8fbff}.step input{margin-right:7px}.notice{padding:12px;border-radius:12px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412}.drop{border:2px dashed #9bb5d6;border-radius:14px;padding:18px;text-align:center;background:#f8fbff;min-height:160px}.drop img{max-width:100%;max-height:170px}.ad{white-space:pre-wrap;background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}.hidden{display:none}.tableWrap{width:100%;overflow-x:auto}.manifest-table{min-width:1120px}.manifest-table th,.manifest-table td{white-space:nowrap;padding:10px 8px}.manifest-table .step{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;min-width:124px;padding:8px 10px;margin:0}.manifest-table .step input{margin:0}.manifest-table .search{max-width:none;width:100%;min-width:105px;padding:8px}.manifest-save{min-width:78px}.login-note{font-size:12px;color:#60708a}
 .orderDoc{background:white;color:#111;max-width:900px;margin:10px auto;font-family:Arial,sans-serif}.orderSheet{background:white;width:190mm;min-height:277mm;margin:0 auto;padding:5mm;box-sizing:border-box}.orderVia{border:1px solid #111;margin:0 0 5mm 0;break-inside:avoid;page-break-inside:avoid;font-size:9.2px;line-height:1.05}.orderVia table{width:100%;border-collapse:collapse}.orderVia td,.orderVia th{border:1px solid #111;padding:2px 3px;vertical-align:middle}.orderVia .titleBar{background:#d9d9d9;border-bottom:1px solid #111;text-align:center;font-weight:900;font-size:16px;letter-spacing:.4px;padding:3px}.orderVia .logoCell{width:42%;height:75px;text-align:center}.orderVia .logoCell img{max-width:165px;max-height:65px}.orderVia .companyName{text-align:center;font-weight:900;font-size:18px;padding:4px}.orderVia .center{text-align:center}.orderVia .gray{background:#d9d9d9;font-weight:900;text-align:center}.orderVia .label{background:#d9d9d9;font-weight:900;text-align:right;white-space:nowrap}.orderVia .section{background:#d9d9d9;text-align:center;font-weight:900;font-size:12px;padding:3px}.orderVia .empty{height:13px}.orderCut{border-top:1px dashed #777;text-align:center;color:#777;font-size:9px;margin:-2mm 0 3mm}.orderActions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0}@media print{@page{size:A4;margin:6mm}body *{visibility:hidden}.orderDoc,.orderDoc *{visibility:visible}.orderDoc{position:absolute;left:0;top:0;width:100%;max-width:none;border:0;margin:0}.orderSheet{width:100%;min-height:auto;padding:0}.side,.top,.panel:not(.printable){display:none!important}.orderActions{display:none!important}}
@@ -11,11 +11,12 @@
 </head>
 <body>
 <div id="login" class="modal" style="display:none"><div class="box" style="max-width:420px"><div style="display:flex;gap:12px;align-items:center;margin-bottom:18px"><div class="logo">DRO</div><div><h1 style="font-size:28px">DRO Cargas</h1><div class="sub" style="margin:0">Gestão inteligente de fretes</div></div></div><div class="field"><label>E-mail</label><input id="email" value="diego@drocargas.com"></div><div class="field" style="margin-top:10px"><label>Senha</label><input id="senha" type="password" value="123456"></div><button class="green" style="width:100%;margin-top:16px" onclick="login()">Entrar</button><p class="sub">Login inicial: diego@drocargas.com / 123456</p></div></div>
-<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v7.4 Ordem 2 Vias</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
+<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v7.5 PDF Ajustado</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
 <div id="modal" class="modal"><div class="box" id="modalBox"></div></div>
 <input id="restoreFile" type="file" accept="application/json" class="hidden" onchange="restoreBackup(event)">
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const G10_LOGO='data:image/jpeg;base64,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';
 const KEY='DRO_CARGAS_DATA'; const MASTER='DRO_CARGAS_MASTER'; const OLD=['DRO_CARGAS_MASTER','DRO_CARGAS_DATA','droCargasData','DRO_CARGAS_V19','DRO_CARGAS_V20','dro-cargas'];
@@ -418,51 +419,98 @@ function orderViaHTML(d){return `<div class="orderVia">
   <div class="center" style="font-weight:900;margin-top:3px">DADOS DO CARREGAMENTO</div>
   <table><tr><th class="gray">PEDIDO</th><th class="gray">PRODUTO</th><th class="gray">FRETE MOTORISTA</th></tr><tr><td>${escapeHtml(d.pedido)}</td><td>${escapeHtml(d.produto)} ${d.quantidade?escapeHtml(d.quantidade):''}</td><td>${escapeHtml(d.frete)}</td></tr><tr><td class="empty"></td><td></td><td></td></tr></table>
 </div>`}
+function pdfSafeText(v){return String(v??'').replace(/[\u2013\u2014]/g,'-').replace(/\s+/g,' ').trim();}
+function pdfText(doc,txt,x,y,opt={}){
+  txt=pdfSafeText(txt);
+  const max=opt.max||0;
+  if(max && doc.getTextWidth(txt)>max){
+    while(txt.length>3 && doc.getTextWidth(txt+'...')>max) txt=txt.slice(0,-1);
+    txt+='...';
+  }
+  doc.text(txt,x,y,opt);
+}
+function pdfCell(doc,x,y,w,h,txt,opt={}){
+  if(opt.fill){doc.setFillColor(217,217,217); doc.rect(x,y,w,h,'FD');}
+  else doc.rect(x,y,w,h);
+  doc.setTextColor(0,0,0);
+  doc.setFont('helvetica',opt.bold?'bold':'normal');
+  doc.setFontSize(opt.size||7);
+  let tx=x+1.5, ty=y+h/2+2;
+  if(opt.center){pdfText(doc,txt,x+w/2,ty,{align:'center',max:w-3});}
+  else if(opt.right){pdfText(doc,txt,x+w-1.5,ty,{align:'right',max:w-3});}
+  else pdfText(doc,txt,tx,ty,{max:w-3});
+}
+function pdfVia(doc,d,y0){
+  const x0=10, W=190;
+  let y=y0;
+  doc.setDrawColor(0,0,0); doc.setLineWidth(0.25);
+  pdfCell(doc,x0,y,W,8,'AUTORIZAÇÃO DE CARREGAMENTO',{fill:true,bold:true,size:13,center:true}); y+=8;
+  // Cabeçalho com logo e dados G10
+  const logoW=80, rightW=W-logoW;
+  doc.rect(x0,y,logoW,34);
+  try{doc.addImage(G10_LOGO,'JPEG',x0+17,y+5,45,24);}catch(e){}
+  pdfCell(doc,x0+logoW,y,rightW,10,'G10 - TRANSPORTES LTDA',{bold:true,size:14,center:true});
+  pdfCell(doc,x0+logoW,y+10,rightW*0.62,16,'BR 392 KM 10 SALA 17, 1\nBARRA, RIO GRANDE - RS\nFONE: (53) 3230-3713',{size:7,center:true});
+  pdfCell(doc,x0+logoW+rightW*0.62,y+10,rightW*0.38,16,'RIO GRANDE',{fill:true,bold:true,size:9,center:true});
+  pdfCell(doc,x0+logoW,y+26,rightW*0.62,8,'CNPJ: 07.569.161/0012-00',{bold:true,size:8,center:true});
+  pdfCell(doc,x0+logoW+rightW*0.62,y+26,rightW*0.38,8,'IE: 1000298180',{bold:true,size:8,center:true});
+  y+=34;
+  // Remetente / Destinatário
+  pdfCell(doc,x0,y,28,6,'REMETENTE',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+28,y,77,6,d.remetente,{size:7});
+  pdfCell(doc,x0+105,y,20,6,'LOCAL',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+125,y,65,6,d.localOrigem,{size:7}); y+=6;
+  pdfCell(doc,x0,y,28,6,'DESTINATÁRIO',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+28,y,77,6,d.destinatario,{size:7});
+  pdfCell(doc,x0+105,y,20,6,'LOCAL',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+125,y,65,6,d.localDestino,{size:7}); y+=11;
+  pdfCell(doc,x0,y,W,7,'AUTORIZAMOS O CARREGAMENTO DO SEGUINTE VEÍCULO',{fill:true,bold:true,size:9,center:true}); y+=13;
+  pdfCell(doc,x0,y,28,6,'CAVALO',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+28,y,63,6,d.cavalo,{size:7});
+  pdfCell(doc,x0+91,y,28,6,'S.REB.',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+119,y,71,6,d.carreta,{size:7}); y+=6;
+  pdfCell(doc,x0,y,28,6,'PROPRIETÁRIO',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+28,y,105,6,d.proprietario,{size:7});
+  pdfCell(doc,x0+133,y,22,6,'CPF/CNPJ',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+155,y,35,6,d.cpfCnpjProprietario,{size:7}); y+=6;
+  pdfCell(doc,x0,y,28,6,'ENDEREÇO',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+28,y,105,6,'',{size:7});
+  pdfCell(doc,x0+133,y,22,6,'MUNICÍPIO',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+155,y,35,6,`${d.municipio||''}${d.uf?' - '+d.uf:''}`,{size:7}); y+=6;
+  pdfCell(doc,x0,y,28,6,'MOTORISTA',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+28,y,162,6,d.motorista,{size:7}); y+=6;
+  pdfCell(doc,x0,y,28,6,'CART. HAB. Nº',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+28,y,63,6,d.cnh,{size:7});
+  pdfCell(doc,x0+91,y,28,6,'RG',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+119,y,36,6,d.rg,{size:7});
+  pdfCell(doc,x0+155,y,15,6,'CPF',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+170,y,20,6,d.cpf,{size:7}); y+=6;
+  pdfCell(doc,x0,y,28,6,'TELEFONE',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+28,y,162,6,d.telefone,{size:7}); y+=6;
+  pdfCell(doc,x0,y,28,6,'OBSERVAÇÃO:',{fill:true,bold:true,right:true});
+  pdfCell(doc,x0+28,y,162,6,d.observacao,{size:7}); y+=8;
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); pdfText(doc,'DADOS DO CARREGAMENTO',x0+W/2,y,{align:'center'}); y+=3;
+  pdfCell(doc,x0,y,32,6,'PEDIDO',{fill:true,bold:true,size:8,center:true});
+  pdfCell(doc,x0+32,y,95,6,'PRODUTO',{fill:true,bold:true,size:8,center:true});
+  pdfCell(doc,x0+127,y,63,6,'FRETE MOTORISTA',{fill:true,bold:true,size:8,center:true}); y+=6;
+  pdfCell(doc,x0,y,32,7,d.pedido,{size:7});
+  pdfCell(doc,x0+32,y,95,7,`${d.produto||''}${d.quantidade?' '+d.quantidade:''}`,{size:7});
+  pdfCell(doc,x0+127,y,63,7,d.frete,{size:7}); y+=7;
+  pdfCell(doc,x0,y,32,7,'',{size:7}); pdfCell(doc,x0+32,y,95,7,'',{size:7}); pdfCell(doc,x0+127,y,63,7,'',{size:7});
+}
 async function saveOrderPdf(){
   updateOrderPreview();
   let {v}=selectedOrderData();
   let filename=`ORDEM G10 PLACA ${placaOrdem(v)}.pdf`;
-  let doc=document.getElementById('orderDoc');
-  if(!doc)return alert('Ordem não encontrada.');
   if(placaOrdem(v)==='SEM-PLACA'&&!confirm('Nenhum caminhão selecionado. Salvar mesmo assim?'))return;
-  if(!window.html2pdf){alert('Gerador de PDF não carregou. Use Imprimir > Salvar como PDF.'); window.print(); return;}
-  const wrap=document.createElement('div');
-  wrap.id='pdfSafeWrap';
-  wrap.style.position='fixed';
-  wrap.style.left='0';
-  wrap.style.top='0';
-  wrap.style.width='210mm';
-  wrap.style.background='#fff';
-  wrap.style.padding='0';
-  wrap.style.margin='0';
-  wrap.style.zIndex='99999';
-  wrap.style.opacity='1';
-  const clone=doc.cloneNode(true);
-  clone.removeAttribute('id');
-  clone.style.margin='0';
-  clone.style.width='210mm';
-  clone.style.maxWidth='210mm';
-  clone.style.transform='none';
-  clone.style.position='static';
-  wrap.appendChild(clone);
-  document.body.appendChild(wrap);
-  try{
-    await Promise.all([...clone.querySelectorAll('img')].map(img=>img.complete?Promise.resolve():new Promise(res=>{img.onload=img.onerror=res;})));
-    await html2pdf().set({
-      margin:[5,5,5,5],
-      filename,
-      image:{type:'jpeg',quality:0.98},
-      html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,windowWidth:794,windowHeight:1123},
-      jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
-      pagebreak:{mode:['avoid-all','css','legacy']}
-    }).from(clone).save();
-  }catch(e){
-    console.error(e);
-    alert('Não consegui salvar o PDF automático. Vou abrir a impressão para você salvar como PDF.');
-    window.print();
-  }finally{
-    wrap.remove();
-  }
+  const jsPDFCtor=(window.jspdf&&window.jspdf.jsPDF)||window.jsPDF;
+  if(!jsPDFCtor){alert('Gerador de PDF não carregou. Use Imprimir > Salvar como PDF.'); window.print(); return;}
+  const d=currentOrderData();
+  const doc=new jsPDFCtor({unit:'mm',format:'a4',orientation:'portrait'});
+  pdfVia(doc,d,7);
+  doc.setLineDashPattern([2,2],0); doc.line(10,146,200,146); doc.setLineDashPattern([],0);
+  pdfVia(doc,d,152);
+  doc.save(filename);
 }
 function printOrder(){updateOrderPreview(); window.print()}
 
