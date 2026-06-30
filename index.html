@@ -2,14 +2,14 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DRO Cargas v6.7 Importação Corrigida</title>
+<title>DRO Cargas v6.8 Importação Azul</title>
 <style>
 :root{--nav:#08213a;--blue:#2563eb;--green:#16a34a;--red:#ef4444;--bg:#f3f7fb;--card:#fff;--line:#d8e2ef;--txt:#142033;--muted:#60708a;--amber:#f59e0b;--purple:#7c3aed;--orange:#f97316}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--txt)}button,input,textarea,select{font:inherit}button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.btn{background:#e8eef7;color:#12213a}.primary{background:var(--blue);color:white}.green{background:var(--green);color:white}.red{background:var(--red);color:white}.dark{background:#071626;color:white}.ghost{background:#eef4fb}.small{padding:7px 10px;font-size:13px}.app{display:flex;min-height:100vh}.side{width:250px;background:var(--nav);color:white;position:fixed;left:0;top:0;bottom:0;transition:.2s;z-index:5;overflow:auto}.side.closed{width:72px}.brand{height:82px;display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid rgba(255,255,255,.12);position:relative}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2f80ed,#1aa286);display:grid;place-items:center;font-weight:900}.brand span{font-weight:900;font-size:20px;white-space:nowrap}.toggle{margin-left:auto;background:#29415e;color:white;border-radius:10px;padding:8px 10px;min-width:38px;z-index:9}.side.closed .toggle{position:absolute;right:-17px;top:23px;border:2px solid #fff;border-radius:50%;width:36px;height:36px;padding:0;background:#29415e;display:grid;place-items:center}.side:not(.closed) .toggle{display:block}.side.closed .brand span,.side.closed .label{display:none}.nav a{display:flex;align-items:center;gap:14px;margin:8px 10px;padding:12px 13px;border-radius:10px;color:white;text-decoration:none}.nav a.active,.nav a:hover{background:#173d63}.ico{font-size:20px;width:22px;text-align:center}.main{margin-left:250px;transition:.2s;width:calc(100% - 250px);padding:28px 32px}.side.closed+.main{margin-left:72px;width:calc(100% - 72px)}h1{margin:0;font-size:30px}.sub{color:var(--muted);margin:4px 0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:22px}.actions{display:flex;gap:10px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:14px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 10px 28px rgba(15,36,67,.06);cursor:pointer}.card b{font-size:34px;display:block;margin-top:8px}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:18px;box-shadow:0 10px 28px rgba(15,36,67,.06)}.panel h2{margin:0 0 12px}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.search{max-width:330px;width:100%;padding:13px;border:1px solid var(--line);border-radius:11px}.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}.table th{background:#f8fbff;text-align:left;color:#30435f;font-size:13px;text-transform:uppercase}.table th,.table td{padding:13px;border-bottom:1px solid var(--line);vertical-align:middle}.table tr:last-child td{border-bottom:0}.table tbody tr:hover{background:#f8fbff}.route{font-weight:900}.money{display:inline-block;background:#eef4ff;padding:7px 10px;border-radius:10px;font-weight:900;margin:2px}.margin{background:#fff3e6}.status{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:900;font-size:13px}.Disponivel{background:#dbeafe;color:#1d4ed8}.Agendado{background:#fef3c7;color:#92400e}.Manifestado{background:#ede9fe;color:#5b21b6}.Carregado{background:#dcfce7;color:#166534}.Transito{background:#ffedd5;color:#9a3412}.Finalizado{background:#dcfce7;color:#166534}.actionsRow{display:flex;gap:8px;flex-wrap:wrap}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:22px}.modal.show{display:flex}.box{background:white;border-radius:18px;padding:22px;max-width:900px;width:100%;max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:13px;color:#53637a;font-weight:800;margin:0 0 4px}.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:white}.field textarea{min-height:80px}.span2{grid-column:1/-1}.readonly{background:#f8fbff;border:1px solid var(--line);border-radius:12px;padding:13px}.readonly small{display:block;color:#60708a}.readonly b{display:block;margin-top:3px}.steps{display:flex;gap:10px;flex-wrap:wrap}.step{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#f8fbff}.step input{margin-right:7px}.notice{padding:12px;border-radius:12px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412}.drop{border:2px dashed #9bb5d6;border-radius:14px;padding:18px;text-align:center;background:#f8fbff;min-height:160px}.drop img{max-width:100%;max-height:170px}.ad{white-space:pre-wrap;background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}.hidden{display:none}.tableWrap{width:100%;overflow-x:auto}.manifest-table{min-width:1120px}.manifest-table th,.manifest-table td{white-space:nowrap;padding:10px 8px}.manifest-table .step{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;min-width:124px;padding:8px 10px;margin:0}.manifest-table .step input{margin:0}.manifest-table .search{max-width:none;width:100%;min-width:105px;padding:8px}.manifest-save{min-width:78px}.login-note{font-size:12px;color:#60708a}@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.side{width:72px}.side .brand span,.side .label{display:none}.main{margin-left:72px;width:calc(100% - 72px);padding:18px}.top{flex-direction:column}.table{font-size:13px}.table th,.table td{padding:9px}.actionsRow button{padding:7px 9px}.cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div id="login" class="modal" style="display:none"><div class="box" style="max-width:420px"><div style="display:flex;gap:12px;align-items:center;margin-bottom:18px"><div class="logo">DRO</div><div><h1 style="font-size:28px">DRO Cargas</h1><div class="sub" style="margin:0">Gestão inteligente de fretes</div></div></div><div class="field"><label>E-mail</label><input id="email" value="diego@drocargas.com"></div><div class="field" style="margin-top:10px"><label>Senha</label><input id="senha" type="password" value="123456"></div><button class="green" style="width:100%;margin-top:16px" onclick="login()">Entrar</button><p class="sub">Login inicial: diego@drocargas.com / 123456</p></div></div>
-<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v6.7 Import Corrigida</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
+<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v6.8 Import Azul</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
 <div id="modal" class="modal"><div class="box" id="modalBox"></div></div>
 <input id="restoreFile" type="file" accept="application/json" class="hidden" onchange="restoreBackup(event)">
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -319,14 +319,97 @@ function createImport(){
 }
 function valImp(i,k){let e=document.getElementById(`imp_${i}_${k}`); return e?e.value:''}
 function clearImport(){impList=[]; let t=document.getElementById('impText'); if(t)t.value=''; let p=document.getElementById('prev'); if(p)p.innerHTML='<div class="readonly span2">Cole ou envie um print para analisar.</div>'; impSetStatus('Aguardando conteúdo...')}
+function dataUrlToImage(src){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>resolve(img);
+    img.onerror=reject;
+    img.src=src;
+  });
+}
+function canvasToBlob(canvas){
+  return new Promise(resolve=>canvas.toBlob(resolve,'image/png',0.95));
+}
+function detectBlueTableRows(img){
+  const canvas=document.createElement('canvas');
+  canvas.width=img.naturalWidth||img.width;
+  canvas.height=img.naturalHeight||img.height;
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  ctx.drawImage(img,0,0,canvas.width,canvas.height);
+  const w=canvas.width,h=canvas.height;
+  const data=ctx.getImageData(0,0,w,h).data;
+  let rowScore=new Array(h).fill(0);
+  // Procura os retângulos azuis/ciano da coluna Data dos VLogs.
+  for(let y=0;y<h;y++){
+    let score=0;
+    for(let x=0;x<w;x+=2){
+      const i=(y*w+x)*4, r=data[i], g=data[i+1], b=data[i+2];
+      const isCyan=(b>145 && g>105 && r<80 && (b-r)>80 && (g-r)>45);
+      const isBlue=(b>120 && g>70 && r<90 && (b-r)>55);
+      if(isCyan||isBlue)score++;
+    }
+    rowScore[y]=score;
+  }
+  let bands=[];
+  const minScore=Math.max(8,Math.floor(w*0.006));
+  let inBand=false,start=0;
+  for(let y=0;y<h;y++){
+    if(rowScore[y]>=minScore && !inBand){start=y; inBand=true;}
+    if((rowScore[y]<minScore || y===h-1) && inBand){
+      let end=y;
+      if(end-start>=4)bands.push([start,end]);
+      inBand=false;
+    }
+  }
+  // Junta pequenas faixas do mesmo botão azul da data.
+  let merged=[];
+  for(const b of bands){
+    if(!merged.length || b[0]-merged[merged.length-1][1]>6)merged.push(b);
+    else merged[merged.length-1][1]=b[1];
+  }
+  // Cada faixa azul representa uma linha azul válida. Recorta a linha inteira.
+  return merged.map(([a,b])=>{
+    const cy=Math.round((a+b)/2);
+    const pad=Math.max(18,Math.round(h*0.035));
+    return {y1:Math.max(0,cy-pad), y2:Math.min(h,cy+pad), cy};
+  }).filter((r,i,arr)=>i===0 || Math.abs(r.cy-arr[i-1].cy)>12);
+}
+function cropRowCanvas(img,row){
+  const w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
+  const c=document.createElement('canvas');
+  c.width=w; c.height=Math.max(1,row.y2-row.y1);
+  const ctx=c.getContext('2d');
+  ctx.drawImage(img,0,row.y1,w,row.y2-row.y1,0,0,w,row.y2-row.y1);
+  return c;
+}
+async function ocrSource(source){
+  const ret=await Tesseract.recognize(source,'por+eng');
+  return (ret.data&&ret.data.text)||'';
+}
 async function showImg(file){
   let r=new FileReader(); r.onload=async()=>{
     drop.innerHTML=`<img src="${r.result}"><p>Imagem recebida. Fazendo OCR...</p>`;
     if(window.Tesseract){
       try{
         impSetStatus('Lendo imagem...');
-        const ret=await Tesseract.recognize(file,'por+eng');
-        document.getElementById('impText').value=(ret.data&&ret.data.text)||'';
+        const img=await dataUrlToImage(r.result);
+        const blueRows=detectBlueTableRows(img);
+        let text='';
+        if(blueRows.length>=1){
+          impSetStatus(`Detectei ${blueRows.length} linha(s) azul(is). Lendo somente elas...`);
+          const parts=[];
+          for(let i=0;i<blueRows.length;i++){
+            const crop=cropRowCanvas(img,blueRows[i]);
+            const blob=await canvasToBlob(crop);
+            const t=await ocrSource(blob);
+            if(t.trim())parts.push(t.trim());
+          }
+          text=parts.join('\n');
+        }else{
+          impSetStatus('Nenhuma linha azul detectada. Lendo imagem completa...');
+          text=await ocrSource(file);
+        }
+        document.getElementById('impText').value=text;
         previewImport();
       }catch(e){console.error(e); impSetStatus('Não consegui ler a imagem. Cole o texto manualmente.');}
     }else{impSetStatus('OCR indisponível. Cole o texto manualmente.')}
