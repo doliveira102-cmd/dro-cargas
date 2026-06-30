@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DRO Cargas v7.6 Cotação e Ordem G10</title>
+<title>DRO Cargas v7.7 Cotação Filtro</title>
 <style>
 :root{--nav:#08213a;--blue:#2563eb;--green:#16a34a;--red:#ef4444;--bg:#f3f7fb;--card:#fff;--line:#d8e2ef;--txt:#142033;--muted:#60708a;--amber:#f59e0b;--purple:#7c3aed;--orange:#f97316}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--txt)}button,input,textarea,select{font:inherit}button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.btn{background:#e8eef7;color:#12213a}.primary{background:var(--blue);color:white}.green{background:var(--green);color:white}.red{background:var(--red);color:white}.dark{background:#071626;color:white}.ghost{background:#eef4fb}.small{padding:7px 10px;font-size:13px}.app{display:flex;min-height:100vh}.side{width:250px;background:var(--nav);color:white;position:fixed;left:0;top:0;bottom:0;transition:.2s;z-index:5;overflow:auto}.side.closed{width:72px}.brand{height:82px;display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid rgba(255,255,255,.12);position:relative}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2f80ed,#1aa286);display:grid;place-items:center;font-weight:900}.brand span{font-weight:900;font-size:20px;white-space:nowrap}.toggle{margin-left:auto;background:#29415e;color:white;border-radius:10px;padding:8px 10px;min-width:38px;z-index:9}.side.closed .toggle{position:absolute;right:-17px;top:23px;border:2px solid #fff;border-radius:50%;width:36px;height:36px;padding:0;background:#29415e;display:grid;place-items:center}.side:not(.closed) .toggle{display:block}.side.closed .brand span,.side.closed .label{display:none}.nav a{display:flex;align-items:center;gap:14px;margin:8px 10px;padding:12px 13px;border-radius:10px;color:white;text-decoration:none}.nav a.active,.nav a:hover{background:#173d63}.ico{font-size:20px;width:22px;text-align:center}.main{margin-left:250px;transition:.2s;width:calc(100% - 250px);padding:28px 32px}.side.closed+.main{margin-left:72px;width:calc(100% - 72px)}h1{margin:0;font-size:30px}.sub{color:var(--muted);margin:4px 0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:22px}.actions{display:flex;gap:10px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:14px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 10px 28px rgba(15,36,67,.06);cursor:pointer}.card b{font-size:34px;display:block;margin-top:8px}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:18px;box-shadow:0 10px 28px rgba(15,36,67,.06)}.panel h2{margin:0 0 12px}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.search{max-width:330px;width:100%;padding:13px;border:1px solid var(--line);border-radius:11px}.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}.table th{background:#f8fbff;text-align:left;color:#30435f;font-size:13px;text-transform:uppercase}.table th,.table td{padding:13px;border-bottom:1px solid var(--line);vertical-align:middle}.table tr:last-child td{border-bottom:0}.table tbody tr:hover{background:#f8fbff}.route{font-weight:900}.money{display:inline-block;background:#eef4ff;padding:7px 10px;border-radius:10px;font-weight:900;margin:2px}.margin{background:#fff3e6}.status{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:900;font-size:13px}.Disponivel{background:#dbeafe;color:#1d4ed8}.Agendado{background:#fef3c7;color:#92400e}.Manifestado{background:#ede9fe;color:#5b21b6}.Carregado{background:#dcfce7;color:#166534}.Transito{background:#ffedd5;color:#9a3412}.Finalizado{background:#dcfce7;color:#166534}.actionsRow{display:flex;gap:8px;flex-wrap:wrap}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:22px}.modal.show{display:flex}.box{background:white;border-radius:18px;padding:22px;max-width:900px;width:100%;max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:13px;color:#53637a;font-weight:800;margin:0 0 4px}.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:white}.field textarea{min-height:80px}.span2{grid-column:1/-1}.readonly{background:#f8fbff;border:1px solid var(--line);border-radius:12px;padding:13px}.readonly small{display:block;color:#60708a}.readonly b{display:block;margin-top:3px}.steps{display:flex;gap:10px;flex-wrap:wrap}.step{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#f8fbff}.step input{margin-right:7px}.notice{padding:12px;border-radius:12px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412}.drop{border:2px dashed #9bb5d6;border-radius:14px;padding:18px;text-align:center;background:#f8fbff;min-height:160px}.drop img{max-width:100%;max-height:170px}.ad{white-space:pre-wrap;background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}.hidden{display:none}.tableWrap{width:100%;overflow-x:auto}.manifest-table{min-width:1120px}.manifest-table th,.manifest-table td{white-space:nowrap;padding:10px 8px}.manifest-table .step{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;min-width:124px;padding:8px 10px;margin:0}.manifest-table .step input{margin:0}.manifest-table .search{max-width:none;width:100%;min-width:105px;padding:8px}.manifest-save{min-width:78px}.login-note{font-size:12px;color:#60708a}
 .orderDoc{background:white;color:#111;max-width:900px;margin:10px auto;font-family:Arial,sans-serif}.orderSheet{background:white;width:190mm;min-height:277mm;margin:0 auto;padding:5mm;box-sizing:border-box}.orderVia{border:1px solid #111;margin:0 0 5mm 0;break-inside:avoid;page-break-inside:avoid;font-size:9.2px;line-height:1.05}.orderVia table{width:100%;border-collapse:collapse}.orderVia td,.orderVia th{border:1px solid #111;padding:2px 3px;vertical-align:middle}.orderVia .titleBar{background:#d9d9d9;border-bottom:1px solid #111;text-align:center;font-weight:900;font-size:16px;letter-spacing:.4px;padding:3px}.orderVia .logoCell{width:42%;height:75px;text-align:center}.orderVia .logoCell img{max-width:165px;max-height:65px}.orderVia .companyName{text-align:center;font-weight:900;font-size:18px;padding:4px}.orderVia .center{text-align:center}.orderVia .gray{background:#d9d9d9;font-weight:900;text-align:center}.orderVia .label{background:#d9d9d9;font-weight:900;text-align:right;white-space:nowrap}.orderVia .section{background:#d9d9d9;text-align:center;font-weight:900;font-size:12px;padding:3px}.orderVia .empty{height:13px}.orderCut{border-top:1px dashed #777;text-align:center;color:#777;font-size:9px;margin:-2mm 0 3mm}.orderActions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0}@media print{@page{size:A4;margin:6mm}body *{visibility:hidden}.orderDoc,.orderDoc *{visibility:visible}.orderDoc{position:absolute;left:0;top:0;width:100%;max-width:none;border:0;margin:0}.orderSheet{width:100%;min-height:auto;padding:0}.side,.top,.panel:not(.printable){display:none!important}.orderActions{display:none!important}}
@@ -11,7 +11,7 @@
 </head>
 <body>
 <div id="login" class="modal" style="display:none"><div class="box" style="max-width:420px"><div style="display:flex;gap:12px;align-items:center;margin-bottom:18px"><div class="logo">DRO</div><div><h1 style="font-size:28px">DRO Cargas</h1><div class="sub" style="margin:0">Gestão inteligente de fretes</div></div></div><div class="field"><label>E-mail</label><input id="email" value="diego@drocargas.com"></div><div class="field" style="margin-top:10px"><label>Senha</label><input id="senha" type="password" value="123456"></div><button class="green" style="width:100%;margin-top:16px" onclick="login()">Entrar</button><p class="sub">Login inicial: diego@drocargas.com / 123456</p></div></div>
-<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v7.6 Cotação</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
+<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v7.7 Cotação</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
 <div id="modal" class="modal"><div class="box" id="modalBox"></div></div>
 <input id="restoreFile" type="file" accept="application/json" class="hidden" onchange="restoreBackup(event)">
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -606,16 +606,43 @@ function saveMotorVeiculo(id=''){
 }
 function delMotorVeiculo(id){if(!confirm('Excluir este cadastro de motorista e caminhão?'))return; let mot=db.motoristas.find(x=>x.id===id); if(mot&&mot.veiculoId)db.veiculos=db.veiculos.filter(v=>v.id!==mot.veiculoId); db.motoristas=db.motoristas.filter(m=>m.id!==id); save(); render()}
 
+function cotNorm(v){
+  return String(v||'')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase()
+    .replace(/[-–—>→x]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function cotContains(campo, busca){
+  busca=cotNorm(busca);
+  if(!busca)return true;
+  const alvo=cotNorm(campo);
+  return busca.split(' ').every(p=>alvo.includes(p));
+}
+function aplicarCotacaoFiltros(){
+  window.cotIni=document.getElementById('cotIni')?.value||'';
+  window.cotFim=document.getElementById('cotFim')?.value||'';
+  window.cotOri=document.getElementById('cotOri')?.value||'';
+  window.cotDest=document.getElementById('cotDest')?.value||'';
+  window.cotProd=document.getElementById('cotProd')?.value||'';
+  window.cotCli=document.getElementById('cotCli')?.value||'';
+  render();
+}
+function limparCotacaoFiltros(){
+  window.cotIni='';window.cotFim='';window.cotOri='';window.cotDest='';window.cotProd='';window.cotCli='';render();
+}
 function cotacaoPage(m){
   if(!db.cotacoes)db.cotacoes=[]; ensureCotacoes();
-  const hoje=today(); const ini=window.cotIni||''; const fim=window.cotFim||''; const ori=(window.cotOri||'').toLowerCase(); const dest=(window.cotDest||'').toLowerCase(); const prod=(window.cotProd||'').toLowerCase(); const cli=(window.cotCli||'').toLowerCase();
+  const ini=window.cotIni||'', fim=window.cotFim||'', ori=window.cotOri||'', dest=window.cotDest||'', prod=window.cotProd||'', cli=window.cotCli||'';
   let rows=db.cotacoes.filter(c=>{
     let d=c.dataLancada||c.data||'';
-    if(ini&&d<ini)return false; if(fim&&d>fim)return false;
-    if(ori&&!String(c.origem||'').toLowerCase().includes(ori))return false;
-    if(dest&&!String(c.destino||'').toLowerCase().includes(dest))return false;
-    if(prod&&!String(c.produto||'').toLowerCase().includes(prod))return false;
-    if(cli&&!String(c.cliente||'').toLowerCase().includes(cli))return false;
+    if(ini&&d<ini)return false;
+    if(fim&&d>fim)return false;
+    if(!cotContains(c.origem,ori))return false;
+    if(!cotContains(c.destino,dest))return false;
+    if(!cotContains(c.produto,prod))return false;
+    if(!cotContains(c.cliente,cli))return false;
     return true;
   }).sort((a,b)=>String(b.dataLancada||'').localeCompare(String(a.dataLancada||'')));
   const vals=rows.map(r=>Number(r.valorEmpresa||0)).filter(v=>v>0);
@@ -624,13 +651,13 @@ function cotacaoPage(m){
   m.innerHTML=topHtml('Cotação','Histórico de fretes lançados, mesmo que a carga seja excluída')+`
   <div class="cards"><div class="card">Média<b>${currency(media)}</b></div><div class="card">Menor<b>${currency(min)}</b></div><div class="card">Maior<b>${currency(max)}</b></div><div class="card">Registros<b>${rows.length}</b></div></div>
   <div class="panel"><h2>Filtros</h2><div class="grid">
-    <div class="field"><label>Data inicial</label><input type="date" value="${escapeHtml(ini)}" oninput="window.cotIni=this.value;render()"></div>
-    <div class="field"><label>Data final</label><input type="date" value="${escapeHtml(fim)}" oninput="window.cotFim=this.value;render()"></div>
-    <div class="field"><label>Origem</label><input placeholder="Ex: Cruz Alta" value="${escapeHtml(window.cotOri||'')}" oninput="window.cotOri=this.value;render()"></div>
-    <div class="field"><label>Destino</label><input placeholder="Ex: Rio Grande" value="${escapeHtml(window.cotDest||'')}" oninput="window.cotDest=this.value;render()"></div>
-    <div class="field"><label>Produto</label><input value="${escapeHtml(window.cotProd||'')}" oninput="window.cotProd=this.value;render()"></div>
-    <div class="field"><label>Cliente</label><input value="${escapeHtml(window.cotCli||'')}" oninput="window.cotCli=this.value;render()"></div>
-  </div><br><button class="btn" onclick="window.cotIni='';window.cotFim='';window.cotOri='';window.cotDest='';window.cotProd='';window.cotCli='';render()">Limpar filtros</button></div>
+    <div class="field"><label>Data inicial</label><input id="cotIni" type="date" value="${escapeHtml(ini)}"></div>
+    <div class="field"><label>Data final</label><input id="cotFim" type="date" value="${escapeHtml(fim)}"></div>
+    <div class="field"><label>Origem</label><input id="cotOri" placeholder="Ex: Cruz Alta" value="${escapeHtml(ori)}" onkeydown="if(event.key==='Enter')aplicarCotacaoFiltros()"></div>
+    <div class="field"><label>Destino</label><input id="cotDest" placeholder="Ex: Rio Grande" value="${escapeHtml(dest)}" onkeydown="if(event.key==='Enter')aplicarCotacaoFiltros()"></div>
+    <div class="field"><label>Produto</label><input id="cotProd" value="${escapeHtml(prod)}" onkeydown="if(event.key==='Enter')aplicarCotacaoFiltros()"></div>
+    <div class="field"><label>Cliente</label><input id="cotCli" value="${escapeHtml(cli)}" onkeydown="if(event.key==='Enter')aplicarCotacaoFiltros()"></div>
+  </div><br><button class="primary" onclick="aplicarCotacaoFiltros()">Aplicar filtros</button> <button class="btn" onclick="limparCotacaoFiltros()">Limpar filtros</button><p class="sub" style="margin-top:10px">Agora o filtro só aplica quando clicar em <b>Aplicar filtros</b> ou apertar Enter. Assim você consegue digitar normalmente.</p></div>
   <div class="panel"><div class="tableWrap"><table class="table"><thead><tr><th>Data lançada</th><th>Origem</th><th>Destino</th><th>Produto</th><th>Cliente</th><th>Valor empresa</th></tr></thead><tbody>${rows.length?rows.map(r=>`<tr><td>${dateBR(r.dataLancada)}</td><td>${escapeHtml(r.origem||'')}</td><td>${escapeHtml(r.destino||'')}</td><td>${escapeHtml(r.produto||'')}</td><td>${escapeHtml(r.cliente||'')}</td><td><b>${currency(r.valorEmpresa)}</b></td></tr>`).join(''):'<tr><td colspan="6">Nenhuma cotação encontrada.</td></tr>'}</tbody></table></div></div>`
 }
 
