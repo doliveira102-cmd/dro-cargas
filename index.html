@@ -2,14 +2,14 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DRO Cargas v6.4 Importação Segura</title>
+<title>DRO Cargas v6.6 Importação Segura</title>
 <style>
 :root{--nav:#08213a;--blue:#2563eb;--green:#16a34a;--red:#ef4444;--bg:#f3f7fb;--card:#fff;--line:#d8e2ef;--txt:#142033;--muted:#60708a;--amber:#f59e0b;--purple:#7c3aed;--orange:#f97316}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--txt)}button,input,textarea,select{font:inherit}button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.btn{background:#e8eef7;color:#12213a}.primary{background:var(--blue);color:white}.green{background:var(--green);color:white}.red{background:var(--red);color:white}.dark{background:#071626;color:white}.ghost{background:#eef4fb}.small{padding:7px 10px;font-size:13px}.app{display:flex;min-height:100vh}.side{width:250px;background:var(--nav);color:white;position:fixed;left:0;top:0;bottom:0;transition:.2s;z-index:5;overflow:auto}.side.closed{width:72px}.brand{height:82px;display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid rgba(255,255,255,.12);position:relative}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2f80ed,#1aa286);display:grid;place-items:center;font-weight:900}.brand span{font-weight:900;font-size:20px;white-space:nowrap}.toggle{margin-left:auto;background:#29415e;color:white;border-radius:10px;padding:8px 10px;min-width:38px;z-index:9}.side.closed .toggle{position:absolute;right:-17px;top:23px;border:2px solid #fff;border-radius:50%;width:36px;height:36px;padding:0;background:#29415e;display:grid;place-items:center}.side:not(.closed) .toggle{display:block}.side.closed .brand span,.side.closed .label{display:none}.nav a{display:flex;align-items:center;gap:14px;margin:8px 10px;padding:12px 13px;border-radius:10px;color:white;text-decoration:none}.nav a.active,.nav a:hover{background:#173d63}.ico{font-size:20px;width:22px;text-align:center}.main{margin-left:250px;transition:.2s;width:calc(100% - 250px);padding:28px 32px}.side.closed+.main{margin-left:72px;width:calc(100% - 72px)}h1{margin:0;font-size:30px}.sub{color:var(--muted);margin:4px 0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:22px}.actions{display:flex;gap:10px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:14px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 10px 28px rgba(15,36,67,.06);cursor:pointer}.card b{font-size:34px;display:block;margin-top:8px}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:18px;box-shadow:0 10px 28px rgba(15,36,67,.06)}.panel h2{margin:0 0 12px}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.search{max-width:330px;width:100%;padding:13px;border:1px solid var(--line);border-radius:11px}.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}.table th{background:#f8fbff;text-align:left;color:#30435f;font-size:13px;text-transform:uppercase}.table th,.table td{padding:13px;border-bottom:1px solid var(--line);vertical-align:middle}.table tr:last-child td{border-bottom:0}.table tbody tr:hover{background:#f8fbff}.route{font-weight:900}.money{display:inline-block;background:#eef4ff;padding:7px 10px;border-radius:10px;font-weight:900;margin:2px}.margin{background:#fff3e6}.status{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:900;font-size:13px}.Disponivel{background:#dbeafe;color:#1d4ed8}.Agendado{background:#fef3c7;color:#92400e}.Manifestado{background:#ede9fe;color:#5b21b6}.Carregado{background:#dcfce7;color:#166534}.Transito{background:#ffedd5;color:#9a3412}.Finalizado{background:#dcfce7;color:#166534}.actionsRow{display:flex;gap:8px;flex-wrap:wrap}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:22px}.modal.show{display:flex}.box{background:white;border-radius:18px;padding:22px;max-width:900px;width:100%;max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:13px;color:#53637a;font-weight:800;margin:0 0 4px}.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:white}.field textarea{min-height:80px}.span2{grid-column:1/-1}.readonly{background:#f8fbff;border:1px solid var(--line);border-radius:12px;padding:13px}.readonly small{display:block;color:#60708a}.readonly b{display:block;margin-top:3px}.steps{display:flex;gap:10px;flex-wrap:wrap}.step{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#f8fbff}.step input{margin-right:7px}.notice{padding:12px;border-radius:12px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412}.drop{border:2px dashed #9bb5d6;border-radius:14px;padding:18px;text-align:center;background:#f8fbff;min-height:160px}.drop img{max-width:100%;max-height:170px}.ad{white-space:pre-wrap;background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}.hidden{display:none}.tableWrap{width:100%;overflow-x:auto}.manifest-table{min-width:1120px}.manifest-table th,.manifest-table td{white-space:nowrap;padding:10px 8px}.manifest-table .step{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;min-width:124px;padding:8px 10px;margin:0}.manifest-table .step input{margin:0}.manifest-table .search{max-width:none;width:100%;min-width:105px;padding:8px}.manifest-save{min-width:78px}.login-note{font-size:12px;color:#60708a}@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.side{width:72px}.side .brand span,.side .label{display:none}.main{margin-left:72px;width:calc(100% - 72px);padding:18px}.top{flex-direction:column}.table{font-size:13px}.table th,.table td{padding:9px}.actionsRow button{padding:7px 9px}.cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div id="login" class="modal" style="display:none"><div class="box" style="max-width:420px"><div style="display:flex;gap:12px;align-items:center;margin-bottom:18px"><div class="logo">DRO</div><div><h1 style="font-size:28px">DRO Cargas</h1><div class="sub" style="margin:0">Gestão inteligente de fretes</div></div></div><div class="field"><label>E-mail</label><input id="email" value="diego@drocargas.com"></div><div class="field" style="margin-top:10px"><label>Senha</label><input id="senha" type="password" value="123456"></div><button class="green" style="width:100%;margin-top:16px" onclick="login()">Entrar</button><p class="sub">Login inicial: diego@drocargas.com / 123456</p></div></div>
-<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v6.4 Import Segura</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
+<div class="app"><aside id="side" class="side closed"><div class="brand"><div class="logo">DRO</div><span>DRO Cargas<br><small>v6.6 Importação Segura</small></span><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
 <div id="modal" class="modal"><div class="box" id="modalBox"></div></div>
 <input id="restoreFile" type="file" accept="application/json" class="hidden" onchange="restoreBackup(event)">
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -135,189 +135,147 @@ function adsPage(m){m.innerHTML=topHtml('Anúncios','Os anúncios usam sempre o 
 function adText(c){return `🚛🚛 CARGA DISPONÍVEL 🚛🚛\n\n📍 ORIGEM: ${c.origem||''}\n📍 DESTINO: ${c.destino||''}\n\n🌾 PRODUTO: ${c.produto||''}\n⚖️ QUANTIDADE: ${c.quantidade||''}\n${c.tipoVeiculo?'🚛 VEÍCULO: '+c.tipoVeiculo+'\n':''}\n💰 FRETE: ${currency(c.valorMotorista)}\n\n📅 ${dateBR(c.data)}\n\n📲 CHAMAR NO PRIVADO`}
 function copyAd(id){let c=db.cargas.find(x=>x.id===id); navigator.clipboard?.writeText(adText(c)); db.anuncios.push({id:crypto.randomUUID(),cargaId:id,data:today(),tipo:'copiado'}); save(); alert('Anúncio copiado')}
 function txtAd(id){let c=db.cargas.find(x=>x.id===id); let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([adText(c)],{type:'text/plain'})); a.download=`anuncio_OP_${c.op}.txt`; a.click(); db.anuncios.push({id:crypto.randomUUID(),cargaId:id,data:today(),tipo:'txt'}); save()}
+
 function importPage(m){m.innerHTML=topHtml('Importação Inteligente','Cole texto, imagem com CTRL+V, arraste ou escolha arquivo')+`<div class="panel">
-  <div id="drop" class="drop" tabindex="0" onpaste="pasteImg(event)" ondragover="event.preventDefault();this.style.background='#eef6ff'" ondragleave="this.style.background='#f8fbff'" ondrop="dropImg(event)" style="min-height:220px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
-    <div style="font-size:40px">🤖</div>
-    <h2 style="margin:0">DRO AI Import</h2>
-    <div class="sub" style="text-align:center;margin:0">Cole print do WhatsApp, tabela de portal ou texto. O sistema cria apenas cargas válidas.</div>
-    <input id="smartFile" type="file" accept="image/*,text/plain,.txt" onchange="fileImg(event)">
+  <div id="drop" class="drop" tabindex="0" onclick="this.focus()" onpaste="pasteImg(event)" ondragover="event.preventDefault();this.style.background='#eef6ff'" ondragleave="this.style.background='#f8fbff'" ondrop="dropImg(event)" style="min-height:210px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+    <div style="font-size:42px">📥</div>
+    <h2 style="margin:0">Cole, arraste ou selecione o print/texto aqui</h2>
+    <div class="sub" style="margin:0;text-align:center">Funciona com texto do WhatsApp, print, imagem e tabela. Primeiro gera prévia editável; depois você salva.</div>
+    <input id="impFile" type="file" accept="image/*,.txt,text/plain" onchange="fileImg(event)">
   </div>
   <div class="grid" style="margin-top:14px">
-    <div class="field span2"><label>Texto lido / identificado</label><textarea id="impText" placeholder="Cole aqui texto do WhatsApp, e-mail ou sistema..." oninput="previewImport()" onpaste="setTimeout(previewImport,120)" style="min-height:140px"></textarea></div>
+    <div class="field span2"><label>Texto lido / identificado</label><textarea id="impText" placeholder="Cole aqui texto do WhatsApp, tabela ou texto lido do print..." oninput="previewImport()" style="min-height:150px"></textarea></div>
     <div class="field"><label>Margem (%)</label><input id="impMarg" type="number" value="10" oninput="previewImport()"></div>
-    <div class="readonly"><small>Status</small><b id="importStatus">Aguardando conteúdo...</b></div>
+    <div class="readonly"><small>Status</small><b id="impStatus">Aguardando conteúdo...</b></div>
   </div>
   <h2 style="margin-top:18px">Pré-visualização das cargas encontradas</h2>
-  <div id="prev"><div class="readonly">Cole um texto ou print para analisar.</div></div>
+  <div id="prev" class="grid"><div class="readonly span2">Cole ou envie um print para analisar. Nada será salvo sem você confirmar.</div></div>
   <div style="margin-top:14px"><button class="primary" onclick="previewImport()">Analisar</button> <button class="green" onclick="createImport()">Criar cargas selecionadas</button> <button class="btn" onclick="clearImport()">Limpar</button></div>
-  <p class="sub">Regra de segurança: o DRO ignora cargas sem rota, produto e valor suficientes, para não criar registros vazios.</p>
 </div>`}
 let impList=[];
-function setImportStatus(msg){let el=document.getElementById('importStatus'); if(el)el.textContent=msg;}
-function cleanImp(s){return String(s||'').replace(/[\t ]+/g,' ').replace(/\s+([,.;:])/g,'$1').trim()}
-function normImp(s){return cleanImp(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()}
-function numImp(v){let s=String(v||'').replace(/[^0-9,.]/g,''); if(!s)return 0; if(s.includes(',')&&s.includes('.'))s=s.replace(/\./g,'').replace(',','.'); else if(s.includes(','))s=s.replace(',','.'); return Number(s)||0;}
-function titleImp(s){return cleanImp(s).replace(/\b([A-ZÁÉÍÓÚÃÕÇ]{3,})\b/g,m=>m.charAt(0)+m.slice(1).toLowerCase())}
-const PRODUTOS_IMP=['SOJA BENEFICIADA','FARELO DE SOJA','FARELO','SOJA A GRANEL','SOJA EM GRAOS','SOJA EM GRÃOS','SOJA','MILHO','TRIGO','ARROZ','UREIA','URÉIA','ADUBO','FERTILIZANTE','CALCARIO','CALCÁRIO','DDG','CAVACO'];
-const VEICULOS_IMP=['RODOTREM','BITREM','BITEM','LS','TRUCK','CARRETA','GRANELEIRO','BASCULANTE','6 EIXOS','7 EIXOS','8 EIXOS','9 EIXOS','SOMENTE 6 EIXOS','SOMENTE 7 EIXOS','SOMENTE 9 EIXOS'];
-const EMPRESAS_IMP=['COTRISAL','AGROFEL','BOCCHI','CARGILL','BUNGE','LDC','OLEOPLAN','MOINHO NORDESTE','COTRIJAL','COOPATRIGO','CAMIL','BIANCHINI','COFCO','ADM','CCGL','CAMERA','CÂMERA','GRANJA PINHEIROS','RODOFROTA','AG BRASIL'];
-function findProduto(txt){let n=normImp(txt); let p=PRODUTOS_IMP.find(x=>n.includes(normImp(x))); return p||''}
-function findVeiculo(txt){let n=normImp(txt); let m=n.match(/(?:SOMENTE\s*)?(?:[679]\s*EIXOS?|LS|BITREM|RODOTREM|TRUCK|CARRETA|GRANELEIRO|BASCULANTE)/); return m?m[0].replace(/\s+/g,' '):''}
-function findValor(txt){let t=String(txt||''); let m=t.match(/R\$\s*([0-9]{1,4}(?:[.,][0-9]{1,2})?)/i); if(m)return numImp(m[1]); m=t.match(/(?:frete|valor)\s*[:=-]?\s*([0-9]{1,4}(?:[.,][0-9]{1,2})?)/i); if(m)return numImp(m[1]); return 0;}
-function findEmpresa(txt){let n=normImp(txt); return EMPRESAS_IMP.find(e=>n.includes(normImp(e)))||''}
-function splitRouteText(txt){
-  let t=cleanImp(String(txt||'')).replace(/[–—]/g,'-').replace(/\s+/g,' ');
-  t=t.replace(/\bX\b/g,' x ').replace(/\s+\/\s+/g,'/');
-  let byIcon=t.match(/(?:📍|ORIGEM\s*:?)(.+?)(?:🏁|DESTINO\s*:?)(.+?)(?:💰|R\$|SOMENTE|$)/i);
-  if(byIcon)return {origem:cleanImp(byIcon[1].replace(/^[:\- ]+/,'')),destino:cleanImp(byIcon[2].replace(/^[:\- ]+/,''))};
-  let m=t.match(/(.+?)\s*(?:→|->|=>|\sx\s|\sX\s)\s*(.+)/i);
-  if(m){
-    let origem=cleanImp(m[1].replace(/^(🚨|🌱|🚛|📍|🏁|💰|CARREGAMENTO IMEDIATO)+/gi,'').replace(/^(SOJA|MILHO|TRIGO|FARELO).*$/i,''));
-    let destino=cleanImp(m[2].split(/R\$|💰|SOMENTE|\bSOJA\b|\bMILHO\b|\bTRIGO\b|\bFARELO\b/i)[0]);
-    return {origem,destino};
+function impSetStatus(t){let e=document.getElementById('impStatus'); if(e)e.textContent=t}
+function cleanOCR(s){
+  return String(s||'')
+    .replace(/\r/g,'\n')
+    .replace(/[|]+/g,'\n')
+    .replace(/—|–/g,' → ')
+    .replace(/([A-ZÁÉÍÓÚÃÕÇ])([A-ZÁÉÍÓÚÃÕÇ]{2,})(RS|PR|SC|SP|GO|MT|MS)\b/g,'$1$2/$3')
+    .replace(/SOJAAGRANEL/gi,'SOJA A GRANEL')
+    .replace(/SOJAA GRANEL/gi,'SOJA A GRANEL')
+    .replace(/FARELEDESOJA/gi,'FARELO DE SOJA')
+    .replace(/FARELODESOJA/gi,'FARELO DE SOJA')
+    .replace(/PORTORIOGRANDE/gi,'PORTO RIO GRANDE')
+    .replace(/RIOGRANDE/gi,'RIO GRANDE')
+    .replace(/AGROFEL([A-ZÁÉÍÓÚÃÕÇ])/g,'AGROFEL $1')
+    .replace(/COTRISAL([A-ZÁÉÍÓÚÃÕÇ])/g,'COTRISAL $1')
+    .replace(/OLEOPLAN([A-ZÁÉÍÓÚÃÕÇ])/g,'OLEOPLAN $1')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function titleCaseFrete(s){return String(s||'').replace(/\s+/g,' ').trim().toUpperCase();}
+function numBR(v){let s=String(v||'').replace(/[^0-9,\.]/g,''); if(!s)return 0; if(s.includes(',')&&s.includes('.'))s=s.replace(/\./g,'').replace(',','.'); else if(s.includes(','))s=s.replace(',','.'); return Number(s)||0}
+function extractProduct(t){let m=String(t||'').match(/\b(SOJA(?:\s+A\s+GRANEL|\s+BENEFICIADA)?|MILHO|TRIGO|FARELO(?:\s+DE\s+SOJA)?|ARROZ|DDG|UREIA|FERTILIZANTE|CALC[ÁA]RIO)\b/i); return m?titleCaseFrete(m[1]):''}
+function extractVehicle(t){let m=String(t||'').match(/\b(SOMENTE\s+)?(\d+\s*EIXOS?|LS|BITREM|RODOTREM|TRUCK|GRANELEIRO|BASCULANTE|CA[CÇ]AMBA)\b/i); return m?titleCaseFrete(m[0].replace(/^SOMENTE\s+/i,'')):''}
+function extractValue(t){let m=String(t||'').match(/R\$\s*([0-9.]+,?\d{0,2})/i) || String(t||'').match(/\b([0-9]{2,4},\d{2})\b/); return m?numBR(m[1]):0}
+function parseWhatsapp(t){
+  let raw=cleanOCR(t), lines=String(t||'').split(/\n+/).map(x=>cleanOCR(x)).filter(Boolean);
+  let value=extractValue(raw), product=extractProduct(raw), vehicle=extractVehicle(raw);
+  let routeLine=lines.find(l=>/(\/RS|\/PR|\/SC|\/SP|\/GO|\/MT|\/MS).*(\sx\s|→|\s-\s).*(\/RS|\/PR|\/SC|\/SP|\/GO|\/MT|\/MS)/i.test(l)) || lines.find(l=>/\sx\s|→/.test(l)) || '';
+  let origem='', destino='', cliente='';
+  if(routeLine){
+    let parts=routeLine.split(/\s+x\s+|\s+X\s+|\s*→\s*/i);
+    if(parts.length<2)parts=routeLine.split(/\s+-\s+/);
+    origem=cleanOCR(parts[0]||'');
+    destino=cleanOCR(parts.slice(1).join(' ')||'');
+  } else {
+    let pin=lines.findIndex(l=>/📍|ORIGEM/i.test(l));
+    let flag=lines.findIndex(l=>/🏁|DESTINO/i.test(l));
+    if(pin>=0)origem=cleanOCR(lines[pin].replace(/📍|ORIGEM:?/ig,''));
+    if(flag>=0)destino=cleanOCR(lines[flag].replace(/🏁|DESTINO:?/ig,''));
   }
-  return {origem:'',destino:''};
+  let known=['COTRISAL','AGROFEL','CARGILL','BUNGE','LDC','OLEOPLAN','COFCO','BICHINI','BIANCHINI','MOINHO NORDESTE','CAMIL','ADM'];
+  cliente=known.find(k=>raw.toUpperCase().includes(k))||'';
+  return {cliente,origem,destino,produto:product,quantidade:'',valorEmpresa:value,margem:Number(document.getElementById('impMarg')?.value||10),valorMotorista:value*(1-Number(document.getElementById('impMarg')?.value||10)/100),data:today(),tipoVeiculo:vehicle,status:'Disponível',obs:''};
 }
-function makeCargaImp(o){
-  let margem=Number(document.getElementById('impMarg')?.value||10);
-  let valorEmpresa=Number(o.valorEmpresa||0), valorMotorista=Number(o.valorMotorista||0);
-  if(valorEmpresa&&!valorMotorista)valorMotorista=valorEmpresa*(1-margem/100);
-  return {cliente:cleanImp(o.cliente||''),origem:cleanImp(o.origem||''),destino:cleanImp(o.destino||''),produto:cleanImp(o.produto||''),quantidade:cleanImp(o.quantidade||''),valorEmpresa,margem,valorMotorista,tipoVeiculo:cleanImp(o.tipoVeiculo||''),data:o.data||today(),status:'Disponível',obs:cleanImp(o.obs||'')};
+function tableSegments(t){
+  let s=cleanOCR(t);
+  let parts=s.split(/(?=\b(?:\d+\s+)?(?:BR\s+)?RODO\s+\d{4,6}\b)/i).map(x=>x.trim()).filter(x=>/\bRODO\s+\d{4,6}\b/i.test(x));
+  if(parts.length>1)return parts;
+  let lines=String(t||'').split(/\n+/).map(cleanOCR).filter(Boolean);
+  return lines.filter(l=>/\bRODO\b/i.test(l)&&/\b(SOJA|FARELO|MILHO|TRIGO|ARROZ)\b/i.test(l));
 }
-function validCargaImp(c){
-  const hasRoute=!!(c.origem&&c.destino);
-  const hasProd=!!c.produto;
-  const hasValue=Number(c.valorEmpresa)>0;
-  return hasRoute && (hasProd||hasValue||c.cliente);
+function parseTableLine(seg){
+  let s=cleanOCR(seg);
+  let value=0;
+  let nums=[...s.matchAll(/\b([0-9]{2,4})(?:\s*(?:07:|08:|19:|AS|Qt|Disp|Uso)|\s*$)/gi)].map(m=>Number(m[1])).filter(n=>n>0);
+  if(nums.length)value=nums[nums.length-1];
+  let product=extractProduct(s);
+  let beforeProduct=product?s.split(new RegExp(product.replace(/\s+/g,'\\s+'),'i'))[0]:s;
+  let afterRodo=(beforeProduct.match(/\bRODO\s+\d{4,6}\s+(.+)/i)||[])[1]||beforeProduct;
+  let chunks=afterRodo.split(/\s{2,}| → | - /).map(cleanOCR).filter(Boolean);
+  // fallback: tenta reconhecer pela repetição de nomes do portal
+  let cliente=chunks[0]||'';
+  let origem=chunks[chunks.length-2]||'';
+  let destino=chunks[chunks.length-1]||'';
+  if(chunks.length>=4){cliente=chunks[0]; origem=chunks[chunks.length-2]; destino=chunks[chunks.length-1];}
+  if(!origem && /PORTO RIO GRANDE|RIO GRANDE/i.test(s))destino='PORTO RIO GRANDE - RS';
+  return {cliente:titleCaseFrete(cliente),origem:titleCaseFrete(origem),destino:titleCaseFrete(destino),produto:product,quantidade:'',valorEmpresa:value,margem:Number(document.getElementById('impMarg')?.value||10),valorMotorista:value*(1-Number(document.getElementById('impMarg')?.value||10)/100),data:today(),tipoVeiculo:'',status:'Disponível',obs:''};
 }
-function parseWhatsappImp(txt){
-  let t=cleanImp(String(txt||'').replace(/\n/g,' | '));
-  let route=splitRouteText(t);
-  let produto=findProduto(t);
-  let valor=findValor(t);
-  let veic=findVeiculo(t);
-  let cliente=findEmpresa(t);
-  if(!produto){let line=String(txt||'').split(/\n+/).find(l=>/🌱|produto/i.test(l)); produto=findProduto(line||'');}
-  if(!route.origem || !route.destino){
-    let lines=String(txt||'').split(/\n+/).map(cleanImp).filter(Boolean);
-    let rline=lines.find(l=>/(→|->|\sx\s|\sX\s)/.test(l));
-    if(rline)route=splitRouteText(rline);
-    let pin=lines.findIndex(l=>/📍|origem/i.test(l));
-    let flag=lines.findIndex(l=>/🏁|destino/i.test(l));
-    if(pin>=0&&!route.origem)route.origem=cleanImp(lines[pin].replace(/📍|origem:?/ig,''));
-    if(flag>=0&&!route.destino)route.destino=cleanImp(lines[flag].replace(/🏁|destino:?/ig,''));
+function isUseful(c){return !!(c.origem||c.destino||c.produto||c.valorEmpresa||c.cliente)}
+function parseImportAll(t){
+  let text=String(t||'');
+  let segs=tableSegments(text);
+  let out=[];
+  if(segs.length>=2 || (segs.length===1 && /\bRODO\b/i.test(text))){
+    out=segs.map(parseTableLine).filter(isUseful);
+  } else {
+    out=[parseWhatsapp(text)].filter(isUseful);
   }
-  let c=makeCargaImp({cliente,origem:route.origem,destino:route.destino,produto,quantidade:'',valorEmpresa:valor,tipoVeiculo:veic,obs:'Importado de WhatsApp'});
-  return validCargaImp(c)?[c]:[];
+  if(!out.length && text.trim())out=[parseWhatsapp(text)];
+  return out;
 }
-function parseTableImp(txt){
-  let original=String(txt||'');
-  let lines=original.split(/\n+/).map(cleanImp).filter(Boolean);
-  let rows=[];
-  // Caso OCR preserve linhas: cada linha com data + RODO + produto + frete
-  for(const l of lines){
-    let n=normImp(l);
-    if(!/\d{1,2}\/\d{1,2}\/\d{2,4}/.test(l) && !/\bRODO\b/.test(n))continue;
-    if(/COTA\s+OP\s+DATA|CLIENTE\s+TOMADOR|PRODUTO\s+FRETE/i.test(n))continue;
-    let produto=findProduto(l); if(!produto)continue;
-    let valor=0; let afterProd=l.slice(Math.max(0,n.indexOf(normImp(produto))));
-    let nums=[...afterProd.matchAll(/\b([0-9]{1,4})(?:[,.][0-9]{1,2})?\b/g)].map(m=>Number(m[1])).filter(x=>x>0&&x<1000);
-    if(nums.length)valor=nums[0];
-    let data=(l.match(/\d{1,2}\/\d{1,2}\/\d{2,4}/)||[])[0]||today();
-    let pre=l.split(new RegExp(produto.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i'))[0];
-    pre=pre.replace(/.*?\bRODO\b\s*/i,'').replace(/\([^)]*\)/g,' ');
-    let parts=pre.split(/\s{2,}|\|/).map(cleanImp).filter(Boolean);
-    if(parts.length<3){
-      // tentativa por palavras conhecidas: cliente, tomador, origem, destino nas últimas posições antes do produto
-      let tokens=pre.split(/\s+/);
-      parts=[pre];
-    }
-    let origem='',destino='',cliente='';
-    if(parts.length>=4){cliente=parts[0]; origem=parts[2]; destino=parts[3];}
-    else {
-      // para OCR sem colunas, tenta capturar blocos entre empresas conhecidas e destino
-      let names=pre.replace(/\b\d{3,6}\b/g,' ').replace(/\bRODO\b/ig,' ').trim();
-      cliente=findEmpresa(names)||'';
-      let chunks=names.split(/\s{2,}/).map(cleanImp).filter(Boolean);
-      origem=chunks.at(-2)||''; destino=chunks.at(-1)||'';
-    }
-    let c=makeCargaImp({cliente,origem,destino,produto,valorEmpresa:valor,data:convertDateImp(data),obs:'Importado de tabela'});
-    if(validCargaImp(c))rows.push(c);
-  }
-  // Caso OCR venha em bloco sem quebras: divide por datas repetidas
-  if(rows.length<=1){
-    let flat=cleanImp(original.replace(/\n/g,' '));
-    let chunks=flat.split(/(?=\d{1,2}\/\d{1,2}\/\d{2,4}\s+\d{1,2}:?\d{0,2}\s*RODO|\bRODO\s+\d{4,6})/i).map(cleanImp).filter(x=>findProduto(x));
-    let alt=[];
-    for(const ch of chunks){
-      let produto=findProduto(ch); let valor=0;
-      let after=ch.slice(Math.max(0,normImp(ch).indexOf(normImp(produto))));
-      let vm=after.match(/\b([0-9]{1,4})(?:[,.][0-9]{1,2})?\b/); if(vm)valor=Number(vm[1]);
-      let data=(ch.match(/\d{1,2}\/\d{1,2}\/\d{2,4}/)||[])[0]||today();
-      let before=ch.split(new RegExp(produto.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i'))[0];
-      before=before.replace(/.*?\bRODO\b\s*\d{3,6}(?:\s*\([^)]*\))?/i,'').trim();
-      let seg=before.split(/\s{2,}/).map(cleanImp).filter(Boolean);
-      let cliente=seg[0]||findEmpresa(before)||'';
-      let origem=seg.at(-2)||'';
-      let destino=seg.at(-1)||'';
-      let c=makeCargaImp({cliente,origem,destino,produto,valorEmpresa:valor,data:convertDateImp(data),obs:'Importado de tabela'});
-      if(validCargaImp(c))alt.push(c);
-    }
-    if(alt.length>rows.length)rows=alt;
-  }
-  return dedupeImp(rows);
-}
-function convertDateImp(d){if(!d)return today(); if(d.includes('/')){let [da,mo,yr]=d.split('/'); if(yr&&yr.length==2)yr='20'+yr; return `${yr}-${String(mo).padStart(2,'0')}-${String(da).padStart(2,'0')}`;} return d;}
-function parseUniversalImp(txt){
-  let raw=String(txt||'');
-  let n=normImp(raw);
-  let tableLikely=/\b(COTA|MODAL|TOMADOR|FRETE|TURNO|RODO|CLIENTE|PRODUTO)\b/.test(n) && /\bRODO\b|\d{1,2}\/\d{1,2}\/\d{2,4}/.test(n);
-  let list=tableLikely?parseTableImp(raw):[];
-  if(!list.length)list=parseWhatsappImp(raw);
-  if(!list.length){
-    let route=splitRouteText(raw), produto=findProduto(raw), valor=findValor(raw), veic=findVeiculo(raw), cliente=findEmpresa(raw);
-    let c=makeCargaImp({cliente,origem:route.origem,destino:route.destino,produto,valorEmpresa:valor,tipoVeiculo:veic,obs:'Importado de texto'});
-    if(validCargaImp(c))list=[c];
-  }
-  return dedupeImp(list);
-}
-function dedupeImp(list){let seen=new Set(); return list.filter(c=>{let k=normImp([c.cliente,c.origem,c.destino,c.produto,c.valorEmpresa,c.data].join('|')); if(seen.has(k))return false; seen.add(k); return true;});}
 function previewImport(){
-  impList=parseUniversalImp(document.getElementById('impText')?.value||'');
-  let p=document.getElementById('prev'); if(!p)return;
-  if(!impList.length){p.innerHTML='<div class="notice">Nenhuma carga válida encontrada. Verifique se o texto contém origem, destino, produto ou valor.</div>'; setImportStatus('Nenhuma carga válida encontrada.'); return;}
-  setImportStatus(`${impList.length} carga(s) encontrada(s). Confira e crie.`);
-  p.innerHTML=`<div class="tableWrap"><table class="table"><thead><tr><th>Criar</th><th>Cliente</th><th>Origem</th><th>Destino</th><th>Produto</th><th>Qtd</th><th>Valor</th><th>Veículo</th></tr></thead><tbody>${impList.map((c,i)=>`<tr><td><input type="checkbox" id="imp_ok_${i}" checked></td><td><input class="search" id="imp_cliente_${i}" value="${escapeHtml(c.cliente)}"></td><td><input class="search" id="imp_origem_${i}" value="${escapeHtml(c.origem)}"></td><td><input class="search" id="imp_destino_${i}" value="${escapeHtml(c.destino)}"></td><td><input class="search" id="imp_produto_${i}" value="${escapeHtml(c.produto)}"></td><td><input class="search" id="imp_quantidade_${i}" value="${escapeHtml(c.quantidade)}"></td><td><input class="search" type="number" step="0.01" id="imp_valor_${i}" value="${c.valorEmpresa||0}"></td><td><input class="search" id="imp_veic_${i}" value="${escapeHtml(c.tipoVeiculo)}"></td></tr>`).join('')}</tbody></table></div>`;
+  let txt=document.getElementById('impText')?.value||'';
+  impList=parseImportAll(txt);
+  let prev=document.getElementById('prev'); if(!prev)return;
+  if(!impList.length){prev.innerHTML='<div class="notice span2">Nenhuma carga encontrada. Você pode ajustar o texto lido acima e clicar em Analisar.</div>'; impSetStatus('Nenhuma carga válida encontrada.'); return;}
+  impSetStatus(`${impList.length} carga(s) encontrada(s). Confira antes de salvar.`);
+  prev.innerHTML=impList.map((c,i)=>`<div class="panel span2" style="box-shadow:none;margin:0"><label style="font-weight:900"><input type="checkbox" id="imp_sel_${i}" checked> Criar carga ${i+1}</label><div class="grid" style="margin-top:10px">
+    ${impField(i,'cliente','Cliente',c.cliente)}${impField(i,'origem','Origem',c.origem)}${impField(i,'destino','Destino',c.destino)}${impField(i,'produto','Produto',c.produto)}
+    ${impField(i,'quantidade','Quantidade',c.quantidade)}${impField(i,'valorEmpresa','Valor Empresa',c.valorEmpresa,'number')}${impField(i,'margem','Margem (%)',c.margem,'number')}${impField(i,'valorMotorista','Valor Motorista',c.valorMotorista,'number')}${impField(i,'tipoVeiculo','Tipo veículo',c.tipoVeiculo)}${impField(i,'data','Data',c.data,'date')}
+  </div></div>`).join('');
 }
+function impField(i,k,label,v,type='text'){return `<div class="field"><label>${label}</label><input id="imp_${i}_${k}" type="${type}" value="${escapeHtml(v??'')}"></div>`}
 function createImport(){
   if(!impList.length)previewImport();
-  let criadas=0;
+  let created=0, ignored=0;
   impList.forEach((c,i)=>{
-    if(!document.getElementById(`imp_ok_${i}`)?.checked)return;
-    let valor=Number(document.getElementById(`imp_valor_${i}`).value||0);
-    let margem=Number(document.getElementById('impMarg')?.value||10);
-    let carga=makeCargaImp({cliente:document.getElementById(`imp_cliente_${i}`).value,origem:document.getElementById(`imp_origem_${i}`).value,destino:document.getElementById(`imp_destino_${i}`).value,produto:document.getElementById(`imp_produto_${i}`).value,quantidade:document.getElementById(`imp_quantidade_${i}`).value,valorEmpresa:valor,valorMotorista:valor*(1-margem/100),margem,tipoVeiculo:document.getElementById(`imp_veic_${i}`).value,data:today(),obs:c.obs});
-    if(!validCargaImp(carga))return;
-    carga.id=crypto.randomUUID(); carga.op=nextOp(); carga.createdAt=Date.now();
-    db.cargas.push(carga); addHist(carga.id,'Carga criada por Importação Inteligente Universal'); criadas++;
+    let sel=document.getElementById(`imp_sel_${i}`); if(sel&&!sel.checked)return;
+    let carga={id:crypto.randomUUID(),op:nextOp(),createdAt:Date.now(),cliente:valImp(i,'cliente'),origem:valImp(i,'origem'),destino:valImp(i,'destino'),produto:valImp(i,'produto'),quantidade:valImp(i,'quantidade'),valorEmpresa:Number(valImp(i,'valorEmpresa')||0),margem:Number(valImp(i,'margem')||10),valorMotorista:Number(valImp(i,'valorMotorista')||0),tipoVeiculo:valImp(i,'tipoVeiculo'),data:valImp(i,'data')||today(),status:'Disponível',obs:'Criada por Importação Inteligente'};
+    if(!isUseful(carga)){ignored++; return;}
+    db.cargas.push(carga); addHist(carga.id,'Carga criada por importação inteligente'); created++;
   });
-  if(!criadas){alert('Nenhuma carga válida foi selecionada.');return;}
-  save(); alert(`${criadas} carga(s) criada(s).`); go('cargas');
+  if(!created){alert('Nenhuma carga válida foi criada. Confira a prévia ou edite os campos.'); return;}
+  save(); alert(`${created} carga(s) criada(s).`+(ignored?` ${ignored} ignorada(s).`:'')); go('cargas');
 }
-function clearImport(){impList=[]; let t=document.getElementById('impText'); if(t)t.value=''; let p=document.getElementById('prev'); if(p)p.innerHTML='<div class="readonly">Cole um texto ou print para analisar.</div>'; setImportStatus('Aguardando conteúdo...');}
-async function processImportImage(file){
-  let r=new FileReader(); r.onload=()=>{let d=document.getElementById('drop'); if(d)d.innerHTML=`<img src="${r.result}"><p>Imagem recebida. Fazendo OCR...</p>`}; r.readAsDataURL(file);
-  try{
+function valImp(i,k){let e=document.getElementById(`imp_${i}_${k}`); return e?e.value:''}
+function clearImport(){impList=[]; let t=document.getElementById('impText'); if(t)t.value=''; let p=document.getElementById('prev'); if(p)p.innerHTML='<div class="readonly span2">Cole ou envie um print para analisar.</div>'; impSetStatus('Aguardando conteúdo...')}
+async function showImg(file){
+  let r=new FileReader(); r.onload=async()=>{
+    drop.innerHTML=`<img src="${r.result}"><p>Imagem recebida. Fazendo OCR...</p>`;
     if(window.Tesseract){
-      setImportStatus('Lendo imagem com OCR...');
-      const ret=await Tesseract.recognize(file,'por+eng',{logger:m=>{if(m.status)setImportStatus('OCR: '+m.status+(m.progress?` ${Math.round(m.progress*100)}%`:''));}});
-      document.getElementById('impText').value=(ret.data&&ret.data.text)||'';
-      previewImport();
-    }else{setImportStatus('OCR indisponível. Cole o texto manualmente.');}
-  }catch(e){console.error(e); setImportStatus('Não consegui ler a imagem. Tente colar o texto.');}
+      try{
+        impSetStatus('Lendo imagem...');
+        const ret=await Tesseract.recognize(file,'por+eng');
+        document.getElementById('impText').value=(ret.data&&ret.data.text)||'';
+        previewImport();
+      }catch(e){console.error(e); impSetStatus('Não consegui ler a imagem. Cole o texto manualmente.');}
+    }else{impSetStatus('OCR indisponível. Cole o texto manualmente.')}
+  }; r.readAsDataURL(file)
 }
-function showImg(file){processImportImage(file)}
-function fileImg(e){if(e.target.files[0])processImportImage(e.target.files[0])} function dropImg(e){e.preventDefault(); if(e.dataTransfer.files[0])processImportImage(e.dataTransfer.files[0])} function pasteImg(e){let f=[...e.clipboardData.items].find(i=>i.type.startsWith('image/')); if(f){e.preventDefault();processImportImage(f.getAsFile())}}
+function fileImg(e){if(e.target.files[0])showImg(e.target.files[0])}
+function dropImg(e){e.preventDefault(); if(e.dataTransfer.files[0])showImg(e.dataTransfer.files[0])}
+function pasteImg(e){let f=[...e.clipboardData.items].find(i=>i.type.startsWith('image/')); if(f){e.preventDefault();showImg(f.getAsFile())}else{setTimeout(previewImport,80)}}
 
 
 function rascunhosPage(m){
