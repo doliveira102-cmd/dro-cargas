@@ -17,6 +17,103 @@ h1{font-size:28px;color:#fff;font-weight:800}.sub{color:#c3cfe0}.top{align-items
 .cards{grid-template-columns:repeat(5,minmax(140px,1fr));gap:16px}.card{background:linear-gradient(180deg,rgba(15,39,68,.92),rgba(10,28,50,.92));border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 44px rgba(0,0,0,.26);color:#dbe6f5}.card b{font-size:30px;color:#1e88ff}.panel{background:rgba(10,28,50,.88);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 44px rgba(0,0,0,.26)}.panel h2{color:#fff}.search{background:#08192d;border:1px solid var(--line);color:white;border-radius:11px}.table{border:1px solid var(--line);background:rgba(10,28,50,.88);border-radius:14px;border-spacing:0}.table th{background:rgba(8,25,45,.96);color:#b6c6dc;font-size:12px;font-weight:800}.table th,.table td{border-bottom:1px solid rgba(255,255,255,.08);padding:12px;white-space:nowrap}.table tbody tr:hover{background:rgba(30,136,255,.08)}.route{font-weight:700;color:#fff}.route .arrow{color:#1e88ff;padding:0 10px}.opCol{width:54px;font-weight:900}.clienteCol{width:105px}.produtoCol{max-width:140px;overflow:hidden;text-overflow:ellipsis}.valorCol{font-weight:900;color:#fff}.money{background:#0e223b;color:#fff;border:1px solid var(--line)}.margin{background:rgba(245,158,11,.12);color:#fbbf24}.statusDot{width:13px;height:13px;border-radius:50%;display:inline-block}.statusDot.blue{background:#1e88ff;box-shadow:0 0 0 4px rgba(30,136,255,.13)}.statusDot.orange{background:#f59e0b;box-shadow:0 0 0 4px rgba(245,158,11,.14)}.statusDot.red{background:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.14)}.v8Actions{flex-wrap:nowrap}.v8Actions .small{padding:7px 10px;font-size:12px;border-radius:8px}.modal{background:rgba(0,0,0,.62)}.box{background:#0b1c32;border:1px solid var(--line);color:white;box-shadow:0 40px 90px rgba(0,0,0,.45)}.readonly{background:#0e223b;border:1px solid var(--line);color:#fff}.readonly small,.field label{color:#9fb1c8}.field input,.field textarea,.field select{background:#08192d;border:1px solid var(--line);color:white}.notice{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:#fbbf24}.login-v8{background:radial-gradient(circle at top left,rgba(30,136,255,.22),transparent 34%),linear-gradient(135deg,#061323,#08213c 60%,#061323)!important}.login-box{max-width:430px!important;border-radius:22px!important;padding:34px!important}.login-logo-wrap{display:flex;justify-content:center;margin-bottom:28px}.login-logo-img{width:300px;max-height:115px}.login-btn{border-radius:11px!important;height:44px}.login-note-v8{text-align:center;color:#87a0bd;font-size:11px;margin:18px 0 0}.login-note{display:none}
 @media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.main{padding:18px}.v8Actions{flex-wrap:wrap}.table{font-size:13px}}
 
+
+/* ===== DRO CARGAS V8 - Correções finais de tema escuro ===== */
+:root{
+  --nav:#061323!important;
+  --bg:#061323!important;
+  --card:#0b1c32!important;
+  --line:#1f3858!important;
+  --txt:#f4f8ff!important;
+  --muted:#9fb1c8!important;
+}
+body{background:#061323!important;color:#f4f8ff!important;}
+.panel,.card,.box,.readonly,.step,.ad,.drop,.table{
+  background:#0b1c32!important;
+  color:#f4f8ff!important;
+  border-color:#1f3858!important;
+}
+.table th{
+  background:#08192d!important;
+  color:#b6c6dc!important;
+}
+.table td{
+  background:transparent!important;
+  color:#f4f8ff!important;
+}
+.table tbody tr:hover{background:rgba(30,136,255,.08)!important;}
+.field input,.field textarea,.field select,.search,.manifest-table .search{
+  background:#08192d!important;
+  color:#f4f8ff!important;
+  border-color:#1f3858!important;
+}
+.field input::placeholder,.field textarea::placeholder,.search::placeholder{
+  color:#7f90a8!important;
+}
+.drop{
+  border:2px dashed #39608c!important;
+}
+.drop h2,.drop p,.drop b,.drop small{
+  color:#f4f8ff!important;
+}
+.ad{
+  white-space:pre-wrap!important;
+  background:#0b1c32!important;
+  color:#f4f8ff!important;
+  border:1px solid #1f3858!important;
+}
+.notice{
+  background:rgba(245,158,11,.16)!important;
+  border-color:rgba(245,158,11,.45)!important;
+  color:#fbbf24!important;
+}
+.money{
+  background:#102947!important;
+  color:#f4f8ff!important;
+}
+.margin{
+  background:rgba(245,158,11,.16)!important;
+  color:#fbbf24!important;
+}
+.status{
+  background:#102947!important;
+  color:#f4f8ff!important;
+}
+.Disponivel{background:rgba(30,136,255,.18)!important;color:#58aaff!important;}
+.Agendado{background:rgba(245,158,11,.18)!important;color:#fbbf24!important;}
+.Manifestado{background:rgba(124,58,237,.22)!important;color:#c4b5fd!important;}
+.Carregado{background:rgba(34,197,94,.18)!important;color:#4ade80!important;}
+.Transito{background:rgba(249,115,22,.18)!important;color:#fb923c!important;}
+.Finalizado{background:rgba(34,197,94,.18)!important;color:#4ade80!important;}
+.modal{background:rgba(0,0,0,.68)!important;}
+.box{
+  box-shadow:0 30px 80px rgba(0,0,0,.42)!important;
+}
+input[type="checkbox"]{
+  accent-color:#1e88ff;
+}
+.manifest-table .step{
+  background:#102947!important;
+  color:#f4f8ff!important;
+  border-color:#1f3858!important;
+}
+.manifest-table .step input:disabled + span,
+.manifest-table .step input:disabled{
+  opacity:.75;
+}
+.orderDoc,.orderSheet,.orderVia{
+  background:white!important;
+  color:#111!important;
+}
+.orderDoc *,.orderSheet *,.orderVia *{
+  color:#111!important;
+}
+.login-logo-img,.brand-logo-img,img[src="logo-dro-oficial.png"]{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
 </style>
 </head>
 <body>
