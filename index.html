@@ -266,6 +266,20 @@ img[src="logo-dro-oficial.png"],.logo-official{
   box-shadow:none!important;
 }
 
+
+/* ===== V8: menu aberto inicia com grupos recolhidos ===== */
+.navGroup.closed{
+  border-bottom:1px solid rgba(255,255,255,.05);
+  padding-bottom:2px;
+}
+.navGroupTitle{
+  cursor:pointer!important;
+}
+.navGroupTitle:hover{
+  background:rgba(30,136,255,.10)!important;
+  border-radius:9px!important;
+}
+
 </style>
 </head>
 <body>
@@ -281,6 +295,23 @@ const G10_LOGO='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCA
 const KEY='DRO_CARGAS_DATA'; const MASTER='DRO_CARGAS_MASTER'; const OLD=['DRO_CARGAS_MASTER','DRO_CARGAS_DATA','droCargasData','DRO_CARGAS_V19','DRO_CARGAS_V20','dro-cargas'];
 let page='dashboard', search='', editId=null; let orderCargaId='', orderMotoristaId='', orderVeiculoId='', orderCargaFilter='', orderMotFilter='', orderVeiFilter=''; let simpleFilters={clientes:'',motoristas:'',veiculos:''}; let manFilter={motorista:'',placa:'',agendado:'',manifestado:'',carregado:'',transito:'',finalizado:''};
 let db=load();
+
+// LIMPEZA INICIAL V8: apaga lotes antigos e zera contador de OP somente uma vez
+if(!localStorage.getItem('DRO_CARGAS_V8_LIMPEZA_INICIAL_OK')){
+  try{
+    db.cargas=[];
+    db.cotacoes=[];
+    db.agendamentos=[];
+    db.manifestos=[];
+    db.anuncios=[];
+    db.historico=[];
+    db.rascunho='';
+    db.lastOp=0;
+    localStorage.setItem('DRO_CARGAS_V8_LIMPEZA_INICIAL_OK','1');
+    save();
+  }catch(e){}
+}
+
 const pages=[['dashboard','⌂','Dashboard','OPERAÇÃO'],['cargas','▣','Cargas','OPERAÇÃO'],['agenda','▤','Agenda','OPERAÇÃO'],['rascunhos','✎','Rascunhos','OPERAÇÃO'],['importar','⇩','Importação Inteligente','OPERAÇÃO'],['agendamentos','▰','Agendamentos','LOGÍSTICA'],['manifestos','▧','Manifestos','LOGÍSTICA'],['ordemg10','▣','ORDEM','LOGÍSTICA'],['cotacao','$','Cotação','COMERCIAL'],['anuncios','↗','Anúncios','COMERCIAL'],['clientes','◎','Clientes','CADASTROS'],['motoristas','♙','Motoristas/Veículos','CADASTROS'],['relatorios','▥','Relatórios','SISTEMA']];
 function defaultDb(){return{cargas:[],cotacoes:[],agendamentos:[],manifestos:[],clientes:[],motoristas:[],veiculos:[],anuncios:[],agenda:[],historico:[],rascunho:'',lastOp:0,version:'4.0'}}
 function load(){let d=null; for(const k of OLD){let o=localStorage.getItem(k); if(o){d=o; break}} try{let x=d?JSON.parse(d):defaultDb(); return Object.assign(defaultDb(),x)}catch(e){return defaultDb()}}
@@ -289,7 +320,7 @@ function login(){const e=document.getElementById('email').value.trim(); const s=
 function logout(){sessionStorage.removeItem('DRO_CARGAS_SESSAO'); document.getElementById('login').style.display='flex'; document.getElementById('login').classList.add('show');}
 function toggleSide(){let s=document.getElementById('side'); s.classList.toggle('closed'); s.querySelector('.toggle').textContent=s.classList.contains('closed')?'▶':'◀'}
 function go(p){page=p; search=''; render()}
-let navClosedGroups={};
+let navClosedGroups={'OPERAÇÃO':true,'LOGÍSTICA':true,'COMERCIAL':true,'CADASTROS':true,'SISTEMA':true};
 function toggleNavGroup(g){navClosedGroups[g]=!navClosedGroups[g];renderNav()}
 function renderNav(){
   const grupos=[...new Set(pages.map(p=>p[3]))];
