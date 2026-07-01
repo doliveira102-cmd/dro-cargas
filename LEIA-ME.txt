@@ -1,0 +1,19 @@
+DRO Cargas V10 Online
+
+Você já criou a tabela "cargas" no Supabase.
+
+Agora faça:
+1. Extraia este ZIP.
+2. Copie index.html e logo-dro-oficial.png para a pasta dro-cargas.
+3. Substitua os arquivos antigos.
+4. No GitHub Desktop faça commit e Push Origin.
+
+Commit sugerido:
+feat: conecta DRO Cargas ao banco online Supabase
+
+Como usar:
+- Abra primeiro no PC onde suas cargas aparecem.
+- Clique em "Enviar Nuvem" uma vez.
+- Depois abra no iPhone e clique em "Carregar Nuvem", se necessário.
+
+Daí em diante, as alterações salvam automaticamente na nuvem.
