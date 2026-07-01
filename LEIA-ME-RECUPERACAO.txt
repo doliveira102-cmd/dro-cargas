@@ -1,0 +1,13 @@
+DRO Cargas - Recuperação Estável
+
+Use este pacote para voltar para a última versão estável antes da tentativa de Supabase.
+
+Copie para a pasta dro-cargas:
+- index.html
+- logo-dro-oficial.png
+
+Depois faça commit e Push Origin.
+
+Importante:
+Abra primeiro no PC onde as cargas ainda apareciam.
+Os dados locais do navegador devem continuar lá, porque esta versão não apaga a base.
