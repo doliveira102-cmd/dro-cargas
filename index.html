@@ -321,6 +321,15 @@ img[src="logo-dro-oficial.png"],.logo-official{
 }
 .smartItem:last-child{border-bottom:0}
 
+
+/* ===== V8.1 - Botão Maps nos clientes ===== */
+.table a.btn.small{
+  text-decoration:none!important;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+
 </style>
 </head>
 <body>
@@ -490,7 +499,7 @@ function seedClientesLocalizacoes(){
       uf:c.uf||'',
       contato:'',
       cnpj:'',
-      localizacao:'',
+      localizacao:mapsLinkCliente(c.nome,city,c.observacoes),
       telefone:'',
       email:'',
       observacoes:c.observacoes||''
@@ -498,6 +507,51 @@ function seedClientesLocalizacoes(){
   });
   localStorage.setItem('DRO_CARGAS_V8_CLIENTES_LOCALIZACOES_OK','1');
   save();
+}
+
+
+// ===== V8.1 - Localização automática dos clientes =====
+function mapsLinkCliente(nome,cidade,obs){
+  const q=[nome,cidade,obs].filter(Boolean).join(' ');
+  return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);
+}
+
+// ===== V8.1 - Complemento clientes aba Localizações =====
+const CLIENTES_LOCALIZACOES_COMPLEMENTO=[{"cidade": "Lagoa Vermelha/RS", "uf": "RS", "nome": "Bocchi", "observacoes": "Clemente Argolo Bocchi Agrobios - Clemente Argolo"}, {"cidade": "Santo Expedito do Sul/RS", "uf": "RS", "nome": "Bocchi", "observacoes": "Bocchi Agro Bios"}, {"cidade": "Santo Antônio das Missões/RS", "uf": "RS", "nome": "Coopatrigo", "observacoes": "São José Novo Coopatrigo - São José Novo"}];
+function completarClientesLocalizacoesFaltantes(){
+  if(!db.clientes) db.clientes=[];
+  let changed=false;
+  CLIENTES_LOCALIZACOES_COMPLEMENTO.forEach(c=>{
+    const exists=db.clientes.some(x=>normalizeText(x.nome)===normalizeText(c.nome)&&normalizeText(x.cidade)===normalizeText(c.cidade)&&normalizeText(x.observacoes)===normalizeText(c.observacoes));
+    if(!exists){
+      db.clientes.push({
+        id:crypto.randomUUID(),
+        nome:c.nome,
+        cidade:c.cidade,
+        uf:c.uf,
+        contato:'',
+        cnpj:'',
+        localizacao:mapsLinkCliente(c.nome,c.cidade,c.observacoes),
+        telefone:'',
+        email:'',
+        observacoes:c.observacoes
+      });
+      changed=true;
+    }
+  });
+  if(changed) save();
+}
+
+function completarLocalizacoesClientes(){
+  if(!db.clientes) db.clientes=[];
+  let changed=false;
+  db.clientes.forEach(c=>{
+    if(!c.localizacao || !String(c.localizacao).trim()){
+      c.localizacao=mapsLinkCliente(c.nome,c.cidade,c.observacoes);
+      changed=true;
+    }
+  });
+  if(changed) save();
 }
 
 function sourceList(kind){
@@ -1052,7 +1106,7 @@ function simpleInputField(f,item){
     return `<div class="field span2"><label>${label}</label><textarea id="s_${f}">${value}</textarea></div>`;
   }
   if(f==='localizacao'){
-    return `<div class="field span2"><label>${label}</label><input id="s_${f}" value="${value}" placeholder="Cole o link do Google Maps, se tiver"></div>`;
+    return `<div class="field span2"><label>${label}</label><input id="s_${f}" value="${value}" placeholder="Cole o link do Google Maps ou deixe em branco para gerar automático"></div>`;
   }
   if(f==='veiculoId'){
     return `<div class="field"><label>${label}</label><select id="s_${f}"><option value="">Selecionar...</option>${(db.veiculos||[]).map(v=>`<option value="${v.id}" ${item[f]===v.id?'selected':''}>${escapeHtml((v.placaCavalo||v.placa||'')+' '+(v.placaCarreta||''))}</option>`).join('')}</select></div>`;
@@ -1077,18 +1131,30 @@ function editSimpleKey(key,id,title){
   editSimple(key,id,fields,title);
 }
 
+
+// ===== V8.1 - Filtro sem perder foco =====
+function filterSimplePageInput(input,key){
+  simpleFilters[key]=input.value;
+  const panel=input.closest('.panel');
+  if(!panel)return;
+  const q=normalizeText(input.value);
+  panel.querySelectorAll('tbody tr[data-search]').forEach(tr=>{
+    tr.style.display=!q || normalizeText(tr.dataset.search).includes(q) ? '' : 'none';
+  });
+}
+
 function simplePage(m,key,title,fields){
   SIMPLE_FIELDS[key]=fields;
   const filter=simpleFilters[key]||'';
-  const q=filter.toLowerCase();
-  const rows=(db[key]||[]).filter(i=>!q||fields.some(f=>String(i[f]||'').toLowerCase().includes(q))).sort((a,b)=>String(a.nome||a.placa||a.titulo||'').localeCompare(String(b.nome||b.placa||b.titulo||''),'pt-BR'));
-  const filterHtml=['clientes','motoristas','veiculos'].includes(key)?`<input class="search" placeholder="Filtrar ${title.toLowerCase()}..." value="${escapeHtml(filter)}" oninput="simpleFilters['${key}']=this.value;render()">`:'';
-  m.innerHTML=topHtml(title,'Cadastro')+`<div class="panel"><div class="toolbar"><div>${filterHtml}</div><button class="primary" onclick="openSimpleKey('${key}','${title}')">+ Novo</button></div><div class="tableWrap"><table class="table"><thead><tr>${fields.slice(0,6).map(f=>`<th>${niceLabel(f)}</th>`).join('')}<th>Ações</th></tr></thead><tbody>${rows.length?rows.map(i=>`<tr>${fields.slice(0,6).map(f=>`<td>${f==='localizacao'&&i[f]?`<a href="${i[f]}" target="_blank">Abrir Maps</a>`:escapeHtml(i[f]||'')}</td>`).join('')}<td><button class="btn small" onclick="editSimpleKey('${key}','${i.id}','${title}')">Editar</button> <button class="red small" onclick="delSimple('${key}','${i.id}')">Excluir</button></td></tr>`).join(''):'<tr><td colspan="7">Nenhum cadastro.</td></tr>'}</tbody></table></div></div>`
+  const q=normalizeText(filter);
+  const rows=(db[key]||[]).filter(i=>!q||fields.some(f=>normalizeText(i[f]||'').includes(q))).sort((a,b)=>String(a.nome||a.placa||a.titulo||'').localeCompare(String(b.nome||b.placa||b.titulo||''),'pt-BR'));
+  const filterHtml=['clientes','motoristas','veiculos'].includes(key)?`<input class="search" placeholder="Filtrar ${title.toLowerCase()}..." value="${escapeHtml(filter)}" oninput="filterSimplePageInput(this,'${key}')">`:'';
+  m.innerHTML=topHtml(title,'Cadastro')+`<div class="panel"><div class="toolbar"><div>${filterHtml}</div><button class="primary" onclick="openSimpleKey('${key}','${title}')">+ Novo</button></div><div class="tableWrap"><table class="table"><thead><tr>${fields.slice(0,6).map(f=>`<th>${niceLabel(f)}</th>`).join('')}<th>Ações</th></tr></thead><tbody>${rows.length?rows.map(i=>`<tr data-search="${escapeHtml(fields.map(f=>i[f]||'').join(' '))}">${fields.slice(0,6).map(f=>`<td>${f==='localizacao'&&i[f]?`<a class="btn small" href="${i[f]}" target="_blank">📍 Abrir Maps</a>`:escapeHtml(i[f]||'')}</td>`).join('')}<td><button class="btn small" onclick="editSimpleKey('${key}','${i.id}','${title}')">Editar</button> <button class="red small" onclick="delSimple('${key}','${i.id}')">Excluir</button></td></tr>`).join(''):'<tr><td colspan="7">Nenhum cadastro.</td></tr>'}</tbody></table></div></div>`
 }
 function openSimple(key,title,fields){openModal(`<h2>Novo ${title}</h2><div class="grid">${fields.map(f=>simpleInputField(f,{})).join('')}</div><br><button class="green" onclick="saveSimple('${key}',${JSON.stringify(fields).replaceAll('\"','&quot;')})">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button>`)}
 function editSimple(key,id,fields,title){let item=db[key].find(x=>x.id===id); if(!item)return; openModal(`<h2>Editar ${title}</h2><div class="grid">${fields.map(f=>simpleInputField(f,item)).join('')}</div><br><button class="green" onclick="updateSimple('${key}','${id}',${JSON.stringify(fields).replaceAll('\"','&quot;')})">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button>`)}
-function saveSimple(key,fields){let obj={id:crypto.randomUUID()}; fields.forEach(f=>obj[f]=document.getElementById('s_'+f).value); if(!db[key])db[key]=[]; db[key].push(obj); save(); closeModal(); render()}
-function updateSimple(key,id,fields){let obj=db[key].find(x=>x.id===id); if(!obj)return; fields.forEach(f=>obj[f]=document.getElementById('s_'+f).value); save(); closeModal(); render()}
+function saveSimple(key,fields){let obj={id:crypto.randomUUID()}; fields.forEach(f=>obj[f]=document.getElementById('s_'+f).value); if(key==='clientes' && !obj.localizacao)obj.localizacao=mapsLinkCliente(obj.nome,obj.cidade,obj.observacoes); if(!db[key])db[key]=[]; db[key].push(obj); save(); closeModal(); render()}
+function updateSimple(key,id,fields){let obj=db[key].find(x=>x.id===id); if(!obj)return; fields.forEach(f=>obj[f]=document.getElementById('s_'+f).value); if(key==='clientes' && !obj.localizacao)obj.localizacao=mapsLinkCliente(obj.nome,obj.cidade,obj.observacoes); save(); closeModal(); render()}
 function delSimple(key,id){if(confirm('Excluir cadastro?')){db[key]=db[key].filter(x=>x.id!==id); save(); render()}}
 function veiculoLabelById(id){let v=db.veiculos.find(x=>x.id===id); return v?`${v.placaCavalo||v.placa||''} / ${v.placaCarreta||''}`:''}
 function motoristaVeiculoRows(){
@@ -1205,6 +1271,8 @@ function addHist(cargaId,txt){db.historico.push({id:crypto.randomUUID(),cargaId,
 function backup(){let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'})); a.download='backup-dro-cargas.json'; a.click()}
 function restoreBackup(e){let f=e.target.files[0]; if(!f)return; let r=new FileReader(); r.onload=()=>{try{db=Object.assign(defaultDb(),JSON.parse(r.result)); normalize(); save(); alert('Backup restaurado.'); render()}catch(err){alert('Arquivo inválido')}}; r.readAsText(f)}
 seedClientesLocalizacoes();
+completarLocalizacoesClientes();
+completarClientesLocalizacoesFaltantes();
 if(sessionStorage.getItem('DRO_CARGAS_SESSAO')==='1'){document.getElementById('login').classList.remove('show');document.getElementById('login').style.display='none';page='dashboard';render();}else{document.getElementById('login').style.display='flex';document.getElementById('login').classList.add('show');}
 </script>
 </body></html>
