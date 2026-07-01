@@ -280,6 +280,47 @@ img[src="logo-dro-oficial.png"],.logo-official{
   border-radius:9px!important;
 }
 
+
+/* ===== V8.1 - Campos inteligentes com lupa/autocomplete ===== */
+.smartField{position:relative}
+.smartField input{
+  padding-left:36px!important;
+}
+.smartField:before{
+  content:"🔎";
+  position:absolute;
+  left:11px;
+  top:31px;
+  font-size:14px;
+  opacity:.75;
+  pointer-events:none;
+}
+.smartList{
+  position:absolute;
+  left:0;
+  right:0;
+  top:100%;
+  background:#08192d;
+  border:1px solid #1f3858;
+  border-radius:10px;
+  margin-top:4px;
+  z-index:999999;
+  max-height:220px;
+  overflow:auto;
+  box-shadow:0 18px 40px rgba(0,0,0,.35);
+  display:none;
+}
+.smartItem{
+  padding:9px 12px;
+  cursor:pointer;
+  color:#f4f8ff;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.smartItem:hover{
+  background:rgba(30,136,255,.18);
+}
+.smartItem:last-child{border-bottom:0}
+
 </style>
 </head>
 <body>
@@ -403,9 +444,87 @@ function cargasTable(rows,title){return `<div class="panel"><div class="toolbar"
 
 function openModal(html){document.getElementById('modalBox').innerHTML=html; document.getElementById('modal').classList.add('show')}
 function closeModal(){document.getElementById('modal').classList.remove('show')}
-function openCarga(id){let c=id?db.cargas.find(x=>x.id===id):{data:today(),margem:10,status:'Disponível'}; openModal(`<h2>${id?'Editar carga':'Nova carga'}</h2><div class="grid"><div class="field"><label>OP (automática se deixar em branco)</label><input id="op" value="${c.op||''}"></div><div class="field"><label>Cliente</label><input id="cliente" value="${c.cliente||''}"></div><div class="field"><label>Origem</label><input id="origem" value="${c.origem||''}"></div><div class="field"><label>Destino</label><input id="destino" value="${c.destino||''}"></div><div class="field"><label>Produto</label><input id="produto" value="${c.produto||''}"></div><div class="field"><label>Quantidade/Toneladas</label><input id="quantidade" value="${c.quantidade||''}"></div><div class="field"><label>Valor Empresa</label><input id="valorEmpresa" type="number" value="${c.valorEmpresa||''}" oninput="calcMot()"></div><div class="field"><label>Margem (%)</label><input id="margem" type="number" value="${c.margem??10}" oninput="calcMot()"></div><div class="field"><label>Valor Motorista</label><input id="valorMotorista" readonly value="${currency(c.valorMotorista||0)}"></div><div class="field"><label>Data Liberada</label><input id="data" type="date" value="${c.data||today()}"></div><div class="field"><label>Tipo Veículo</label><input id="tipoVeiculo" value="${c.tipoVeiculo||''}"></div><div class="field"><label>Status</label><select id="status">${['Disponível','Agendado','Manifestado','Carregado','Em trânsito','Finalizado'].map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field span2"><label>Observações</label><textarea id="obs">${c.obs||''}</textarea></div></div><div style="margin-top:14px"><button class="green" onclick="saveCarga('${id||''}')">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button></div>`); calcMot()}
+
+// ===== V8.1 - Bases inteligentes e autocomplete =====
+const CIDADES_BASE=[
+'Agudo/RS','Ajuricaba/RS','Alecrim/RS','Alegrete/RS','Alegria/RS','Almirante Tamandaré do Sul/RS','Alpestre/RS','Alto Alegre/RS','Alto Feliz/RS','Alvorada/RS','Ametista do Sul/RS','André da Rocha/RS','Anta Gorda/RS','Antônio Prado/RS','Aratiba/RS','Arroio do Meio/RS','Arroio do Sal/RS','Arroio do Tigre/RS','Arroio dos Ratos/RS','Arroio Grande/RS','Arvorezinha/RS','Augusto Pestana/RS','Áurea/RS','Bagé/RS','Barão de Cotegipe/RS','Barra do Guarita/RS','Barra do Ribeiro/RS','Barra do Rio Azul/RS','Barra Funda/RS','Barracão/RS','Barros Cassal/RS','Benjamin Constant do Sul/RS','Bento Gonçalves/RS','Boa Vista das Missões/RS','Boa Vista do Buricá/RS','Boa Vista do Cadeado/RS','Boa Vista do Incra/RS','Bom Jesus/RS','Bom Princípio/RS','Bom Progresso/RS','Boqueirão do Leão/RS','Bossoroca/RS','Braga/RS','Brochier/RS','Butiá/RS','Caçapava do Sul/RS','Cacequi/RS','Cachoeira do Sul/RS','Cachoeirinha/RS','Cacique Doble/RS','Caibaté/RS','Caiçara/RS','Camaquã/RS','Camargo/RS','Cambará do Sul/RS','Campina das Missões/RS','Campinas do Sul/RS','Campo Bom/RS','Campo Novo/RS','Campos Borges/RS','Candelária/RS','Cândido Godói/RS','Candiota/RS','Canela/RS','Canguçu/RS','Canoas/RS','Capão da Canoa/RS','Capão do Cipó/RS','Capão do Leão/RS','Capivari do Sul/RS','Carazinho/RS','Carlos Barbosa/RS','Carlos Gomes/RS','Casca/RS','Caseiros/RS','Catuípe/RS','Caxias do Sul/RS','Centenário/RS','Cerrito/RS','Cerro Branco/RS','Cerro Largo/RS','Chapada/RS','Charqueadas/RS','Charrua/RS','Chiapetta/RS','Chuí/RS','Chuvisca/RS','Cidreira/RS','Ciríaco/RS','Colinas/RS','Colorado/RS','Condor/RS','Constantina/RS','Coqueiros do Sul/RS','Coronel Barros/RS','Coronel Bicaco/RS','Coronel Pilar/RS','Cotiporã/RS','Crissiumal/RS','Cristal/RS','Cristal do Sul/RS','Cruz Alta/RS','Cruzaltense/RS','Cruzeiro do Sul/RS','David Canabarro/RS','Derrubadas/RS','Dezesseis de Novembro/RS','Dilermando de Aguiar/RS','Dois Irmãos/RS','Dois Irmãos das Missões/RS','Dois Lajeados/RS','Dom Feliciano/RS','Dom Pedrito/RS','Dona Francisca/RS','Doutor Maurício Cardoso/RS','Doutor Ricardo/RS','Eldorado do Sul/RS','Encantado/RS','Encruzilhada do Sul/RS','Engenho Velho/RS','Entre Rios do Sul/RS','Entre-Ijuís/RS','Erebango/RS','Erechim/RS','Ernestina/RS','Erval Grande/RS','Erval Seco/RS','Esmeralda/RS','Esperança do Sul/RS','Espumoso/RS','Estação/RS','Estância Velha/RS','Esteio/RS','Estrela/RS','Estrela Velha/RS','Eugênio de Castro/RS','Fagundes Varela/RS','Farroupilha/RS','Faxinal do Soturno/RS','Faxinalzinho/RS','Fazenda Vilanova/RS','Feliz/RS','Flores da Cunha/RS','Floriano Peixoto/RS','Fontoura Xavier/RS','Formigueiro/RS','Forquetinha/RS','Fortaleza dos Valos/RS','Frederico Westphalen/RS','Garibaldi/RS','Garruchos/RS','Gaurama/RS','General Câmara/RS','Gentil/RS','Getúlio Vargas/RS','Giruá/RS','Glorinha/RS','Gramado/RS','Gramado dos Loureiros/RS','Gramado Xavier/RS','Gravataí/RS','Guabiju/RS','Guaíba/RS','Guaporé/RS','Guarani das Missões/RS','Harmonia/RS','Herval/RS','Horizontina/RS','Hulha Negra/RS','Humaitá/RS','Ibarama/RS','Ibiaçá/RS','Ibiraiaras/RS','Ibirapuitã/RS','Ibirubá/RS','Igrejinha/RS','Ijuí/RS','Ilópolis/RS','Imbé/RS','Imigrante/RS','Independência/RS','Inhacorá/RS','Ipê/RS','Ipiranga do Sul/RS','Iraí/RS','Itaara/RS','Itacurubi/RS','Itapuca/RS','Itaqui/RS','Itati/RS','Itatiba do Sul/RS','Ivorá/RS','Ivoti/RS','Jaboticaba/RS','Jacuizinho/RS','Jacutinga/RS','Jaguarão/RS','Jaguari/RS','Jaquirana/RS','Jari/RS','Jóia/RS','Júlio de Castilhos/RS','Lagoa Bonita do Sul/RS','Lagoa dos Três Cantos/RS','Lagoa Vermelha/RS','Lagoão/RS','Lajeado/RS','Lajeado do Bugre/RS','Lavras do Sul/RS','Liberato Salzano/RS','Lindolfo Collor/RS','Linha Nova/RS','Maçambará/RS','Machadinho/RS','Mampituba/RS','Manoel Viana/RS','Maquiné/RS','Maratá/RS','Marau/RS','Marcelino Ramos/RS','Mariana Pimentel/RS','Mariano Moro/RS','Marques de Souza/RS','Mata/RS','Mato Castelhano/RS','Mato Leitão/RS','Mato Queimado/RS','Maximiliano de Almeida/RS','Minas do Leão/RS','Miraguaí/RS','Montauri/RS','Monte Alegre dos Campos/RS','Monte Belo do Sul/RS','Montenegro/RS','Mormaço/RS','Morrinhos do Sul/RS','Morro Redondo/RS','Morro Reuter/RS','Mostardas/RS','Muçum/RS','Muitos Capões/RS','Muliterno/RS','Não-Me-Toque/RS','Nicolau Vergueiro/RS','Nonoai/RS','Nova Alvorada/RS','Nova Araçá/RS','Nova Bassano/RS','Nova Boa Vista/RS','Nova Bréscia/RS','Nova Candelária/RS','Nova Esperança do Sul/RS','Nova Hartz/RS','Nova Pádua/RS','Nova Palma/RS','Nova Petrópolis/RS','Nova Prata/RS','Nova Ramada/RS','Nova Santa Rita/RS','Novo Barreiro/RS','Novo Hamburgo/RS','Novo Machado/RS','Novo Tiradentes/RS','Novo Xingu/RS','Osório/RS','Paim Filho/RS','Palmares do Sul/RS','Palmeira das Missões/RS','Palmitinho/RS','Panambi/RS','Pantano Grande/RS','Paraí/RS','Paraíso do Sul/RS','Pareci Novo/RS','Parobé/RS','Passa Sete/RS','Passo do Sobrado/RS','Passo Fundo/RS','Paulo Bento/RS','Paverama/RS','Pedras Altas/RS','Pedro Osório/RS','Pejuçara/RS','Pelotas/RS','Picada Café/RS','Pinhal/RS','Pinhal da Serra/RS','Pinhal Grande/RS','Pinheirinho do Vale/RS','Pinheiro Machado/RS','Pinto Bandeira/RS','Pirapó/RS','Piratini/RS','Planalto/RS','Poço das Antas/RS','Pontão/RS','Ponte Preta/RS','Portão/RS','Porto Alegre/RS','Porto Lucena/RS','Porto Mauá/RS','Porto Vera Cruz/RS','Porto Xavier/RS','Pouso Novo/RS','Presidente Lucena/RS','Progresso/RS','Protásio Alves/RS','Quaraí/RS','Quatro Irmãos/RS','Quevedos/RS','Quinze de Novembro/RS','Redentora/RS','Relvado/RS','Restinga Seca/RS','Rio dos Índios/RS','Rio Grande/RS','Rio Pardo/RS','Riozinho/RS','Roca Sales/RS','Rodeio Bonito/RS','Rolador/RS','Rolante/RS','Ronda Alta/RS','Rondinha/RS','Roque Gonzales/RS','Rosário do Sul/RS','Sagrada Família/RS','Saldanha Marinho/RS','Salto do Jacuí/RS','Salvador das Missões/RS','Salvador do Sul/RS','Sananduva/RS','Santa Bárbara do Sul/RS','Santa Cecília do Sul/RS','Santa Clara do Sul/RS','Santa Cruz do Sul/RS','Santa Margarida do Sul/RS','Santa Maria/RS','Santa Maria do Herval/RS','Santa Rosa/RS','Santa Tereza/RS','Santa Vitória do Palmar/RS','Santana da Boa Vista/RS','Santana do Livramento/RS','Santiago/RS','Santo Ângelo/RS','Santo Antônio da Patrulha/RS','Santo Antônio das Missões/RS','Santo Antônio do Palma/RS','Santo Antônio do Planalto/RS','Santo Augusto/RS','Santo Cristo/RS','Santo Expedito do Sul/RS','São Borja/RS','São Domingos do Sul/RS','São Francisco de Assis/RS','São Francisco de Paula/RS','São Gabriel/RS','São Jerônimo/RS','São João da Urtiga/RS','São João do Polêsine/RS','São Jorge/RS','São José das Missões/RS','São José do Herval/RS','São José do Hortêncio/RS','São José do Inhacorá/RS','São José do Norte/RS','São José do Ouro/RS','São José do Sul/RS','São José dos Ausentes/RS','São Leopoldo/RS','São Lourenço do Sul/RS','São Luiz Gonzaga/RS','São Marcos/RS','São Martinho/RS','São Martinho da Serra/RS','São Miguel das Missões/RS','São Nicolau/RS','São Paulo das Missões/RS','São Pedro da Serra/RS','São Pedro das Missões/RS','São Pedro do Butiá/RS','São Pedro do Sul/RS','São Sebastião do Caí/RS','São Sepé/RS','São Valentim/RS','São Valentim do Sul/RS','São Valério do Sul/RS','São Vendelino/RS','São Vicente do Sul/RS','Sapiranga/RS','Sapucaia do Sul/RS','Sarandi/RS','Seberi/RS','Sede Nova/RS','Segredo/RS','Selbach/RS','Senador Salgado Filho/RS','Sentinela do Sul/RS','Serafina Corrêa/RS','Sério/RS','Sertão/RS','Sertão Santana/RS','Sete de Setembro/RS','Severiano de Almeida/RS','Silveira Martins/RS','Sinimbu/RS','Sobradinho/RS','Soledade/RS','Tabaí/RS','Tapejara/RS','Tapera/RS','Tapes/RS','Taquara/RS','Taquari/RS','Taquaruçu do Sul/RS','Tavares/RS','Tenente Portela/RS','Terra de Areia/RS','Teutônia/RS','Tio Hugo/RS','Tiradentes do Sul/RS','Toropi/RS','Torres/RS','Tramandaí/RS','Travesseiro/RS','Três Arroios/RS','Três Cachoeiras/RS','Três Coroas/RS','Três de Maio/RS','Três Forquilhas/RS','Três Palmeiras/RS','Três Passos/RS','Trindade do Sul/RS','Triunfo/RS','Tucunduva/RS','Tunas/RS','Tupanci do Sul/RS','Tupanciretã/RS','Tupandi/RS','Tuparendi/RS','Turuçu/RS','Ubiretama/RS','União da Serra/RS','Unistalda/RS','Uruguaiana/RS','Vacaria/RS','Vale do Sol/RS','Vale Real/RS','Vale Verde/RS','Vanini/RS','Venâncio Aires/RS','Vera Cruz/RS','Veranópolis/RS','Vespasiano Corrêa/RS','Viadutos/RS','Viamão/RS','Vicente Dutra/RS','Victor Graeff/RS','Vila Flores/RS','Vila Lângaro/RS','Vila Maria/RS','Vila Nova do Sul/RS','Vista Alegre/RS','Vista Alegre do Prata/RS','Vista Gaúcha/RS','Vitória das Missões/RS','Westfália/RS','Xangri-lá/RS',
+'Chapecó/SC','São Miguel do Oeste/SC','Itajaí/SC','Joinville/SC','Blumenau/SC','Cascavel/PR','Curitiba/PR','Maringá/PR','Londrina/PR','Paranaguá/PR','Ponta Grossa/PR','Rondonópolis/MT','Cuiabá/MT','Campo Grande/MS','Dourados/MS','Goiânia/GO','Rio Verde/GO','Uberlândia/MG','São Paulo/SP','Santos/SP'
+];
+
+const CLIENTES_BASE=['Cargill','Bianchini','Bunge','Tergrasa','Cotribá','Cotrijal','Coopatrigo','Coopermil','Cotrisal','Cotricampo','Cotrimaio','Cotriguçu','Cvale','Camera','Agropan','Roos','Uggeri','Gold Grain','Master','Moinho Nordeste','Granja Pinheiros','Bocchi'];
+const PRODUTOS_BASE=['Soja','Milho','Trigo','Farelo de Soja','Arroz','Aveia','Canola','Sorgo','Fertilizante','Calcário'];
+const CAMINHOES_BASE=['Graneleiro LS','Graneleiro Bitrem','Graneleiro Rodotrem','Basculante LS','Basculante Bitrem','Basculante Rodotrem','Truck','Carreta 4º eixo','Vanderleia'];
+
+function normalizeText(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
+function uniqueList(arr){return [...new Set(arr.filter(Boolean).map(x=>String(x).trim()).filter(Boolean))]}
+function learnedList(kind){
+  let values=[];
+  try{
+    db.cargas.forEach(c=>{
+      if(kind==='clientes'){values.push(c.cliente,c.tomadorFrete,c.clienteOrigem,c.localDescarga)}
+      if(kind==='cidades'){values.push(c.origem,c.destino)}
+      if(kind==='produtos'){values.push(c.produto)}
+      if(kind==='caminhoes'){values.push(c.tipoVeiculo)}
+    });
+    db.clientes.forEach(c=>values.push(c.nome));
+  }catch(e){}
+  return uniqueList(values)
+}
+function sourceList(kind){
+  if(kind==='cidades')return uniqueList([...CIDADES_BASE,...learnedList('cidades')]);
+  if(kind==='clientes')return uniqueList([...CLIENTES_BASE,...learnedList('clientes')]);
+  if(kind==='produtos')return uniqueList([...PRODUTOS_BASE,...learnedList('produtos')]);
+  if(kind==='caminhoes')return uniqueList([...CAMINHOES_BASE,...learnedList('caminhoes')]);
+  return [];
+}
+function smartWrap(id,label,value,kind){
+  return `<div class="field smartField"><label>${label}</label><input id="${id}" value="${value||''}" autocomplete="off" data-smart="${kind}" oninput="showSmartList(this)" onfocus="showSmartList(this)"><div class="smartList" id="smart_${id}"></div></div>`
+}
+function showSmartList(input){
+  const list=document.getElementById('smart_'+input.id); if(!list)return;
+  const q=normalizeText(input.value);
+  const data=sourceList(input.dataset.smart);
+  const found=data.filter(x=>!q||normalizeText(x).includes(q)).slice(0,40);
+  list.innerHTML=found.map(x=>`<div class="smartItem" onclick="selectSmart('${input.id}',${JSON.stringify(x).replace(/"/g,'&quot;')})">${x}</div>`).join('');
+  list.style.display=found.length?'block':'none';
+}
+function selectSmart(id,value){
+  const input=document.getElementById(id); if(!input)return;
+  input.value=value;
+  const list=document.getElementById('smart_'+id); if(list)list.style.display='none';
+  input.dispatchEvent(new Event('change'));
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.smartField')){
+    document.querySelectorAll('.smartList').forEach(l=>l.style.display='none');
+  }
+});
+
+function openCarga(id){
+let c=id?db.cargas.find(x=>x.id===id):{data:today(),margem:10,status:'Disponível'};
+openModal(`<h2>${id?'Editar lote':'Novo lote'}</h2>
+<div class="grid">
+<div class="field"><label>OP (automática se deixar em branco)</label><input id="op" value="${c.op||''}"></div>
+${smartWrap('cliente','Tomador do Frete',c.cliente||c.tomadorFrete||'','clientes')}
+${smartWrap('origem','Origem',c.origem||'','cidades')}
+${smartWrap('destino','Destino',c.destino||'','cidades')}
+${smartWrap('clienteOrigem','Cliente de Origem',c.clienteOrigem||'','clientes')}
+${smartWrap('localDescarga','Local de Descarga',c.localDescarga||'','clientes')}
+${smartWrap('produto','Produto',c.produto||'','produtos')}
+<div class="field"><label>Quantidade/Toneladas</label><input id="quantidade" value="${c.quantidade||''}"></div>
+<div class="field"><label>Valor Empresa</label><input id="valorEmpresa" type="number" value="${c.valorEmpresa||''}" oninput="calcMot()"></div>
+<div class="field"><label>Margem (%)</label><input id="margem" type="number" value="${c.margem??10}" oninput="calcMot()"></div>
+<div class="field"><label>Valor Motorista</label><input id="valorMotorista" readonly value="${currency(c.valorMotorista||0)}"></div>
+<div class="field"><label>Data Liberada</label><input id="data" type="date" value="${c.data||today()}"></div>
+${smartWrap('tipoVeiculo','Tipo de Caminhão',c.tipoVeiculo||'','caminhoes')}
+<div class="field"><label>Status</label><select id="status">${['Disponível','Agendado','Manifestado','Carregado','Em trânsito','Finalizado'].map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}</select></div>
+<div class="field span2"><label>Observações</label><textarea id="obs">${c.obs||''}</textarea></div>
+</div>
+<div style="margin-top:14px"><button class="green" onclick="saveCarga('${id||''}')">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button></div>`);
+calcMot();
+}
 function calcMot(){let ve=Number(document.getElementById('valorEmpresa')?.value||0), mg=Number(document.getElementById('margem')?.value||0); let el=document.getElementById('valorMotorista'); if(el)el.value=currency(ve*(1-mg/100))}
-function saveCarga(id){let c=id?db.cargas.find(x=>x.id===id):{id:crypto.randomUUID(),op:document.getElementById('op').value||nextOp(),createdAt:Date.now()}; Object.assign(c,{op:document.getElementById('op').value||c.op||nextOp(),cliente:cliente.value,origem:origem.value,destino:destino.value,produto:produto.value,quantidade:quantidade.value,valorEmpresa:Number(valorEmpresa.value||0),margem:Number(margem.value||10),valorMotorista:Number(valorEmpresa.value||0)*(1-Number(margem.value||10)/100),data:data.value||today(),tipoVeiculo:tipoVeiculo.value,status:status.value,obs:obs.value}); if(!id){db.cargas.push(c); recordCotacao(c)} addHist(c.id,id?'Carga editada':'Carga criada'); closeModal(); render()}
+function saveCarga(id){let c=id?db.cargas.find(x=>x.id===id):{id:crypto.randomUUID(),op:document.getElementById('op').value||nextOp(),createdAt:Date.now()}; Object.assign(c,{op:document.getElementById('op').value||c.op||nextOp(),cliente:cliente.value,tomadorFrete:cliente.value,origem:origem.value,destino:destino.value,clienteOrigem:clienteOrigem.value,localDescarga:localDescarga.value,produto:produto.value,quantidade:quantidade.value,valorEmpresa:Number(valorEmpresa.value||0),margem:Number(margem.value||10),valorMotorista:Number(valorEmpresa.value||0)*(1-Number(margem.value||10)/100),data:data.value||today(),tipoVeiculo:tipoVeiculo.value,status:status.value,obs:obs.value}); if(!id){db.cargas.push(c); recordCotacao(c)} addHist(c.id,id?'Carga editada':'Carga criada'); closeModal(); render()}
 function delCarga(id){if(confirm('Excluir carga?')){db.cargas=db.cargas.filter(c=>c.id!==id);db.agendamentos=db.agendamentos.filter(a=>a.cargaId!==id);render()}}
 function dupCarga(id){let c=db.cargas.find(x=>x.id===id); if(!c)return; let n=Object.assign({},c,{id:crypto.randomUUID(),op:nextOp(),createdAt:Date.now(),status:'Disponível'}); db.cargas.push(n); recordCotacao(n); addHist(n.id,'Carga duplicada da OP '+c.op); render();}
 function detailsCarga(id){let c=db.cargas.find(x=>x.id===id); let hist=db.historico.filter(h=>h.cargaId===id); let ags=db.agendamentos.filter(a=>a.cargaId===id); let carregado=ags.length*32; let qtd=parseFloat(String(c.quantidade||'').replace(',','.'))||0; let saldo=qtd?Math.max(qtd-carregado,0):''; openModal(`<h2>OP ${c.op} — ${escapeHtml(c.cliente||'')}</h2><div class="sub" style="margin-top:-6px">${escapeHtml(c.origem||'')} ➜ ${escapeHtml(c.destino||'')}</div><div class="grid v8DetailGrid">${[['Produto',c.produto],['Status do Lote',c.status],['Valor Empresa',currency(c.valorEmpresa)],['Valor Motorista',currency(c.valorMotorista)],['Volume Total do Lote',c.quantidade||'-'],['Saldo a Carregar',saldo!==''?saldo+' ton':'-'],['Origem',c.origem],['Destino',c.destino],['Tipo de Caminhões',c.tipoVeiculo||'Não informado']].map(x=>`<div class="readonly"><small>${x[0]}</small><b>${x[1]||'-'}</b></div>`).join('')}<div class="readonly span2"><small>OBS</small><b>${escapeHtml(c.obs||'Sem observações')}</b></div><div class="readonly span2"><small>Histórico</small>${hist.length?hist.map(h=>`<div>${dateBR(h.data)} ${h.hora} - ${escapeHtml(h.txt)}</div>`).join(''):'Sem histórico'}</div></div><div style="margin-top:14px"><button class="btn" onclick="closeModal()">Fechar</button> <button class="primary" onclick="closeModal();openCarga('${id}')">Editar</button> <button class="green" onclick="closeModal();openAg('${id}')">Agendar</button> <button class="primary" onclick="closeModal();openOrderFromCarga('${id}')">ORDEM</button></div>`)}
