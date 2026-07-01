@@ -470,6 +470,36 @@ function learnedList(kind){
   }catch(e){}
   return uniqueList(values)
 }
+
+// ===== V8.1 - Base inicial de clientes importada da planilha LOCALIZAÇÕES =====
+const CLIENTES_LOCALIZACOES_SEED=[{"cidade": "Ipê", "uf": "RS", "nome": "Adir Carlos Dagnese", "observacoes": "Porteirinha Fazenda Dagnese"}, {"cidade": "Imbituba", "uf": "SC", "nome": "Adubos Coxilha", "observacoes": "Adubos Coxilha"}, {"cidade": "Bom Jesus", "uf": "RS", "nome": "Agrícola Dois Capões", "observacoes": "Fruticola Cesar (Mario da Rosa)"}, {"cidade": "Passo Fundo", "uf": "RS", "nome": "Agrícola Ferrari", "observacoes": "BR 285 Agricola Ferrari"}, {"cidade": "Machadinho", "uf": "RS", "nome": "Agrícola Grandi", "observacoes": "Agrícola Grandi"}, {"cidade": "Ronda Alta", "uf": "RS", "nome": "Agro Piva", "observacoes": "Silo AgroPiva"}, {"cidade": "Ronda Alta", "uf": "RS", "nome": "Agro Ronda", "observacoes": "AgroRonda"}, {"cidade": "Independência", "uf": "RS", "nome": "Agrofel", "observacoes": "AgroFel"}, {"cidade": "Passo Fundo", "uf": "RS", "nome": "Agrofel", "observacoes": "Agrofel"}, {"cidade": "Rio Pardo", "uf": "RS", "nome": "Agrofel", "observacoes": "Agrofel Graneleira Rio Pardo"}, {"cidade": "Caseiros", "uf": "RS", "nome": "Agronnova Cereais", "observacoes": "Agronnova Agroindustrial LTDA"}, {"cidade": "Catuípe", "uf": "RS", "nome": "Agropecuária Smaniotto", "observacoes": "Agropecuária Smaniotto"}, {"cidade": "Pejuçara", "uf": "RS", "nome": "Agropohl", "observacoes": "BR 153 Agropohl"}, {"cidade": "São Francisco de Paula", "uf": "RS", "nome": "Agrotécnica Soluções", "observacoes": "Silos Agrotécnica Soluções Agrícolas LTDA"}, {"cidade": "Capão Bonito do Sul", "uf": "RS", "nome": "Agrozem", "observacoes": "Agrozem"}, {"cidade": "Lagoa Vermelha", "uf": "RS", "nome": "Agrozem", "observacoes": "Em frente PRF Agrozem"}, {"cidade": "Lagoa Vermelha", "uf": "RS", "nome": "Agrozem", "observacoes": "Antiga Camila Agrozem Comércio e Armazenagem de Grãos Ltda"}, {"cidade": "André da Rocha", "uf": "RS", "nome": "Andre Cecchin", "observacoes": "Chimarrão ANDRE CECCHIN"}, {"cidade": "Barracão", "uf": "RS", "nome": "Anildo Pereira da Luz", "observacoes": "ANILDO PEREIRA DA LUZ"}, {"cidade": "Lagoa Vermelha", "uf": "RS", "nome": "Ari Monteiro", "observacoes": "Sede Argenta Fazenda Monteiro"}, {"cidade": "Anta Gorda", "uf": "RS", "nome": "BBS Basegio", "observacoes": "BBS Basegio"}, {"cidade": "São Francisco de Paula", "uf": "RS", "nome": "Belebas", "observacoes": "Grão da Serra / Grãos da Serra"}, {"cidade": "Trindade do Sul", "uf": "RS", "nome": "Bianchini", "observacoes": "Sede I Bianchini Agricultura e Pecuária - Sede 1"}, {"cidade": "Lagoa Vermelha", "uf": "RS", "nome": "Bocchi", "observacoes": "Clemente Argolo / Bocchi Agrobios - Clemente Argolo"}, {"cidade": "Lagoa Vermelha", "uf": "RS", "nome": "Bocchi", "observacoes": "BR 285 Bocchi Agrobios - Lagoa Vermelha"}, {"cidade": "Santo Expedito do Sul", "uf": "RS", "nome": "Bocchi", "observacoes": "Bocchi Agro Bios"}, {"cidade": "Esmeralda", "uf": "RS", "nome": "Bocchi", "observacoes": "Bocchi Agrobios"}, {"cidade": "Lagoa Vermelha", "uf": "RS", "nome": "Bocchi", "observacoes": "Tupinambá / Bocchi Agrobios Tupinambá"}, {"cidade": "Muitos Capões", "uf": "RS", "nome": "Bocchi", "observacoes": "BR 285 Bocchi Agrobios"}, {"cidade": "Lagoa Vermelha", "uf": "RS", "nome": "Bomba Grãos", "observacoes": "Felipe Bombassaro Bomba Grãos"}, {"cidade": "Marau", "uf": "RS", "nome": "BRF", "observacoes": "Cidade / BRF Rações"}, {"cidade": "Ijuí", "uf": "RS", "nome": "Camera Industrial", "observacoes": "Usina de Biodiesel Camera Ijuí"}, {"cidade": "Santo Ângelo", "uf": "RS", "nome": "Camera Industrial", "observacoes": "CAMERA - CASA BURITI"}, {"cidade": "Espumoso", "uf": "RS", "nome": "Capaz Agrícola", "observacoes": "CAPAZ SÃO DOMINGOS"}, {"cidade": "Soledade", "uf": "RS", "nome": "Capaz Agrícola", "observacoes": "Capaz Agrícola"}, {"cidade": "Ibiaçá", "uf": "RS", "nome": "Cereais Copelli", "observacoes": "Cereais Copelli"}, {"cidade": "Maximiliano de Almeida", "uf": "RS", "nome": "Cereais Maxilianense", "observacoes": "Cerealista Maximilianense - Compra e venda de grãos, venda de insumos e fertilizantes."}, {"cidade": "Tupanci do Sul", "uf": "RS", "nome": "Cereais Pontão", "observacoes": "Cereais Pontão"}, {"cidade": "Caseiros", "uf": "RS", "nome": "Cereais São Luis", "observacoes": "Cereais São Luís (Caseiros RS)"}, {"cidade": "Ajuricaba", "uf": "RS", "nome": "Cerealista Amigos da Terra", "observacoes": "Cerealista Amigos da Terra - CRAT"}, {"cidade": "André da Rocha", "uf": "RS", "nome": "Cerealista Frasson", "observacoes": "BR 470 Cerealista Frasson"}, {"cidade": "Vacaria", "uf": "RS", "nome": "Chapada Grãos", "observacoes": "BR 285, KM 235 Chapada Grãos"}, {"cidade": "Lagoa Vermelha", "uf": "RS", "nome": "Cleomar Jose Pietta", "observacoes": "Boqueirão Cleomar Jose Pietta"}, {"cidade": "Casca", "uf": "RS", "nome": "Coasa", "observacoes": "COASA | Unidade Casca"}, {"cidade": "Ciríaco", "uf": "RS", "nome": "Coasa", "observacoes": "COASA - Unidade Ciríaco"}, {"cidade": "Camargo", "uf": "RS", "nome": "Coasa", "observacoes": "COASA - Unidade Camargo"}, {"cidade": "Caseiros", "uf": "RS", "nome": "Coasa", "observacoes": "BR 285, KM 235 COASA - Unidade Caseiros"}, {"cidade": "Gentil", "uf": "RS", "nome": "Coasa", "observacoes": "COASA GENTIL"}, {"cidade": "Mato Castelhano", "uf": "RS", "nome": "Coasa", "observacoes": "COASA - Un. Mato Castelhano"}, {"cidade": "Santa Cecília do Sul", "uf": "RS", "nome": "Coasa", "observacoes": "COASA - Unidade Santa Cecília do Sul"}, {"cidade": "Tupanci do Sul", "uf": "RS", "nome": "Coasa Clemente Argolo", "observacoes": "COASA Tupanci do Sul"}, {"cidade": "Dom Pedrito", "uf": "RS", "nome": "Cobrarroz", "observacoes": "Cobrarroz - Comercial Brasileira de Arroz LTDA"}, {"cidade": "Ibiaçá", "uf": "RS", "nome": "Cofiume", "observacoes": "Cooperativa Agrícola Nova Fiume"}, {"cidade": "Bossoroca", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Unidade 1 Coopatrigo Bossoroca"}, {"cidade": "Bossoroca", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Unidade 2 Coopatrigo Bossoroca Unidade 2"}, {"cidade": "Caibaté", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Beira de pista / Coopatrigo - Unidade Caibaté"}, {"cidade": "Caibaté", "uf": "RS", "nome": "Coopatrigo", "observacoes": "20 km de chão / Coopatrigo - Unidade Vista Alegre"}, {"cidade": "Capão do Cipó", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Beira de pista / Coopatrigo Capão do Cipó"}, {"cidade": "Dezesseis de Novembro", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Coopatrigo - Unidade Dezesseis de Novembro"}, {"cidade": "Garruchos", "uf": "RS", "nome": "Coopatrigo", "observacoes": "40 km de chão / Coopatrigo - Unidade São José Velho"}, {"cidade": "Mato Queimado", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Coopatrigo - Unidade Mato Queimado"}, {"cidade": "Pirapó", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Coopatrigo - Unidade Pirapó"}, {"cidade": "Rolador", "uf": "RS", "nome": "Coopatrigo", "observacoes": "15 km de chão / Coopatrigo - Unidade Rolador"}, {"cidade": "Roque Gonzales", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Coopatrigo - Unidade Roque Gonzales"}, {"cidade": "Roque Gonzales", "uf": "RS", "nome": "Coopatrigo", "observacoes": "22 km de chão / COOPATRIGO RINCÃO VERMELHO"}, {"cidade": "Santiago", "uf": "RS", "nome": "Coopatrigo", "observacoes": "25 km de chão / Coopatrigo Santiago VL Florida (recebimento grãos)"}, {"cidade": "Santiago", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Beira de pista / Coopatrigo Santiago (recebimento de grãos)"}, {"cidade": "Santo Antônio das Missões", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Coopatrigo - São José Novo"}, {"cidade": "Santo Antônio das Missões", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Beira de pista / Coopatrigo - Unidade Rincão do Meio"}, {"cidade": "Santo Antônio das Missões", "uf": "RS", "nome": "Coopatrigo", "observacoes": "20 km de chão / Coopatrigo São Gregório"}, {"cidade": "Santo Antônio das Missões", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Cooperativa Tritícola Regional de São Luizense Ltda"}, {"cidade": "São Borja", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Beira de pista / Coopatrigo São Borja"}, {"cidade": "São Luiz Gonzaga", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Fábrica Agroindústria - Coopatrigo"}, {"cidade": "São Luiz Gonzaga", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Antiga CESA / Coopatrigo C.R.A.G"}, {"cidade": "São Luiz Gonzaga", "uf": "RS", "nome": "Coopatrigo", "observacoes": "10 km de chão / Coopatrigo São Lourenço"}, {"cidade": "São Nicolau", "uf": "RS", "nome": "Coopatrigo", "observacoes": "Cooperativa Tritícola Regional Sãoluizense Ltda"}, {"cidade": "Tapejara", "uf": "RS", "nome": "Cooperativa Aurora", "observacoes": "Unidade São Domingos Aurora Coop - Unidade São Domingos - FATA II"}, {"cidade": "Barracão", "uf": "RS", "nome": "Cooperativa Colheita", "observacoes": "Coop Colheita"}, {"cidade": "Campina das Missões", "uf": "RS", "nome": "Coopermil", "observacoes": "10 km de chão / Coopermil - Unidade de 8 de maio"}, {"cidade": "Cândido Godói", "uf": "RS", "nome": "Coopermil", "observacoes": "6 km de chão / COOPERMIL - Unidade Linha Acre"}, {"cidade": "Cândido Godói", "uf": "RS", "nome": "Coopermil", "observacoes": "COOPERMIL - Unidade Linha Timbaúva"}, {"cidade": "Cerro Largo", "uf": "RS", "nome": "Coopermil", "observacoes": "COOPERMIL"}, {"cidade": "Doutor Maurício Cardoso", "uf": "RS", "nome": "Coopermil", "observacoes": "Coopermil - Cooperativa Mista São Luiz Ltda"}, {"cidade": "Giruá", "uf": "RS", "nome": "Coopermil", "observacoes": "Coopermil"}, {"cidade": "Giruá", "uf": "RS", "nome": "Coopermil", "observacoes": "Mato Grande / Coopermil"}, {"cidade": "Guarani das Missões", "uf": "RS", "nome": "Coopermil", "observacoes": "10 km de chão / Coopermil"}, {"cidade": "Guarani das Missões", "uf": "RS", "nome": "Coopermil", "observacoes": "COOPERMIL Unidade de Recebimento Guarani das Missões"}, {"cidade": "Santa Rosa", "uf": "RS", "nome": "Coopermil", "observacoes": "Cooperativa Mista São Luiz Ltda (Coopermil)"}, {"cidade": "Santa Rosa", "uf": "RS", "nome": "Coopermil", "observacoes": "Cooperativa Mista São Luiz LTDA. Coopermil - Unidade Lajeado Ipê"}, {"cidade": "Santa Rosa", "uf": "RS", "nome": "Coopermil", "observacoes": "Coopermil Candeia | Agropecuária, Recebimento de Grãos e Fábrica de Rações"}, {"cidade": "Santa Rosa", "uf": "RS", "nome": "Coopermil", "observacoes": "20 km de chão / Coopermil Linha Boa Vista | Agropecuária e Recebimento de Grãos"}, {"cidade": "Santo Ângelo", "uf": "RS", "nome": "Coopermil", "observacoes": "Coopermil S/A"}, {"cidade": "Santo Cristo", "uf": "RS", "nome": "Coopermil", "observacoes": "Silo - Coopermil"}, {"cidade": "São Pedro do Butiá", "uf": "RS", "nome": "Coopermil", "observacoes": "Coopermil"}];
+function seedClientesLocalizacoes(){
+  if(localStorage.getItem('DRO_CARGAS_V8_CLIENTES_LOCALIZACOES_OK')) return;
+  if(!db.clientes) db.clientes=[];
+  CLIENTES_LOCALIZACOES_SEED.forEach(c=>{
+    const city = c.cidade ? `${c.cidade}/${c.uf||''}`.replace(/\/$/,'') : '';
+    const exists=db.clientes.some(x=>
+      normalizeText(x.nome)===normalizeText(c.nome) &&
+      normalizeText(x.cidade)===normalizeText(city) &&
+      normalizeText(x.observacoes)===normalizeText(c.observacoes)
+    );
+    if(!exists) db.clientes.push({
+      id:crypto.randomUUID(),
+      nome:c.nome||'',
+      cidade:city,
+      uf:c.uf||'',
+      contato:'',
+      cnpj:'',
+      localizacao:'',
+      telefone:'',
+      email:'',
+      observacoes:c.observacoes||''
+    });
+  });
+  localStorage.setItem('DRO_CARGAS_V8_CLIENTES_LOCALIZACOES_OK','1');
+  save();
+}
+
 function sourceList(kind){
   if(kind==='cidades')return uniqueList([...CIDADES_BASE,...learnedList('cidades')]);
   if(kind==='clientes')return uniqueList([...CLIENTES_BASE,...learnedList('clientes')]);
@@ -526,9 +556,46 @@ calcMot();
 function calcMot(){let ve=Number(document.getElementById('valorEmpresa')?.value||0), mg=Number(document.getElementById('margem')?.value||0); let el=document.getElementById('valorMotorista'); if(el)el.value=currency(ve*(1-mg/100))}
 function saveCarga(id){let c=id?db.cargas.find(x=>x.id===id):{id:crypto.randomUUID(),op:document.getElementById('op').value||nextOp(),createdAt:Date.now()}; Object.assign(c,{op:document.getElementById('op').value||c.op||nextOp(),cliente:cliente.value,tomadorFrete:cliente.value,origem:origem.value,destino:destino.value,clienteOrigem:clienteOrigem.value,localDescarga:localDescarga.value,produto:produto.value,quantidade:quantidade.value,valorEmpresa:Number(valorEmpresa.value||0),margem:Number(margem.value||10),valorMotorista:Number(valorEmpresa.value||0)*(1-Number(margem.value||10)/100),data:data.value||today(),tipoVeiculo:tipoVeiculo.value,status:status.value,obs:obs.value}); if(!id){db.cargas.push(c); recordCotacao(c)} addHist(c.id,id?'Carga editada':'Carga criada'); closeModal(); render()}
 function delCarga(id){if(confirm('Excluir carga?')){db.cargas=db.cargas.filter(c=>c.id!==id);db.agendamentos=db.agendamentos.filter(a=>a.cargaId!==id);render()}}
-function dupCarga(id){let c=db.cargas.find(x=>x.id===id); if(!c)return; let n=Object.assign({},c,{id:crypto.randomUUID(),op:nextOp(),createdAt:Date.now(),status:'Disponível'}); db.cargas.push(n); recordCotacao(n); addHist(n.id,'Carga duplicada da OP '+c.op); render();}
-function detailsCarga(id){let c=db.cargas.find(x=>x.id===id); let hist=db.historico.filter(h=>h.cargaId===id); let ags=db.agendamentos.filter(a=>a.cargaId===id); let carregado=ags.length*32; let qtd=parseFloat(String(c.quantidade||'').replace(',','.'))||0; let saldo=qtd?Math.max(qtd-carregado,0):''; openModal(`<h2>OP ${c.op} — ${escapeHtml(c.cliente||'')}</h2><div class="sub" style="margin-top:-6px">${escapeHtml(c.origem||'')} ➜ ${escapeHtml(c.destino||'')}</div><div class="grid v8DetailGrid">${[['Produto',c.produto],['Status do Lote',c.status],['Valor Empresa',currency(c.valorEmpresa)],['Valor Motorista',currency(c.valorMotorista)],['Volume Total do Lote',c.quantidade||'-'],['Saldo a Carregar',saldo!==''?saldo+' ton':'-'],['Origem',c.origem],['Destino',c.destino],['Tipo de Caminhões',c.tipoVeiculo||'Não informado']].map(x=>`<div class="readonly"><small>${x[0]}</small><b>${x[1]||'-'}</b></div>`).join('')}<div class="readonly span2"><small>OBS</small><b>${escapeHtml(c.obs||'Sem observações')}</b></div><div class="readonly span2"><small>Histórico</small>${hist.length?hist.map(h=>`<div>${dateBR(h.data)} ${h.hora} - ${escapeHtml(h.txt)}</div>`).join(''):'Sem histórico'}</div></div><div style="margin-top:14px"><button class="btn" onclick="closeModal()">Fechar</button> <button class="primary" onclick="closeModal();openCarga('${id}')">Editar</button> <button class="green" onclick="closeModal();openAg('${id}')">Agendar</button> <button class="primary" onclick="closeModal();openOrderFromCarga('${id}')">ORDEM</button></div>`)}
-
+function dupCarga(id){let c=db.cargas.find(x=>x.id===id); if(!c)return; let n=Object.assign({},c,{id:crypto.randomUUID(),op:nextOp(),createdAt:Date.now(),status:'Disponível'}); db.cargas.push(n); recordCotacao(n); addHist(n.id,'Carga duplicada da OP '+c.op); seedClientesLocalizacoes();
+render();}
+function detailsCarga(id){
+let c=db.cargas.find(x=>x.id===id); 
+let hist=db.historico.filter(h=>h.cargaId===id); 
+let ags=db.agendamentos.filter(a=>a.cargaId===id); 
+let carregado=ags.length*32; 
+let qtd=parseFloat(String(c.quantidade||'').replace(',','.'))||0; 
+let saldo=qtd?Math.max(qtd-carregado,0):'';
+const info=[
+ ['OP',c.op],
+ ['Tomador do Frete',c.cliente||c.tomadorFrete],
+ ['Origem',c.origem],
+ ['Cliente de Origem',c.clienteOrigem],
+ ['Destino',c.destino],
+ ['Local de Descarga',c.localDescarga],
+ ['Produto',c.produto],
+ ['Volume Total do Lote',c.quantidade||'-'],
+ ['Saldo a Carregar',saldo!==''?saldo+' ton':'-'],
+ ['Valor Empresa',currency(c.valorEmpresa)],
+ ['Margem',String(c.margem??'')+'%'],
+ ['Valor Motorista',currency(c.valorMotorista)],
+ ['Data Liberada',dateBR(c.data)],
+ ['Tipo de Caminhões',c.tipoVeiculo||'Não informado'],
+ ['Status do Lote',c.status]
+];
+openModal(`<h2>OP ${c.op} — ${escapeHtml(c.cliente||c.tomadorFrete||'')}</h2>
+<div class="sub" style="margin-top:-6px">${escapeHtml(c.origem||'')} ➜ ${escapeHtml(c.destino||'')}</div>
+<div class="grid v8DetailGrid">
+${info.map(x=>`<div class="readonly"><small>${x[0]}</small><b>${escapeHtml(x[1]||'-')}</b></div>`).join('')}
+<div class="readonly span2"><small>OBS</small><b>${escapeHtml(c.obs||'Sem observações')}</b></div>
+<div class="readonly span2"><small>Histórico</small>${hist.length?hist.map(h=>`<div>${dateBR(h.data)} ${h.hora} - ${escapeHtml(h.txt)}</div>`).join(''):'Sem histórico'}</div>
+</div>
+<div style="margin-top:14px">
+<button class="btn" onclick="closeModal()">Fechar</button>
+<button class="primary" onclick="closeModal();openCarga('${id}')">Editar</button>
+<button class="green" onclick="closeModal();openAg('${id}')">Agendar</button>
+<button class="primary" onclick="closeModal();openOrderFromCarga('${id}')">ORDEM</button>
+</div>`);
+}
 function openAg(id){let c=db.cargas.find(x=>x.id===id); let motors=db.motoristas||[]; openModal(`<h2>Agendar carga</h2><p><b>${c.op} - ${c.origem} x ${c.destino}</b></p><div class="grid"><div class="field"><label>Motorista cadastrado</label><select id="motorSel" onchange="fillMotor()"><option value="">Selecionar...</option>${motors.map(m=>`<option value="${m.id}">${m.nome||m.placa}</option>`).join('')}</select></div><div class="field"><label>Motorista</label><input id="mot" value=""></div><div class="field"><label>Placa</label><input id="placa" value=""></div><div class="field"><label>Telefone</label><input id="tel" value=""></div><div class="field"><label>Data</label><input id="dtAg" type="date" value="${today()}"></div><div class="field span2"><label>Observações</label><textarea id="obsAg"></textarea></div></div><div style="margin-top:14px"><button class="green" onclick="saveAg('${id}')">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button></div>`)}
 function fillMotor(){let m=db.motoristas.find(x=>x.id===motorSel.value); if(m){mot.value=m.nome||'';placa.value=m.placa||'';tel.value=m.telefone||''}}
 function saveAg(cargaId){let c=db.cargas.find(x=>x.id===cargaId); let a={id:crypto.randomUUID(),cargaId,motorista:mot.value,placa:placa.value,telefone:tel.value,data:dtAg.value,obs:obsAg.value}; db.agendamentos=db.agendamentos.filter(x=>x.cargaId!==cargaId); db.agendamentos.push(a); let mf=db.manifestos.find(m=>m.cargaId===cargaId); if(!mf)db.manifestos.push({id:crypto.randomUUID(),cargaId,agendamentoId:a.id,agendado:true,manifestado:false,carregado:false,transito:false,finalizado:false}); c.status='Agendado'; addHist(cargaId,'Motorista agendado: '+a.motorista); closeModal(); render()}
@@ -977,16 +1044,51 @@ function saveRascunho(){db.rascunho=document.getElementById('rascunhoTxt').value
 function clearRascunho(){if(confirm('Limpar todo o rascunho?')){db.rascunho=''; save(); render()}}
 function escapeHtml(v){return String(v??'').replace(/[&<>"]/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]))}
 function niceLabel(f){return ({nome:'Nome',nomeWhatsapp:'Nome no WhatsApp',cidade:'Cidade',municipio:'Município',uf:'UF',contato:'Contato',cnpj:'CNPJ',localizacao:'Localização (link)',telefone:'Telefone',email:'E-mail',observacoes:'Observações',placa:'Placa',placaCavalo:'Placa Cavalo',placaCarreta:'Placa Carreta / S. Reb.',tipo:'Tipo',motorista:'Motorista',situacao:'Situação',tipoVeiculo:'Tipo veículo',titulo:'Título',descricao:'Descrição',data:'Data',cpf:'CPF',rg:'RG',cnh:'CNH',veiculoId:'Veículo vinculado',proprietario:'Proprietário',cpfCnpjProprietario:'CPF/CNPJ Proprietário',rntrc:'RNTRC'}[f]||f)}
+
+function simpleInputField(f,item){
+  const value = escapeHtml(item[f]||'');
+  const label = niceLabel(f);
+  const smartKind = (f==='cidade'||f==='municipio') ? 'cidades' : (f==='nome' ? 'clientes' : '');
+  if(f==='observacoes'||f==='descricao'){
+    return `<div class="field span2"><label>${label}</label><textarea id="s_${f}">${value}</textarea></div>`;
+  }
+  if(f==='localizacao'){
+    return `<div class="field span2"><label>${label}</label><input id="s_${f}" value="${value}" placeholder="Cole o link do Google Maps, se tiver"></div>`;
+  }
+  if(f==='veiculoId'){
+    return `<div class="field"><label>${label}</label><select id="s_${f}"><option value="">Selecionar...</option>${(db.veiculos||[]).map(v=>`<option value="${v.id}" ${item[f]===v.id?'selected':''}>${escapeHtml((v.placaCavalo||v.placa||'')+' '+(v.placaCarreta||''))}</option>`).join('')}</select></div>`;
+  }
+  if(smartKind){
+    return `<div class="field smartField"><label>${label}</label><input id="s_${f}" value="${value}" autocomplete="off" data-smart="${smartKind}" oninput="showSmartList(this)" onfocus="showSmartList(this)"><div class="smartList" id="smart_s_${f}"></div></div>`;
+  }
+  return `<div class="field"><label>${label}</label><input id="s_${f}" value="${value}"></div>`;
+}
+
+
+const SIMPLE_FIELDS={
+  clientes:['nome','cidade','uf','contato','cnpj','localizacao','telefone','email','observacoes'],
+  agenda:['titulo','descricao','data']
+};
+function openSimpleKey(key,title){
+  const fields=SIMPLE_FIELDS[key]||['nome','cidade','uf','contato','cnpj','localizacao','telefone','email','observacoes'];
+  openSimple(key,title,fields);
+}
+function editSimpleKey(key,id,title){
+  const fields=SIMPLE_FIELDS[key]||['nome','cidade','uf','contato','cnpj','localizacao','telefone','email','observacoes'];
+  editSimple(key,id,fields,title);
+}
+
 function simplePage(m,key,title,fields){
+  SIMPLE_FIELDS[key]=fields;
   const filter=simpleFilters[key]||'';
   const q=filter.toLowerCase();
   const rows=(db[key]||[]).filter(i=>!q||fields.some(f=>String(i[f]||'').toLowerCase().includes(q))).sort((a,b)=>String(a.nome||a.placa||a.titulo||'').localeCompare(String(b.nome||b.placa||b.titulo||''),'pt-BR'));
   const filterHtml=['clientes','motoristas','veiculos'].includes(key)?`<input class="search" placeholder="Filtrar ${title.toLowerCase()}..." value="${escapeHtml(filter)}" oninput="simpleFilters['${key}']=this.value;render()">`:'';
-  m.innerHTML=topHtml(title,'Cadastro')+`<div class="panel"><div class="toolbar"><div>${filterHtml}</div><button class="primary" onclick="openSimple('${key}','${title}',${JSON.stringify(fields).replaceAll('"','&quot;')})">+ Novo</button></div><div class="tableWrap"><table class="table"><thead><tr>${fields.slice(0,6).map(f=>`<th>${niceLabel(f)}</th>`).join('')}<th>Ações</th></tr></thead><tbody>${rows.length?rows.map(i=>`<tr>${fields.slice(0,6).map(f=>`<td>${f==='localizacao'&&i[f]?`<a href="${i[f]}" target="_blank">Abrir Maps</a>`:escapeHtml(i[f]||'')}</td>`).join('')}<td><button class="btn small" onclick="editSimple('${key}','${i.id}',${JSON.stringify(fields).replaceAll('"','&quot;')},'${title}')">Editar</button> <button class="red small" onclick="delSimple('${key}','${i.id}')">Excluir</button></td></tr>`).join(''):'<tr><td colspan="7">Nenhum cadastro.</td></tr>'}</tbody></table></div></div>`
+  m.innerHTML=topHtml(title,'Cadastro')+`<div class="panel"><div class="toolbar"><div>${filterHtml}</div><button class="primary" onclick="openSimpleKey('${key}','${title}')">+ Novo</button></div><div class="tableWrap"><table class="table"><thead><tr>${fields.slice(0,6).map(f=>`<th>${niceLabel(f)}</th>`).join('')}<th>Ações</th></tr></thead><tbody>${rows.length?rows.map(i=>`<tr>${fields.slice(0,6).map(f=>`<td>${f==='localizacao'&&i[f]?`<a href="${i[f]}" target="_blank">Abrir Maps</a>`:escapeHtml(i[f]||'')}</td>`).join('')}<td><button class="btn small" onclick="editSimpleKey('${key}','${i.id}','${title}')">Editar</button> <button class="red small" onclick="delSimple('${key}','${i.id}')">Excluir</button></td></tr>`).join(''):'<tr><td colspan="7">Nenhum cadastro.</td></tr>'}</tbody></table></div></div>`
 }
 function openSimple(key,title,fields){openModal(`<h2>Novo ${title}</h2><div class="grid">${fields.map(f=>simpleInputField(f,{})).join('')}</div><br><button class="green" onclick="saveSimple('${key}',${JSON.stringify(fields).replaceAll('\"','&quot;')})">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button>`)}
 function editSimple(key,id,fields,title){let item=db[key].find(x=>x.id===id); if(!item)return; openModal(`<h2>Editar ${title}</h2><div class="grid">${fields.map(f=>simpleInputField(f,item)).join('')}</div><br><button class="green" onclick="updateSimple('${key}','${id}',${JSON.stringify(fields).replaceAll('\"','&quot;')})">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button>`)}
-function saveSimple(key,fields){let obj={id:crypto.randomUUID()}; fields.forEach(f=>obj[f]=document.getElementById('s_'+f).value); db[key].push(obj); save(); closeModal(); render()}
+function saveSimple(key,fields){let obj={id:crypto.randomUUID()}; fields.forEach(f=>obj[f]=document.getElementById('s_'+f).value); if(!db[key])db[key]=[]; db[key].push(obj); save(); closeModal(); render()}
 function updateSimple(key,id,fields){let obj=db[key].find(x=>x.id===id); if(!obj)return; fields.forEach(f=>obj[f]=document.getElementById('s_'+f).value); save(); closeModal(); render()}
 function delSimple(key,id){if(confirm('Excluir cadastro?')){db[key]=db[key].filter(x=>x.id!==id); save(); render()}}
 function veiculoLabelById(id){let v=db.veiculos.find(x=>x.id===id); return v?`${v.placaCavalo||v.placa||''} / ${v.placaCarreta||''}`:''}
@@ -1089,7 +1191,17 @@ function cotacaoPage(m){
   <div class="panel"><div class="tableWrap"><table class="table"><thead><tr><th>Data lançada</th><th>Origem</th><th>Destino</th><th>Produto</th><th>Cliente</th><th>Valor empresa</th></tr></thead><tbody>${rows.length?rows.map(r=>`<tr><td>${dateBR(r.dataLancada)}</td><td>${escapeHtml(r.origem||'')}</td><td>${escapeHtml(r.destino||'')}</td><td>${escapeHtml(r.produto||'')}</td><td>${escapeHtml(r.cliente||'')}</td><td><b>${currency(r.valorEmpresa)}</b></td></tr>`).join(''):'<tr><td colspan="6">Nenhuma cotação encontrada.</td></tr>'}</tbody></table></div></div>`
 }
 
-function reports(m){let totalTon=db.cargas.reduce((s,c)=>s+(parseFloat(String(c.quantidade).replace(',','.'))||0),0); m.innerHTML=topHtml('Relatórios','Resumo simples')+`<div class="cards"><div class="card">Cargas<b>${db.cargas.length}</b></div><div class="card">Toneladas aprox.<b>${totalTon}</b></div><div class="card">Anúncios<b>${db.anuncios.length}</b></div></div>`}
+function reports(m){
+let totalTon=db.cargas.reduce((s,c)=>s+(parseFloat(String(c.quantidade).replace(',','.'))||0),0);
+let placasAgendadas=uniqueList((db.agendamentos||[]).map(a=>a.placa)).length;
+let pesoAgendado=(db.agendamentos||[]).reduce((s,a)=>s+(parseFloat(String(a.peso||a.quantidade||a.volume||32).replace(',','.'))||32),0);
+m.innerHTML=topHtml('Relatórios','Resumo simples')+`<div class="cards">
+<div class="card">Cargas<b>${db.cargas.length}</b></div>
+<div class="card">Toneladas aprox.<b>${totalTon}</b></div>
+<div class="card">Placas agendadas<b>${placasAgendadas}</b></div>
+<div class="card">Peso agendado<b>${pesoAgendado} ton</b></div>
+</div>`;
+}
 function addHist(cargaId,txt){db.historico.push({id:crypto.randomUUID(),cargaId,txt,data:today(),hora:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})})}
 function backup(){let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'})); a.download='backup-dro-cargas.json'; a.click()}
 function restoreBackup(e){let f=e.target.files[0]; if(!f)return; let r=new FileReader(); r.onload=()=>{try{db=Object.assign(defaultDb(),JSON.parse(r.result)); normalize(); save(); alert('Backup restaurado.'); render()}catch(err){alert('Arquivo inválido')}}; r.readAsText(f)}
