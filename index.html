@@ -6,496 +6,89 @@
   <title>DRO Cargas V8</title>
   <style>
     :root{
-      --bg:#061323;
-      --panel:#0b1c32;
-      --panel2:#0f2744;
-      --line:#1e3554;
-      --text:#f4f8ff;
-      --muted:#9fb1c8;
-      --blue:#1e88ff;
-      --blue2:#075ee8;
-      --green:#22c55e;
-      --orange:#f59e0b;
-      --red:#ef4444;
-      --radius:12px;
-      --shadow:0 18px 44px rgba(0,0,0,.32);
+      --bg:#061323; --panel:#0b1c32; --panel2:#102947; --line:#1f3858;
+      --text:#f4f8ff; --muted:#9fb1c8; --blue:#1e88ff; --blue2:#075ee8;
+      --green:#22c55e; --orange:#f59e0b; --red:#ef4444; --shadow:0 18px 44px rgba(0,0,0,.34);
     }
-
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Inter,Segoe UI,Arial,sans-serif;
-      background:linear-gradient(135deg,#061323,#071d35);
-      color:var(--text);
-      font-size:14px;
-    }
+    body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:#061323;color:var(--text);font-size:14px}
 
-    .login{
-      min-height:100vh;
-      display:grid;
-      place-items:center;
-      background:
-        radial-gradient(circle at top left,rgba(30,136,255,.22),transparent 34%),
-        linear-gradient(135deg,#061323,#08213c 60%,#061323);
-      padding:24px;
-    }
+    .logo-box{display:flex;align-items:center;gap:9px}
+    .logo-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#1e88ff,#0b56d8);position:relative;box-shadow:inset -10px -10px 20px rgba(0,0,0,.16)}
+    .logo-icon:before{content:"D";position:absolute;left:9px;top:1px;font-size:32px;font-weight:900;font-style:italic;color:#061323;text-shadow:2px 0 #c9d7eb}
+    .logo-name{display:flex;align-items:center;gap:7px;font-weight:900;font-style:italic;letter-spacing:.7px}
+    .logo-name .dro{font-size:25px;color:#fff}
+    .logo-name .cargas{font-size:14px;background:#1688ff;color:#061323;padding:6px 12px;border-radius:4px 12px 12px 4px;letter-spacing:3px}
+    .logo-sub{margin-top:4px;color:#c3d0e4;font-size:10px}
 
-    .login-card{
-      width:100%;
-      max-width:420px;
-      background:rgba(10,28,50,.94);
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:34px;
-      box-shadow:var(--shadow);
-      animation:rise .35s ease;
-    }
-
-    @keyframes rise{
-      from{opacity:0;transform:translateY(14px)}
-      to{opacity:1;transform:translateY(0)}
-    }
-
-    .brand{text-align:center;margin-bottom:26px}
-    .brand img{
-      width:260px;
-      max-height:90px;
-      object-fit:contain;
-      margin-bottom:8px;
-    }
-
-    .brand p{
-      margin:6px 0 0;
-      color:var(--muted);
-      font-size:12px;
-    }
-
-    .field{margin-bottom:14px}
-    .field label{
-      display:block;
-      font-size:12px;
-      color:#cbd8ea;
-      margin-bottom:6px;
-      font-weight:600;
-    }
-
-    .field input{
-      width:100%;
-      height:43px;
-      border:1px solid var(--line);
-      border-radius:10px;
-      padding:0 12px;
-      background:#08192d;
-      color:var(--text);
-      outline:none;
-      font-size:14px;
-      transition:.2s;
-    }
-
-    .field input:focus{
-      border-color:var(--blue);
-      box-shadow:0 0 0 3px rgba(30,136,255,.15);
-    }
-
-    .login-btn{
-      width:100%;
-      height:44px;
-      border:0;
-      border-radius:11px;
-      background:linear-gradient(135deg,var(--blue),var(--blue2));
-      color:white;
-      font-weight:700;
-      cursor:pointer;
-      transition:.2s;
-      margin-top:8px;
-      font-size:14px;
-    }
-
-    .login-btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(30,136,255,.28)}
+    .login{min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at top left,rgba(30,136,255,.22),transparent 34%),linear-gradient(135deg,#061323,#08213c 60%,#061323);padding:24px}
+    .login-card{width:100%;max-width:430px;background:rgba(10,28,50,.94);border:1px solid var(--line);border-radius:22px;padding:34px;box-shadow:var(--shadow);animation:rise .35s ease}
+    @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    .login-logo{display:flex;flex-direction:column;align-items:center;margin-bottom:28px}
+    .login-logo .logo-icon{width:54px;height:54px}.login-logo .logo-icon:before{font-size:41px;left:12px}
+    .field{margin-bottom:14px}.field label{display:block;font-size:12px;color:#cbd8ea;margin-bottom:6px;font-weight:600}
+    .field input{width:100%;height:43px;border:1px solid var(--line);border-radius:10px;padding:0 12px;background:#08192d;color:var(--text);outline:none;font-size:14px}
+    .field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,136,255,.15)}
+    .login-btn{width:100%;height:44px;border:0;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:white;font-weight:700;cursor:pointer;margin-top:8px;font-size:14px}
     .version{text-align:center;color:#87a0bd;font-size:11px;margin-top:18px}
 
     .app{display:none;min-height:100vh}
-
-    .sidebar{
-      width:270px;
-      background:linear-gradient(180deg,#07172b,#061323);
-      color:white;
-      padding:18px 14px;
-      position:fixed;
-      inset:0 auto 0 0;
-      border-right:1px solid var(--line);
-      transition:.25s ease;
-      z-index:10;
-    }
-
+    .sidebar{width:270px;background:linear-gradient(180deg,#07172b,#061323);position:fixed;inset:0 auto 0 0;border-right:1px solid var(--line);padding:18px 14px;transition:.25s ease;z-index:10}
     .sidebar.collapsed{width:82px}
-    .sidebar.collapsed .nav-text,
-    .sidebar.collapsed .section-title,
-    .sidebar.collapsed .user-info,
-    .sidebar.collapsed .side-brand .logo-full{display:none}
-    .sidebar.collapsed .side-brand{justify-content:center}
-    .sidebar.collapsed .side-brand img{width:46px}
-    .sidebar.collapsed .nav-item{justify-content:center;padding:11px}
+    .sidebar.collapsed .nav-text,.sidebar.collapsed .section-title,.sidebar.collapsed .user-info,.sidebar.collapsed .logo-text{display:none}
+    .sidebar.collapsed .side-brand{justify-content:center}.sidebar.collapsed .nav-item{justify-content:center;padding:11px}
+    .side-brand{display:flex;align-items:center;gap:10px;padding:2px 6px 20px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:14px}
+    .toggle{position:absolute;right:-15px;top:22px;width:30px;height:30px;border:1px solid var(--line);border-radius:50%;background:#0b1c32;color:white;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+    .section-title{color:#36a2ff;font-size:11px;font-weight:700;letter-spacing:.6px;margin:17px 10px 7px}
+    .nav-item{position:relative;display:flex;align-items:center;gap:12px;min-height:39px;padding:10px 11px;margin:3px 0;color:#dbe8fb;border-radius:10px;text-decoration:none;transition:.2s ease;cursor:pointer;font-weight:500}
+    .nav-item::before{content:"";position:absolute;left:0;width:3px;height:0;border-radius:10px;background:var(--blue);transition:.2s}
+    .nav-item:hover,.nav-item.active{background:linear-gradient(90deg,rgba(30,136,255,.26),rgba(30,136,255,.08));color:white;transform:translateX(3px)}
+    .nav-item:hover::before,.nav-item.active::before{height:24px}
+    .nav-icon{width:22px;text-align:center}
+    .side-footer{position:absolute;left:14px;right:14px;bottom:14px;border-top:1px solid rgba(255,255,255,.08);padding-top:13px;display:flex;gap:10px;align-items:center}
+    .avatar{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#1e88ff,#075ee8);display:grid;place-items:center;font-weight:700;position:relative}
+    .avatar::after{content:"";width:9px;height:9px;background:#22c55e;border:2px solid #061323;border-radius:50%;position:absolute;right:-2px;bottom:-2px}
+    .user-info strong{font-size:13px;display:block}.user-info small{font-size:12px;color:#9fb4d0}
 
-    .side-brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:2px 6px 22px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      margin-bottom:14px;
-    }
+    .main{margin-left:270px;transition:.25s ease;min-height:100vh}.main.collapsed{margin-left:82px}
+    .topbar{height:68px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:5;background:rgba(6,19,35,.88);backdrop-filter:blur(14px)}
+    .search{width:min(520px,45vw);height:40px;border:1px solid var(--line);border-radius:11px;padding:0 14px;outline:none;color:var(--text);background:#08192d;font-size:14px}
+    .actions{display:flex;gap:10px;align-items:center}.btn{border:1px solid var(--line);background:#08192d;color:#eaf2ff;padding:9px 13px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer}.btn.primary{background:linear-gradient(135deg,var(--blue),var(--blue2));border-color:var(--blue);color:white}
+    .content{padding:24px}.page-title{margin-bottom:18px}.page-title h2{margin:0;font-size:28px;color:#fff;font-weight:700}.page-title p{margin:6px 0 0;color:#c3cfe0;font-size:14px}
+    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:22px}
+    .card{background:linear-gradient(180deg,rgba(15,39,68,.92),rgba(10,28,50,.92));border:1px solid var(--line);border-radius:12px;padding:18px 20px;box-shadow:var(--shadow);min-height:92px}
+    .card small{color:#dbe6f5;font-weight:600;font-size:14px}.card strong{display:block;font-size:30px;margin-top:7px;color:var(--blue);font-weight:700}.card.green strong{color:var(--green)}.card.orange strong{color:var(--orange)}.card.red strong{color:var(--red)}
+    .table-wrap{background:rgba(10,28,50,.88);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+    table{width:100%;border-collapse:collapse;font-size:14px}th{text-align:left;background:rgba(8,25,45,.96);color:#b6c6dc;font-size:13px;text-transform:uppercase;font-weight:600;padding:13px 12px;border-bottom:1px solid var(--line)}td{padding:13px 12px;border-bottom:1px solid rgba(255,255,255,.07);white-space:nowrap;font-weight:500}tbody tr:hover{background:rgba(30,136,255,.08);cursor:pointer}.op{width:52px;font-weight:700}.cliente{width:110px}.rota{min-width:330px}.rota .arrow{font-weight:700;color:var(--blue);padding:0 10px}.valor{font-weight:700}
+    .status-dot{width:13px;height:13px;border-radius:50%;display:inline-block}.blue{background:var(--blue);box-shadow:0 0 0 4px rgba(30,136,255,.12)}.orange{background:var(--orange);box-shadow:0 0 0 4px rgba(245,158,11,.14)}.red{background:var(--red);box-shadow:0 0 0 4px rgba(239,68,68,.14)}
+    .row-actions{display:flex;gap:8px}.mini{border:0;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer}.green{background:rgba(34,197,94,.20);color:#4ade80}.redb{background:rgba(239,68,68,.20);color:#ff6969}.gray{background:rgba(148,163,184,.16);color:#e2e8f0}.blueb{background:rgba(30,136,255,.25);color:#58aaff}
 
-    .side-brand img{
-      width:210px;
-      max-height:58px;
-      object-fit:contain;
-    }
+    .placeholder{display:none;background:rgba(10,28,50,.88);border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:var(--shadow)}
+    .placeholder h3{margin:0 0 8px;font-size:22px}.placeholder p{margin:0;color:#b6c6dc}
 
-    .toggle{
-      position:absolute;
-      right:-15px;
-      top:22px;
-      width:30px;
-      height:30px;
-      border:1px solid var(--line);
-      border-radius:50%;
-      background:#0b1c32;
-      color:white;
-      cursor:pointer;
-      box-shadow:0 4px 16px rgba(0,0,0,.35);
-    }
-
-    .section-title{
-      color:#36a2ff;
-      font-size:11px;
-      font-weight:700;
-      letter-spacing:.6px;
-      margin:17px 10px 7px;
-    }
-
-    .nav-item{
-      position:relative;
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-height:39px;
-      padding:10px 11px;
-      margin:3px 0;
-      color:#dbe8fb;
-      border-radius:10px;
-      text-decoration:none;
-      transition:.2s ease;
-      cursor:pointer;
-      font-weight:500;
-    }
-
-    .nav-item::before{
-      content:"";
-      position:absolute;
-      left:0;
-      width:3px;
-      height:0;
-      border-radius:10px;
-      background:var(--blue);
-      transition:.2s;
-    }
-
-    .nav-item:hover,
-    .nav-item.active{
-      background:linear-gradient(90deg,rgba(30,136,255,.26),rgba(30,136,255,.08));
-      color:white;
-      transform:translateX(3px);
-    }
-
-    .nav-item:hover::before,
-    .nav-item.active::before{height:24px}
-
-    .nav-icon{width:22px;text-align:center;transition:.2s}
-    .nav-item:hover .nav-icon{transform:scale(1.08)}
-
-    .side-footer{
-      position:absolute;
-      left:14px;
-      right:14px;
-      bottom:14px;
-      border-top:1px solid rgba(255,255,255,.08);
-      padding-top:13px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-
-    .avatar{
-      width:36px;
-      height:36px;
-      border-radius:11px;
-      background:linear-gradient(135deg,#1e88ff,#075ee8);
-      display:grid;
-      place-items:center;
-      font-weight:700;
-      position:relative;
-    }
-
-    .avatar::after{
-      content:"";
-      width:9px;
-      height:9px;
-      background:#22c55e;
-      border:2px solid #061323;
-      border-radius:50%;
-      position:absolute;
-      right:-2px;
-      bottom:-2px;
-    }
-
-    .user-info strong{font-size:13px;display:block}
-    .user-info small{font-size:12px;color:#9fb4d0}
-
-    .main{margin-left:270px;transition:.25s ease;min-height:100vh}
-    .main.collapsed{margin-left:82px}
-
-    .topbar{
-      height:68px;
-      border-bottom:1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:0 24px;
-      position:sticky;
-      top:0;
-      z-index:5;
-      background:rgba(6,19,35,.88);
-      backdrop-filter:blur(14px);
-    }
-
-    .search{
-      width:min(520px,45vw);
-      height:40px;
-      border:1px solid var(--line);
-      border-radius:11px;
-      padding:0 14px;
-      outline:none;
-      color:var(--text);
-      background:#08192d;
-      font-size:14px;
-    }
-
-    .actions{display:flex;gap:10px;align-items:center}
-    .btn{
-      border:1px solid var(--line);
-      background:#08192d;
-      color:#eaf2ff;
-      padding:9px 13px;
-      border-radius:10px;
-      font-size:13px;
-      font-weight:700;
-      cursor:pointer;
-      transition:.2s;
-    }
-    .btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.20)}
-    .btn.primary{background:linear-gradient(135deg,var(--blue),var(--blue2));border-color:var(--blue);color:white}
-
-    .content{padding:24px}
-    .page-title{margin-bottom:18px}
-    .page-title h2{margin:0;font-size:28px;color:#fff;font-weight:700}
-    .page-title p{margin:6px 0 0;color:#c3cfe0;font-size:14px}
-
-    .cards{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:18px;
-      margin-bottom:22px;
-    }
-
-    .card{
-      background:linear-gradient(180deg,rgba(15,39,68,.92),rgba(10,28,50,.92));
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:18px 20px;
-      box-shadow:var(--shadow);
-      position:relative;
-      min-height:92px;
-    }
-
-    .card small{color:#dbe6f5;font-weight:600;font-size:14px}
-    .card strong{display:block;font-size:30px;margin-top:7px;color:var(--blue);font-weight:700}
-    .card.green strong{color:var(--green)}
-    .card.orange strong{color:var(--orange)}
-    .card.red strong{color:var(--red)}
-
-    .table-wrap{
-      background:rgba(10,28,50,.88);
-      border:1px solid var(--line);
-      border-radius:14px;
-      overflow:hidden;
-      box-shadow:var(--shadow);
-    }
-
-    table{width:100%;border-collapse:collapse;font-size:14px}
-    th{
-      text-align:left;
-      background:rgba(8,25,45,.96);
-      color:#b6c6dc;
-      font-size:13px;
-      text-transform:uppercase;
-      font-weight:600;
-      padding:13px 12px;
-      border-bottom:1px solid var(--line);
-    }
-    td{
-      padding:13px 12px;
-      border-bottom:1px solid rgba(255,255,255,.07);
-      vertical-align:middle;
-      white-space:nowrap;
-      font-weight:500;
-    }
-    tbody tr{transition:.18s}
-    tbody tr:hover{
-      background:rgba(30,136,255,.08);
-      cursor:pointer;
-    }
-
-    .op{width:52px;font-weight:700}
-    .cliente{width:110px;font-weight:500}
-    .rota{font-weight:500;min-width:330px}
-    .rota .arrow{font-weight:700;color:var(--blue);padding:0 10px}
-    .valor{font-weight:700}
-    .status-dot{
-      width:13px;
-      height:13px;
-      border-radius:50%;
-      display:inline-block;
-      box-shadow:0 0 0 4px rgba(30,136,255,.12);
-    }
-    .blue{background:var(--blue)}
-    .orange{background:var(--orange);box-shadow:0 0 0 4px rgba(245,158,11,.14)}
-    .red{background:var(--red);box-shadow:0 0 0 4px rgba(239,68,68,.14)}
-
-    .row-actions{display:flex;gap:8px;align-items:center}
-    .mini{
-      border:0;
-      border-radius:8px;
-      padding:7px 11px;
-      font-size:13px;
-      font-weight:700;
-      cursor:pointer;
-    }
-    .mini.green{background:rgba(34,197,94,.20);color:#4ade80}
-    .mini.redb{background:rgba(239,68,68,.20);color:#ff6969}
-    .mini.gray{background:rgba(148,163,184,.16);color:#e2e8f0}
-    .mini.blueb{background:rgba(30,136,255,.25);color:#58aaff}
-
-    .modal{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.62);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:50;
-      padding:20px;
-    }
-
-    .modal-card{
-      width:min(880px,96vw);
-      background:#0b1c32;
-      border:1px solid var(--line);
-      border-radius:18px;
-      box-shadow:0 40px 90px rgba(0,0,0,.45);
-      overflow:hidden;
-      animation:rise .25s ease;
-    }
-
-    .modal-head{
-      padding:18px 22px;
-      background:#07192f;
-      color:white;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      border-bottom:1px solid var(--line);
-    }
-
-    .modal-head h3{margin:0;font-size:20px;font-weight:700}
-    .modal-head small{color:#c4d3e7;font-size:14px}
-    .close{
-      border:1px solid var(--line);
-      background:#0f2744;
-      color:white;
-      width:36px;
-      height:36px;
-      border-radius:10px;
-      cursor:pointer;
-      font-size:22px;
-    }
-
-    .modal-body{
-      padding:20px;
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:12px;
-    }
-
-    .info{
-      background:#0e223b;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:13px;
-      min-height:70px;
-    }
-    .info.wide{grid-column:span 2}
-    .info.full{grid-column:1/-1}
-    .info small{color:#9fb1c8;font-weight:600;display:block;margin-bottom:6px}
-    .info strong{font-size:15px;font-weight:500}
-
-    .footer{
-      display:flex;
-      justify-content:space-between;
-      padding:16px 24px;
-      color:#8798ad;
-      border-top:1px solid rgba(255,255,255,.06);
-      font-size:13px;
-    }
-
-    @media(max-width:1000px){
-      .cards{grid-template-columns:repeat(2,1fr)}
-      .sidebar{width:82px}
-      .sidebar .nav-text,.sidebar .section-title,.sidebar .user-info,.sidebar .side-brand .logo-full{display:none}
-      .side-brand img{width:46px}
-      .main{margin-left:82px}
-      .actions .btn:not(.primary){display:none}
-    }
-
-    @media(max-width:720px){
-      .cards{grid-template-columns:1fr}
-      .content{padding:15px}
-      .search{width:52vw}
-      table{min-width:980px}
-      .table-wrap{overflow:auto}
-      .modal-body{grid-template-columns:1fr}
-      .info.wide,.info.full{grid-column:auto}
-    }
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+    .modal-card{width:min(880px,96vw);background:#0b1c32;border:1px solid var(--line);border-radius:18px;box-shadow:0 40px 90px rgba(0,0,0,.45);overflow:hidden;animation:rise .25s ease}
+    .modal-head{padding:18px 22px;background:#07192f;color:white;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
+    .modal-head h3{margin:0;font-size:20px;font-weight:700}.modal-head small{color:#c4d3e7;font-size:14px}.close{border:1px solid var(--line);background:#0f2744;color:white;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:22px}
+    .modal-body{padding:20px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    .info{background:#0e223b;border:1px solid var(--line);border-radius:12px;padding:13px;min-height:70px}.info.full{grid-column:1/-1}.info small{color:#9fb1c8;font-weight:600;display:block;margin-bottom:6px}.info strong{font-size:15px;font-weight:500}
+    .footer{display:flex;justify-content:space-between;padding:16px 24px;color:#8798ad;border-top:1px solid rgba(255,255,255,.06);font-size:13px}
   </style>
 </head>
 <body>
   <section class="login" id="loginScreen">
     <div class="login-card">
-      <div class="brand">
-        <img src="logo-dro-cargas.png" alt="DRO Cargas">
-        <p>Gestão completa. Rotas que conectam.</p>
+      <div class="login-logo">
+        <div class="logo-box">
+          <div class="logo-icon"></div>
+          <div class="logo-text">
+            <div class="logo-name"><span class="dro">DRO</span><span class="cargas">CARGAS</span></div>
+            <div class="logo-sub">Gestão completa. Rotas que conectam.</div>
+          </div>
+        </div>
       </div>
-
-      <div class="field">
-        <label>Usuário</label>
-        <input placeholder="Digite seu usuário" value="Diego Oliveira" />
-      </div>
-
-      <div class="field">
-        <label>Senha</label>
-        <input type="password" placeholder="Digite sua senha" value="123456" />
-      </div>
-
+      <div class="field"><label>Usuário</label><input value="Diego Oliveira" /></div>
+      <div class="field"><label>Senha</label><input type="password" value="123456" /></div>
       <button class="login-btn" onclick="entrar()">Entrar</button>
       <div class="version">DRO Cargas v8.0</div>
     </div>
@@ -503,10 +96,13 @@
 
   <section class="app" id="appScreen">
     <aside class="sidebar" id="sidebar">
-      <button class="toggle" onclick="toggleMenu()">↔</button>
-
+      <button class="toggle" onclick="toggleMenu()" title="Recolher/expandir">↔</button>
       <div class="side-brand">
-        <img src="logo-dro-cargas.png" alt="DRO Cargas" class="logo-full">
+        <div class="logo-icon"></div>
+        <div class="logo-text">
+          <div class="logo-name"><span class="dro">DRO</span><span class="cargas">CARGAS</span></div>
+          <div class="logo-sub">Gestão completa. Rotas que conectam.</div>
+        </div>
       </div>
 
       <nav>
@@ -515,21 +111,17 @@
         <a class="nav-item" data-page="Cargas"><span class="nav-icon">▣</span><span class="nav-text">Cargas</span></a>
         <a class="nav-item" data-page="Agenda"><span class="nav-icon">▤</span><span class="nav-text">Agenda</span></a>
         <a class="nav-item" data-page="Rascunhos"><span class="nav-icon">✎</span><span class="nav-text">Rascunhos</span></a>
-
         <div class="section-title">LOGÍSTICA</div>
         <a class="nav-item" data-page="Agendamentos"><span class="nav-icon">▰</span><span class="nav-text">Agendamentos</span></a>
         <a class="nav-item" data-page="Manifestos"><span class="nav-icon">▧</span><span class="nav-text">Manifestos</span></a>
         <a class="nav-item" data-page="ORDEM"><span class="nav-icon">▣</span><span class="nav-text">ORDEM</span></a>
-
         <div class="section-title">COMERCIAL</div>
         <a class="nav-item" data-page="Cotação"><span class="nav-icon">$</span><span class="nav-text">Cotação</span></a>
         <a class="nav-item" data-page="Anúncios"><span class="nav-icon">↗</span><span class="nav-text">Anúncios</span></a>
-
         <div class="section-title">CADASTROS</div>
         <a class="nav-item" data-page="Clientes"><span class="nav-icon">◎</span><span class="nav-text">Clientes</span></a>
         <a class="nav-item" data-page="Motoristas"><span class="nav-icon">♙</span><span class="nav-text">Motoristas</span></a>
         <a class="nav-item" data-page="Veículos"><span class="nav-icon">▰</span><span class="nav-text">Veículos</span></a>
-
         <div class="section-title">SISTEMA</div>
         <a class="nav-item" data-page="Relatórios"><span class="nav-icon">▥</span><span class="nav-text">Relatórios</span></a>
         <a class="nav-item" data-page="Configurações"><span class="nav-icon">⚙</span><span class="nav-text">Configurações</span></a>
@@ -537,157 +129,91 @@
 
       <div class="side-footer">
         <div class="avatar">DO</div>
-        <div class="user-info">
-          <strong>Diego Oliveira</strong>
-          <small>Administrador</small>
-        </div>
+        <div class="user-info"><strong>Diego Oliveira</strong><small>Administrador</small></div>
       </div>
     </aside>
 
     <main class="main" id="main">
       <header class="topbar">
         <input class="search" id="searchInput" placeholder="Pesquisar OP, cliente, rota ou produto..." oninput="filtrarTabela()" />
-        <div class="actions">
-          <button class="btn">☁ Backup</button>
-          <button class="btn">⇩ Importar</button>
-          <button class="btn primary">+ Nova Carga</button>
-        </div>
+        <div class="actions"><button class="btn">☁ Backup</button><button class="btn">⇩ Importar</button><button class="btn primary">+ Nova Carga</button></div>
       </header>
 
       <div class="content">
-        <div class="page-title">
-          <h2 id="pageTitle">Dashboard</h2>
-          <p id="pageSubtitle">Visão rápida dos lotes e fretes ativos.</p>
+        <div class="page-title"><h2 id="pageTitle">Dashboard</h2><p id="pageSubtitle">Visão rápida dos lotes e fretes ativos.</p></div>
+
+        <div id="dashboardContent">
+          <section class="cards">
+            <div class="card"><small>Cargas ativas</small><strong>18</strong></div>
+            <div class="card green"><small>Disponíveis</small><strong>12</strong></div>
+            <div class="card orange"><small>Suspensas</small><strong>03</strong></div>
+            <div class="card red"><small>Encerradas</small><strong>07</strong></div>
+          </section>
+          <section class="table-wrap">
+            <table><thead><tr><th>OP</th><th>Cliente</th><th>Rota</th><th>Produto</th><th>Valor Motorista</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead>
+              <tbody id="tbody">
+                <tr onclick="abrirLote()"><td class="op">040</td><td class="cliente">BOCCHI</td><td class="rota">Cruz Alta/RS <span class="arrow">➜</span> Rio Grande/RS</td><td>Farelo de Soja</td><td class="valor">R$ 126,00</td><td>30/06/26</td><td><span class="status-dot blue"></span></td><td><div class="row-actions" onclick="event.stopPropagation()"><button class="mini green">Agendar</button><button class="mini redb">Excluir</button><button class="mini gray">Editar</button><button class="mini blueb">ORDEM</button></div></td></tr>
+                <tr onclick="abrirLote()"><td class="op">041</td><td class="cliente">TERGRASA</td><td class="rota">Ijuí/RS <span class="arrow">➜</span> Canoas/RS</td><td>Trigo</td><td class="valor">R$ 118,00</td><td>30/06/26</td><td><span class="status-dot orange"></span></td><td><div class="row-actions" onclick="event.stopPropagation()"><button class="mini green">Agendar</button><button class="mini redb">Excluir</button><button class="mini gray">Editar</button><button class="mini blueb">ORDEM</button></div></td></tr>
+                <tr onclick="abrirLote()"><td class="op">042</td><td class="cliente">BUNGE</td><td class="rota">Santo Ângelo/RS <span class="arrow">➜</span> Rio Grande/RS</td><td>Soja</td><td class="valor">R$ 132,00</td><td>29/06/26</td><td><span class="status-dot red"></span></td><td><div class="row-actions" onclick="event.stopPropagation()"><button class="mini green">Agendar</button><button class="mini redb">Excluir</button><button class="mini gray">Editar</button><button class="mini blueb">ORDEM</button></div></td></tr>
+              </tbody>
+            </table>
+          </section>
         </div>
 
-        <section class="cards">
-          <div class="card"><small>Cargas ativas</small><strong>18</strong></div>
-          <div class="card green"><small>Disponíveis</small><strong>12</strong></div>
-          <div class="card orange"><small>Suspensas</small><strong>03</strong></div>
-          <div class="card red"><small>Encerradas</small><strong>07</strong></div>
-        </section>
-
-        <section class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>OP</th>
-                <th>Cliente</th>
-                <th>Rota</th>
-                <th>Produto</th>
-                <th>Valor Motorista</th>
-                <th>Data</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="tbody">
-              <tr onclick="abrirLote()">
-                <td class="op">040</td>
-                <td class="cliente">BOCCHI</td>
-                <td class="rota">Cruz Alta/RS <span class="arrow">➜</span> Rio Grande/RS</td>
-                <td>Farelo de Soja</td>
-                <td class="valor">R$ 126,00</td>
-                <td>30/06/26</td>
-                <td><span class="status-dot blue" title="Disponível"></span></td>
-                <td><div class="row-actions" onclick="event.stopPropagation()"><button class="mini green">Agendar</button><button class="mini redb">Excluir</button><button class="mini gray">Editar</button><button class="mini blueb">ORDEM</button></div></td>
-              </tr>
-              <tr onclick="abrirLote()">
-                <td class="op">041</td>
-                <td class="cliente">TERGRASA</td>
-                <td class="rota">Ijuí/RS <span class="arrow">➜</span> Canoas/RS</td>
-                <td>Trigo</td>
-                <td class="valor">R$ 118,00</td>
-                <td>30/06/26</td>
-                <td><span class="status-dot orange" title="Suspenso"></span></td>
-                <td><div class="row-actions" onclick="event.stopPropagation()"><button class="mini green">Agendar</button><button class="mini redb">Excluir</button><button class="mini gray">Editar</button><button class="mini blueb">ORDEM</button></div></td>
-              </tr>
-              <tr onclick="abrirLote()">
-                <td class="op">042</td>
-                <td class="cliente">BUNGE</td>
-                <td class="rota">Santo Ângelo/RS <span class="arrow">➜</span> Rio Grande/RS</td>
-                <td>Soja</td>
-                <td class="valor">R$ 132,00</td>
-                <td>29/06/26</td>
-                <td><span class="status-dot red" title="Encerrado/Cancelado"></span></td>
-                <td><div class="row-actions" onclick="event.stopPropagation()"><button class="mini green">Agendar</button><button class="mini redb">Excluir</button><button class="mini gray">Editar</button><button class="mini blueb">ORDEM</button></div></td>
-              </tr>
-              <tr onclick="abrirLote()">
-                <td class="op">043</td>
-                <td class="cliente">COTRIGUAÇU</td>
-                <td class="rota">Palmeira das Missões/RS <span class="arrow">➜</span> Canoas/RS</td>
-                <td>Milho</td>
-                <td class="valor">R$ 145,00</td>
-                <td>29/06/26</td>
-                <td><span class="status-dot blue" title="Disponível"></span></td>
-                <td><div class="row-actions" onclick="event.stopPropagation()"><button class="mini green">Agendar</button><button class="mini redb">Excluir</button><button class="mini gray">Editar</button><button class="mini blueb">ORDEM</button></div></td>
-              </tr>
-            </tbody>
-          </table>
+        <section class="placeholder" id="placeholder">
+          <h3 id="placeholderTitle"></h3>
+          <p>Esta área já navega corretamente. Na próxima etapa colocamos aqui a tela real deste módulo seguindo o padrão V8.</p>
         </section>
       </div>
 
-      <footer class="footer">
-        <span>DRO Cargas <b style="color:#1e88ff">v8.0</b></span>
-        <span>© DRO Cargas — Gestão completa. Rotas que conectam.</span>
-      </footer>
+      <footer class="footer"><span>DRO Cargas <b style="color:#1e88ff">v8.0</b></span><span>© DRO Cargas — Gestão completa. Rotas que conectam.</span></footer>
     </main>
   </section>
 
   <div class="modal" id="modal">
     <div class="modal-card">
-      <div class="modal-head">
-        <div>
-          <h3>OP 040 — BOCCHI</h3>
-          <small>Cruz Alta/RS ➜ Rio Grande/RS</small>
-        </div>
-        <button class="close" onclick="fecharLote()">×</button>
-      </div>
+      <div class="modal-head"><div><h3>OP 040 — BOCCHI</h3><small>Cruz Alta/RS ➜ Rio Grande/RS</small></div><button class="close" onclick="fecharLote()">×</button></div>
       <div class="modal-body">
         <div class="info"><small>Produto</small><strong>Farelo de Soja</strong></div>
-        <div class="info"><small>Status</small><strong>Disponível</strong></div>
+        <div class="info"><small>Status do Lote</small><strong>Disponível</strong></div>
         <div class="info"><small>Valor Empresa</small><strong>R$ 140,00</strong></div>
         <div class="info"><small>Valor Motorista</small><strong>R$ 126,00</strong></div>
+        <div class="info"><small>Volume Total do Lote</small><strong>340 ton</strong></div>
+        <div class="info"><small>Saldo a Carregar</small><strong>340 ton</strong></div>
         <div class="info"><small>Origem</small><strong>Cruz Alta/RS</strong></div>
         <div class="info"><small>Destino</small><strong>Rio Grande/RS</strong></div>
-        <div class="info"><small>Motorista</small><strong>A definir</strong></div>
-        <div class="info"><small>Tipo de Caminhões</small><strong>Graneleiro (06 eixos)</strong></div>
-        <div class="info full"><small>OBS</small><strong>Carregar manhã. Preferência por veículos basculantes.</strong></div>
+        <div class="info"><small>Tipo de Caminhões</small><strong>Graneleiro / Basculante / LS / Bitrem</strong></div>
+        <div class="info full"><small>OBS</small><strong>Lote com volume total. Pode carregar vários caminhões até consumir o saldo. Encerrar apenas quando o volume for totalmente atendido ou cancelado manualmente.</strong></div>
       </div>
     </div>
   </div>
 
   <script>
-    function entrar(){
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('appScreen').style.display = 'block';
-    }
-
-    function toggleMenu(){
-      document.getElementById('sidebar').classList.toggle('collapsed');
-      document.getElementById('main').classList.toggle('collapsed');
-    }
-
-    function abrirLote(){document.getElementById('modal').style.display = 'flex'}
-    function fecharLote(){document.getElementById('modal').style.display = 'none'}
-
-    document.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', () => {
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    function entrar(){document.getElementById('loginScreen').style.display='none';document.getElementById('appScreen').style.display='block'}
+    function toggleMenu(){document.getElementById('sidebar').classList.toggle('collapsed');document.getElementById('main').classList.toggle('collapsed')}
+    function abrirLote(){document.getElementById('modal').style.display='flex'}
+    function fecharLote(){document.getElementById('modal').style.display='none'}
+    document.querySelectorAll('.nav-item').forEach(item=>{
+      item.addEventListener('click',()=>{
+        document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
         item.classList.add('active');
-        const page = item.dataset.page;
-        document.getElementById('pageTitle').textContent = page;
-        document.getElementById('pageSubtitle').textContent = page === 'Dashboard'
-          ? 'Visão rápida dos lotes e fretes ativos.'
-          : 'Módulo ' + page + ' — tela V8 em preparação.';
-      });
+        const page=item.dataset.page;
+        document.getElementById('pageTitle').textContent=page;
+        if(page==='Dashboard'){
+          document.getElementById('pageSubtitle').textContent='Visão rápida dos lotes e fretes ativos.';
+          document.getElementById('dashboardContent').style.display='block';
+          document.getElementById('placeholder').style.display='none';
+        }else{
+          document.getElementById('pageSubtitle').textContent='Módulo '+page+' — tela V8 em preparação.';
+          document.getElementById('dashboardContent').style.display='none';
+          document.getElementById('placeholder').style.display='block';
+          document.getElementById('placeholderTitle').textContent=page;
+        }
+      })
     });
-
     function filtrarTabela(){
-      const termo = document.getElementById('searchInput').value.toLowerCase();
-      document.querySelectorAll('#tbody tr').forEach(tr => {
-        tr.style.display = tr.innerText.toLowerCase().includes(termo) ? '' : 'none';
-      });
+      const termo=document.getElementById('searchInput').value.toLowerCase();
+      document.querySelectorAll('#tbody tr').forEach(tr=>{tr.style.display=tr.innerText.toLowerCase().includes(termo)?'':'none'})
     }
   </script>
 </body>
