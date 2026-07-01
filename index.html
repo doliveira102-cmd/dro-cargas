@@ -116,19 +116,7 @@ input[type="checkbox"]{
 
 
 /* ===== FIX V8 FINAL: login limpo, sem lateral, logo transparente ===== */
-#login.modal,
-#login.show,
-#login[style*="flex"]{
-  position:fixed!important;
-  inset:0!important;
-  z-index:99999!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  background:
-    radial-gradient(circle at top left,rgba(30,136,255,.18),transparent 34%),
-    linear-gradient(135deg,#061323,#08213c 60%,#061323)!important;
-}
+
 #login::before,
 #login::after{
   display:none!important;
@@ -158,10 +146,7 @@ input[type="checkbox"]{
 #login .box > div:first-child > div:last-child .sub{
   display:none!important;
 }
-body:has(#login.show) .app,
-body:has(#login[style*="flex"]) .app{
-  display:none!important;
-}
+
 .brand .logo{
   display:none!important;
 }
@@ -196,6 +181,86 @@ body:has(#login[style*="flex"]) .app{
 }
 img[src="logo-dro-oficial.png"],
 .logo-official{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+
+/* ===== FIX V8 FINAL 2: login entra, menu inicia recolhido e logo sem fundo preto ===== */
+#login{
+  position:fixed!important;
+  inset:0!important;
+  z-index:99999!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:
+    radial-gradient(circle at top left,rgba(30,136,255,.18),transparent 34%),
+    linear-gradient(135deg,#061323,#08213c 60%,#061323)!important;
+}
+#login.show{
+  display:flex!important;
+}
+#login:not(.show){
+  display:none!important;
+}
+#login .box{
+  background:#0b1c32!important;
+  border:1px solid #1f3858!important;
+  box-shadow:0 30px 80px rgba(0,0,0,.42)!important;
+}
+#login .box > div:first-child{
+  display:flex!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:0!important;
+  margin-bottom:22px!important;
+}
+#login .box > div:first-child .logo{
+  display:none!important;
+}
+#login .box > div:first-child > div:last-child{
+  width:315px!important;
+  height:118px!important;
+  background:url('logo-dro-oficial.png') center/contain no-repeat!important;
+}
+#login .box > div:first-child > div:last-child h1,
+#login .box > div:first-child > div:last-child .sub{
+  display:none!important;
+}
+.brand .logo{
+  display:none!important;
+}
+.brand{
+  justify-content:center!important;
+  padding:12px 10px!important;
+}
+.brand span{
+  width:215px!important;
+  height:72px!important;
+  background:url('logo-dro-oficial.png') center/contain no-repeat!important;
+  font-size:0!important;
+  color:transparent!important;
+}
+.brand span small{
+  display:none!important;
+}
+.side.closed .brand span{
+  display:none!important;
+}
+.side.closed .brand::after{
+  content:"DRO";
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#1e88ff,#075ee8);
+  color:white;
+  font-size:12px;
+  font-weight:900;
+}
+img[src="logo-dro-oficial.png"],.logo-official{
   background:transparent!important;
   border:0!important;
   box-shadow:none!important;
