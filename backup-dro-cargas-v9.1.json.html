@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DRO Cargas V9.1</title>
+<title>DRO Cargas V9</title>
 <style>
 :root{--nav:#08213a;--blue:#2563eb;--green:#16a34a;--red:#ef4444;--bg:#f3f7fb;--card:#fff;--line:#d8e2ef;--txt:#142033;--muted:#60708a;--amber:#f59e0b;--purple:#7c3aed;--orange:#f97316}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--txt)}button,input,textarea,select{font:inherit}button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.btn{background:#e8eef7;color:#12213a}.primary{background:var(--blue);color:white}.green{background:var(--green);color:white}.red{background:var(--red);color:white}.dark{background:#071626;color:white}.ghost{background:#eef4fb}.small{padding:7px 10px;font-size:13px}.app{display:flex;min-height:100vh}.side{width:250px;background:var(--nav);color:white;position:fixed;left:0;top:0;bottom:0;transition:.2s;z-index:5;overflow:auto}.side.closed{width:72px}.brand{height:82px;display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid rgba(255,255,255,.12);position:relative}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2f80ed,#1aa286);display:grid;place-items:center;font-weight:900}.brand span{font-weight:900;font-size:20px;white-space:nowrap}.toggle{margin-left:auto;background:#29415e;color:white;border-radius:10px;padding:8px 10px;min-width:38px;z-index:9}.side.closed .toggle{position:absolute;right:-17px;top:23px;border:2px solid #fff;border-radius:50%;width:36px;height:36px;padding:0;background:#29415e;display:grid;place-items:center}.side:not(.closed) .toggle{display:block}.side.closed .brand span,.side.closed .label{display:none}.nav a{display:flex;align-items:center;gap:14px;margin:8px 10px;padding:12px 13px;border-radius:10px;color:white;text-decoration:none}.nav a.active,.nav a:hover{background:#173d63}.ico{font-size:20px;width:22px;text-align:center}.main{margin-left:250px;transition:.2s;width:calc(100% - 250px);padding:28px 32px}.side.closed+.main{margin-left:72px;width:calc(100% - 72px)}h1{margin:0;font-size:30px}.sub{color:var(--muted);margin:4px 0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:22px}.actions{display:flex;gap:10px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:14px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 10px 28px rgba(15,36,67,.06);cursor:pointer}.card b{font-size:34px;display:block;margin-top:8px}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:18px;box-shadow:0 10px 28px rgba(15,36,67,.06)}.panel h2{margin:0 0 12px}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.search{max-width:330px;width:100%;padding:13px;border:1px solid var(--line);border-radius:11px}.table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}.table th{background:#f8fbff;text-align:left;color:#30435f;font-size:13px;text-transform:uppercase}.table th,.table td{padding:13px;border-bottom:1px solid var(--line);vertical-align:middle}.table tr:last-child td{border-bottom:0}.table tbody tr:hover{background:#f8fbff}.route{font-weight:900}.money{display:inline-block;background:#eef4ff;padding:7px 10px;border-radius:10px;font-weight:900;margin:2px}.margin{background:#fff3e6}.status{display:inline-block;padding:7px 11px;border-radius:999px;font-weight:900;font-size:13px}.Disponivel{background:#dbeafe;color:#1d4ed8}.Agendado{background:#fef3c7;color:#92400e}.Manifestado{background:#ede9fe;color:#5b21b6}.Carregado{background:#dcfce7;color:#166534}.Transito{background:#ffedd5;color:#9a3412}.Finalizado{background:#dcfce7;color:#166534}.actionsRow{display:flex;gap:8px;flex-wrap:wrap}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:22px}.modal.show{display:flex}.box{background:white;border-radius:18px;padding:22px;max-width:900px;width:100%;max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:13px;color:#53637a;font-weight:800;margin:0 0 4px}.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:white}.field textarea{min-height:80px}.span2{grid-column:1/-1}.readonly{background:#f8fbff;border:1px solid var(--line);border-radius:12px;padding:13px}.readonly small{display:block;color:#60708a}.readonly b{display:block;margin-top:3px}.steps{display:flex;gap:10px;flex-wrap:wrap}.step{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#f8fbff}.step input{margin-right:7px}.notice{padding:12px;border-radius:12px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412}.drop{border:2px dashed #9bb5d6;border-radius:14px;padding:18px;text-align:center;background:#f8fbff;min-height:160px}.drop img{max-width:100%;max-height:170px}.ad{white-space:pre-wrap;background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}.hidden{display:none}.tableWrap{width:100%;overflow-x:auto}.manifest-table{min-width:1120px}.manifest-table th,.manifest-table td{white-space:nowrap;padding:10px 8px}.manifest-table .step{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;min-width:124px;padding:8px 10px;margin:0}.manifest-table .step input{margin:0}.manifest-table .search{max-width:none;width:100%;min-width:105px;padding:8px}.manifest-save{min-width:78px}.login-note{font-size:12px;color:#60708a}
 .orderDoc{background:white;color:#111;max-width:900px;margin:10px auto;font-family:Arial,sans-serif}.orderSheet{background:white;width:190mm;min-height:277mm;margin:0 auto;padding:5mm;box-sizing:border-box}.orderVia{border:1px solid #111;margin:0 0 5mm 0;break-inside:avoid;page-break-inside:avoid;font-size:9.2px;line-height:1.05}.orderVia table{width:100%;border-collapse:collapse}.orderVia td,.orderVia th{border:1px solid #111;padding:2px 3px;vertical-align:middle}.orderVia .titleBar{background:#d9d9d9;border-bottom:1px solid #111;text-align:center;font-weight:900;font-size:16px;letter-spacing:.4px;padding:3px}.orderVia .logoCell{width:42%;height:75px;text-align:center}.orderVia .logoCell img{max-width:165px;max-height:65px}.orderVia .companyName{text-align:center;font-weight:900;font-size:18px;padding:4px}.orderVia .center{text-align:center}.orderVia .gray{background:#d9d9d9;font-weight:900;text-align:center}.orderVia .label{background:#d9d9d9;font-weight:900;text-align:right;white-space:nowrap}.orderVia .section{background:#d9d9d9;text-align:center;font-weight:900;font-size:12px;padding:3px}.orderVia .empty{height:13px}.orderCut{border-top:1px dashed #777;text-align:center;color:#777;font-size:9px;margin:-2mm 0 3mm}.orderActions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0}@media print{@page{size:A4;margin:6mm}body *{visibility:hidden}.orderDoc,.orderDoc *{visibility:visible}.orderDoc{position:absolute;left:0;top:0;width:100%;max-width:none;border:0;margin:0}.orderSheet{width:100%;min-height:auto;padding:0}.side,.top,.panel:not(.printable){display:none!important}.orderActions{display:none!important}}
@@ -335,16 +335,10 @@ img[src="logo-dro-oficial.png"],.logo-official{
 .card.activeFilter{border-color:#1e88ff!important;box-shadow:0 0 0 2px rgba(30,136,255,.35),0 18px 44px rgba(0,0,0,.26)!important}
 .filterInfo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:#9fb1c8;font-size:13px}
 .clearFilter{padding:7px 10px!important;font-size:12px!important}
-
-/* ===== DRO CARGAS V9.1 ===== */
-.versionBadge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;background:rgba(30,136,255,.14);border:1px solid rgba(30,136,255,.35);color:#77b7ff;font-size:11px;font-weight:800;margin-left:8px}
-.v8DetailGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
-@media(max-width:1100px){.v8DetailGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:700px){.v8DetailGrid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div id="login" class="modal login-v8" style="display:none"><div class="box login-box"><div class="login-logo-wrap"><img src="logo-dro-oficial.png" class="logo-official login-logo-img" alt="DRO Cargas"></div><div class="field"><label>E-mail</label><input id="email" value="diego@drocargas.com"></div><div class="field" style="margin-top:10px"><label>Senha</label><input id="senha" type="password" value="123456"></div><button class="primary login-btn" style="width:100%;margin-top:16px" onclick="login()">Entrar</button><p class="login-note-v8">DRO Cargas v9.1</p></div></div>
+<div id="login" class="modal login-v8" style="display:none"><div class="box login-box"><div class="login-logo-wrap"><img src="logo-dro-oficial.png" class="logo-official login-logo-img" alt="DRO Cargas"></div><div class="field"><label>E-mail</label><input id="email" value="diego@drocargas.com"></div><div class="field" style="margin-top:10px"><label>Senha</label><input id="senha" type="password" value="123456"></div><button class="primary login-btn" style="width:100%;margin-top:16px" onclick="login()">Entrar</button><p class="login-note-v8">DRO Cargas v9.0</p></div></div>
 <div class="app"><aside id="side" class="side closed"><div class="brand"><img src="logo-dro-oficial.png" class="logo-official side-logo-img" alt="DRO Cargas"><button class="toggle" onclick="toggleSide()">▶</button></div><nav class="nav" id="nav"></nav></aside><main class="main" id="main"></main></div>
 <div id="modal" class="modal"><div class="box" id="modalBox"></div></div>
 <input id="restoreFile" type="file" accept="application/json" class="hidden" onchange="restoreBackup(event)">
@@ -360,7 +354,7 @@ let db=load();
 // V9 preserva todos os dados existentes. Nenhuma limpeza automática é executada.
 
 const pages=[['dashboard','⌂','Dashboard','OPERAÇÃO'],['cargas','▣','Cargas','OPERAÇÃO'],['agenda','▤','Agenda','OPERAÇÃO'],['rascunhos','✎','Rascunhos','OPERAÇÃO'],['importar','⇩','Importação Inteligente','OPERAÇÃO'],['agendamentos','▰','Agendamentos','LOGÍSTICA'],['manifestos','▧','Manifestos','LOGÍSTICA'],['ordemg10','▣','ORDEM','LOGÍSTICA'],['cotacao','$','Cotação','COMERCIAL'],['anuncios','↗','Anúncios','COMERCIAL'],['clientes','◎','Clientes','CADASTROS'],['motoristas','♙','Motoristas/Veículos','CADASTROS'],['relatorios','▥','Relatórios','SISTEMA']];
-function defaultDb(){return{cargas:[],cotacoes:[],agendamentos:[],manifestos:[],clientes:[],motoristas:[],veiculos:[],anuncios:[],agenda:[],historico:[],rascunho:'',lastOp:0,version:'9.1'}}
+function defaultDb(){return{cargas:[],cotacoes:[],agendamentos:[],manifestos:[],clientes:[],motoristas:[],veiculos:[],anuncios:[],agenda:[],historico:[],rascunho:'',lastOp:0,version:'9.0'}}
 function load(){let d=null; for(const k of OLD){let o=localStorage.getItem(k); if(o){d=o; break}} try{let x=d?JSON.parse(d):defaultDb(); return Object.assign(defaultDb(),x)}catch(e){return defaultDb()}}
 function save(){const payload=JSON.stringify(db); localStorage.setItem(KEY,payload); localStorage.setItem(MASTER,payload); try{localStorage.setItem('DRO_CARGAS_V35_ULTIMO',payload)}catch(e){}}
 function login(){const e=document.getElementById('email').value.trim(); const s=document.getElementById('senha').value.trim(); if(e!=='diego@drocargas.com'||s!=='123456'){alert('E-mail ou senha incorretos.'); return;} sessionStorage.setItem('DRO_CARGAS_SESSAO','1');document.getElementById('login').classList.remove('show');document.getElementById('login').style.display='none'; page='dashboard'; render()}
@@ -379,7 +373,7 @@ function renderNav(){
   }).join('')
 }
 function render(){normalize(); save(); renderNav(); const m=document.getElementById('main'); const title=pages.find(x=>x[0]==page)?.[2]||''; if(page==='dashboard') return dashboard(m); if(page==='rascunhos') return rascunhosPage(m); if(page==='cargas') return cargasPage(m); if(page==='agendamentos') return agPage(m); if(page==='manifestos') return manPage(m); if(page==='ordemg10') return ordemG10Page(m); if(page==='cotacao') return cotacaoPage(m); if(page==='anuncios') return adsPage(m); if(page==='pendencias') return pendPage(m); if(page==='importar') return importPage(m); if(page==='clientes') return simplePage(m,'clientes','Clientes',['nome','cidade','uf','contato','cnpj','localizacao','telefone','email','observacoes']); if(page==='motoristas') return motorVeiculoPage(m); if(page==='veiculos') return motorVeiculoPage(m); if(page==='agenda') return simplePage(m,'agenda','Agenda',['titulo','descricao','data']); if(page==='relatorios') return reports(m);}
-function topHtml(title,sub='Resumo operacional do DRO Cargas'){return `<div class="top"><div><h1>${title}<span class="versionBadge">v9.1</span></h1><div class="sub">${sub}</div></div><div class="actions"><button class="btn" onclick="backup()">Backup JSON</button><button class="btn" onclick="document.getElementById('restoreFile').click()">Restaurar Backup</button><button class="primary" onclick="openCarga()">+ Nova Carga</button><button class="ghost" onclick="go('importar')">Importação Inteligente</button><button class="dark" onclick="logout()">Sair</button></div></div>`}
+function topHtml(title,sub='Resumo operacional do DRO Cargas'){return `<div class="top"><div><h1>${title}</h1><div class="sub">${sub}</div></div><div class="actions"><button class="btn" onclick="backup()">Backup JSON</button><button class="btn" onclick="document.getElementById('restoreFile').click()">Restaurar Backup</button><button class="primary" onclick="openCarga()">+ Nova Carga</button><button class="ghost" onclick="go('importar')">Importação Inteligente</button><button class="dark" onclick="logout()">Sair</button></div></div>`}
 function statusClass(s){return String(s||'Disponível').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace('Em transito','Transito')}
 function dateBR(d){if(!d)return''; if(d.includes('/'))return d; let [y,m,da]=d.split('-'); return y&&m&&da?`${da}/${m}/${y}`:d}
 function today(){return new Date().toISOString().slice(0,10)}
@@ -404,7 +398,7 @@ function normalize(){
   ensureCotacoes();
   // V9: Manifesto sempre pertence a uma ORDEM/AGENDAMENTO existente.
   db.manifestos=(db.manifestos||[]).filter(f=>db.agendamentos.some(a=>a.id===f.agendamentoId));
-  db.version='9.1';
+  db.version='9.0';
   db.cargas.forEach(c=>{
     if(!c.op)c.op=nextOp();
     if(!c.id)c.id=crypto.randomUUID();
@@ -587,28 +581,6 @@ function selectSmart(id,value){
   input.value=value;
   const list=document.getElementById('smart_'+id); if(list)list.style.display='none';
   input.dispatchEvent(new Event('change'));
-  if(id==='clienteOrigem')preencherDadosOrigem();
-  if(id==='localDescarga')preencherDadosDestino();
-}
-function clientePorNome(nome){
-  const q=normalizeText(nome||'');
-  return (db.clientes||[]).find(c=>normalizeText(c.nome||'')===q) || (db.clientes||[]).find(c=>normalizeText(c.nome||'').includes(q));
-}
-function preencherDadosOrigem(){
-  const nome=document.getElementById('clienteOrigem')?.value||'';
-  const cli=clientePorNome(nome); if(!cli)return;
-  const loc=document.getElementById('localEmbarque'), contato=document.getElementById('contatoOrigem');
-  if(loc && !loc.value.trim())loc.value=cli.localizacao||[cli.nome,cli.cidade,cli.uf].filter(Boolean).join(' - ');
-  if(contato && !contato.value.trim())contato.value=[cli.contato,cli.telefone].filter(Boolean).join(' / ');
-}
-function preencherDadosDestino(){
-  const nome=document.getElementById('localDescarga')?.value||'';
-  const cli=clientePorNome(nome); if(!cli)return;
-  const el=document.getElementById('localDescarga');
-  if(el && cli.localizacao && !String(el.dataset.locationFilled||'')){
-    el.title='Localização: '+cli.localizacao;
-    el.dataset.locationFilled='1';
-  }
 }
 document.addEventListener('click',e=>{
   if(!e.target.closest('.smartField')){
@@ -624,10 +596,10 @@ openModal(`<h2>${id?'Editar lote':'Novo lote'}</h2>
 ${smartWrap('cliente','Tomador do Frete',c.cliente||c.tomadorFrete||'','clientes')}
 ${smartWrap('origem','Origem',c.origem||'','cidades')}
 ${smartWrap('destino','Destino',c.destino||'','cidades')}
-${smartWrap('clienteOrigem','Cliente de Origem',c.clienteOrigem||'','clientes').replace('<input ','<input onchange="preencherDadosOrigem()" ')}
+${smartWrap('clienteOrigem','Cliente de Origem',c.clienteOrigem||'','clientes')}
 <div class="field"><label>Localização do Embarque</label><input id="localEmbarque" value="${c.localEmbarque||''}" placeholder="Link do Maps ou endereço"></div>
 <div class="field"><label>Contato da Origem</label><input id="contatoOrigem" value="${c.contatoOrigem||''}" placeholder="Nome/telefone do contato"></div>
-${smartWrap('localDescarga','Local de Descarga',c.localDescarga||'','clientes').replace('<input ','<input onchange="preencherDadosDestino()" ')}
+${smartWrap('localDescarga','Local de Descarga',c.localDescarga||'','clientes')}
 ${smartWrap('produto','Produto',c.produto||'','produtos')}
 <div class="field"><label>Quantidade/Toneladas</label><input id="quantidade" value="${c.quantidade||''}"></div>
 <div class="field"><label>Valor Empresa</label><input id="valorEmpresa" type="number" value="${c.valorEmpresa||''}" oninput="calcMot()"></div>
@@ -635,7 +607,7 @@ ${smartWrap('produto','Produto',c.produto||'','produtos')}
 <div class="field"><label>Valor Motorista</label><input id="valorMotorista" readonly value="${currency(c.valorMotorista||0)}"></div>
 <div class="field"><label>Data Liberada</label><input id="data" type="date" value="${c.data||today()}"></div>
 ${smartWrap('tipoVeiculo','Tipo de Caminhão',c.tipoVeiculo||'','caminhoes')}
-<div class="field"><label>Status</label><select id="status">${['Disponível','Suspenso','Agendado','Manifestado','Carregado','Em trânsito','Finalizado','Encerrado/Cancelado'].map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}</select></div>
+<div class="field"><label>Status</label><select id="status">${['Disponível','Agendado','Manifestado','Carregado','Em trânsito','Finalizado'].map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}</select></div>
 <div class="field span2"><label>Observações</label><textarea id="obs">${c.obs||''}</textarea></div>
 </div>
 <div style="margin-top:14px"><button class="green" onclick="saveCarga('${id||''}')">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button></div>`);
@@ -653,8 +625,6 @@ function saveCarga(id){
     valorMotorista:Number(valorEmpresa.value||0)*(1-Number(margem.value||10)/100),data:data.value||today(),tipoVeiculo:tipoVeiculo.value,status:novoStatus,obs:obs.value
   });
   if(novoStatus==='Disponível'){
-    const tinhaVinculos=db.agendamentos.some(a=>a.cargaId===c.id)||db.manifestos.some(m=>m.cargaId===c.id);
-    if(tinhaVinculos && !confirm('Ao voltar para Disponível, a ORDEM/AGENDAMENTO e o manifesto desta carga serão removidos. Continuar?'))return;
     db.agendamentos=db.agendamentos.filter(a=>a.cargaId!==c.id);
     db.manifestos=db.manifestos.filter(m=>m.cargaId!==c.id);
   }
@@ -667,7 +637,7 @@ function detailsCarga(id){
 let c=db.cargas.find(x=>x.id===id); 
 let hist=db.historico.filter(h=>h.cargaId===id); 
 let ags=db.agendamentos.filter(a=>a.cargaId===id); 
-let carregado=ags.reduce((s,a)=>s+(parseFloat(String(a.peso||32).replace(',','.'))||32),0); 
+let carregado=ags.length*32; 
 let qtd=parseFloat(String(c.quantidade||'').replace(',','.'))||0; 
 let saldo=qtd?Math.max(qtd-carregado,0):'';
 const info=[
@@ -703,20 +673,20 @@ ${info.map(x=>`<div class="readonly"><small>${x[0]}</small><b>${escapeHtml(x[1]|
 <button class="primary" onclick="closeModal();openOrderFromCarga('${id}')">ORDEM</button>
 </div>`);
 }
-function openAg(id){let c=db.cargas.find(x=>x.id===id); let motors=db.motoristas||[]; openModal(`<h2>Agendar carga</h2><p><b>${c.op} - ${c.origem} x ${c.destino}</b></p><div class="grid"><div class="field"><label>Motorista cadastrado</label><select id="motorSel" onchange="fillMotor()"><option value="">Selecionar...</option>${motors.map(m=>`<option value="${m.id}">${m.nome||m.placa}</option>`).join('')}</select></div><div class="field"><label>Motorista</label><input id="mot" value=""></div><div class="field"><label>Placa</label><input id="placa" value=""></div><div class="field"><label>Telefone</label><input id="tel" value=""></div><div class="field"><label>Data</label><input id="dtAg" type="date" value="${today()}"></div><div class="field"><label>Peso previsto (ton)</label><input id="pesoAg" type="number" step="0.01" value="32"></div><div class="field span2"><label>Observações</label><textarea id="obsAg"></textarea></div></div><div style="margin-top:14px"><button class="green" onclick="saveAg('${id}')">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button></div>`)}
+function openAg(id){let c=db.cargas.find(x=>x.id===id); let motors=db.motoristas||[]; openModal(`<h2>Agendar carga</h2><p><b>${c.op} - ${c.origem} x ${c.destino}</b></p><div class="grid"><div class="field"><label>Motorista cadastrado</label><select id="motorSel" onchange="fillMotor()"><option value="">Selecionar...</option>${motors.map(m=>`<option value="${m.id}">${m.nome||m.placa}</option>`).join('')}</select></div><div class="field"><label>Motorista</label><input id="mot" value=""></div><div class="field"><label>Placa</label><input id="placa" value=""></div><div class="field"><label>Telefone</label><input id="tel" value=""></div><div class="field"><label>Data</label><input id="dtAg" type="date" value="${today()}"></div><div class="field span2"><label>Observações</label><textarea id="obsAg"></textarea></div></div><div style="margin-top:14px"><button class="green" onclick="saveAg('${id}')">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button></div>`)}
 function fillMotor(){let m=db.motoristas.find(x=>x.id===motorSel.value); if(m){mot.value=m.nome||'';placa.value=m.placa||'';tel.value=m.telefone||''}}
 function saveAg(cargaId){
   let c=db.cargas.find(x=>x.id===cargaId); if(!c)return;
   const motorista=mot.value.trim(), placaValor=placa.value.trim().toUpperCase();
   if(!motorista||!placaValor){alert('Informe motorista e placa.');return;}
-  let a={id:crypto.randomUUID(),tipo:'ORDEM_AGENDAMENTO',cargaId,motoristaId:motorSel.value||'',veiculoId:'',motorista,placa:placaValor,telefone:tel.value.trim(),data:dtAg.value||today(),peso:Number(document.getElementById('pesoAg')?.value||32),obs:obsAg.value.trim(),createdAt:Date.now()};
+  let a={id:crypto.randomUUID(),tipo:'ORDEM_AGENDAMENTO',cargaId,motoristaId:motorSel.value||'',veiculoId:'',motorista,placa:placaValor,telefone:tel.value.trim(),data:dtAg.value||today(),obs:obsAg.value.trim(),createdAt:Date.now()};
   db.agendamentos.push(a);
   db.manifestos.push({id:crypto.randomUUID(),cargaId,agendamentoId:a.id,agendado:true,manifestado:false,carregado:false,transito:false,finalizado:false});
   c.status='Agendado'; addHist(cargaId,'Ordem/Agendamento criado: '+a.motorista+' - '+a.placa); save(); closeModal(); render();
 }
 function agPage(m){
   const lista=[...db.agendamentos].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-  m.innerHTML=topHtml('Agendamentos','ORDEM e AGENDAMENTO são o mesmo registro')+`<div class="panel"><div class="tableWrap"><table class="table"><thead><tr><th>Data</th><th>OP</th><th>Motorista</th><th>Placa</th><th>Telefone</th><th>Peso</th><th>Rota</th><th>Ação</th></tr></thead><tbody>${lista.length?lista.map(a=>{let c=db.cargas.find(x=>x.id===a.cargaId)||{};return`<tr><td>${dateBR(a.data)}</td><td><b>${c.op||'-'}</b></td><td>${escapeHtml(a.motorista||'')}</td><td>${escapeHtml(a.placa||'')}</td><td>${escapeHtml(a.telefone||'')}</td><td>${Number(a.peso||32)} ton</td><td>${escapeHtml(c.origem||'')} → ${escapeHtml(c.destino||'')}</td><td><button class="green small" onclick="go('manifestos')">Manifesto</button> <button class="red small" onclick="deleteAgendamento('${a.id}')">Excluir</button></td></tr>`}).join(''):'<tr><td colspan="8" style="text-align:center">Nenhuma ordem/agendamento</td></tr>'}</tbody></table></div></div>`
+  m.innerHTML=topHtml('Agendamentos','ORDEM e AGENDAMENTO são o mesmo registro')+`<div class="panel"><div class="tableWrap"><table class="table"><thead><tr><th>Data</th><th>OP</th><th>Motorista</th><th>Placa</th><th>Telefone</th><th>Rota</th><th>Ação</th></tr></thead><tbody>${lista.length?lista.map(a=>{let c=db.cargas.find(x=>x.id===a.cargaId)||{};return`<tr><td>${dateBR(a.data)}</td><td><b>${c.op||'-'}</b></td><td>${escapeHtml(a.motorista||'')}</td><td>${escapeHtml(a.placa||'')}</td><td>${escapeHtml(a.telefone||'')}</td><td>${escapeHtml(c.origem||'')} → ${escapeHtml(c.destino||'')}</td><td><button class="green small" onclick="go('manifestos')">Manifesto</button> <button class="red small" onclick="deleteAgendamento('${a.id}')">Excluir</button></td></tr>`}).join(''):'<tr><td colspan="7" style="text-align:center">Nenhuma ordem/agendamento</td></tr>'}</tbody></table></div></div>`
 }
 function deleteAgendamento(id){
   if(!confirm('Excluir esta ordem/agendamento?'))return;
@@ -1363,7 +1333,7 @@ m.innerHTML=topHtml('Relatórios','Resumo simples')+`<div class="cards">
 </div>`;
 }
 function addHist(cargaId,txt){db.historico.push({id:crypto.randomUUID(),cargaId,txt,data:today(),hora:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})})}
-function backup(){let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'})); a.download='backup-dro-cargas-v9.1.json'; a.click()}
+function backup(){let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'})); a.download='backup-dro-cargas.json'; a.click()}
 function restoreBackup(e){let f=e.target.files[0]; if(!f)return; let r=new FileReader(); r.onload=()=>{try{db=Object.assign(defaultDb(),JSON.parse(r.result)); normalize(); save(); alert('Backup restaurado.'); render()}catch(err){alert('Arquivo inválido')}}; r.readAsText(f)}
 seedClientesLocalizacoes();
 completarLocalizacoesClientes();
