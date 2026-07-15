@@ -363,9 +363,19 @@ const pages=[['dashboard','⌂','Dashboard','OPERAÇÃO'],['cargas','▣','Carga
 function defaultDb(){return{cargas:[],cotacoes:[],agendamentos:[],manifestos:[],clientes:[],motoristas:[],veiculos:[],anuncios:[],agenda:[],historico:[],rascunho:'',lastOp:0,version:'9.1'}}
 function load(){let d=null; for(const k of OLD){let o=localStorage.getItem(k); if(o){d=o; break}} try{let x=d?JSON.parse(d):defaultDb(); return Object.assign(defaultDb(),x)}catch(e){return defaultDb()}}
 function save(){const payload=JSON.stringify(db); localStorage.setItem(KEY,payload); localStorage.setItem(MASTER,payload); try{localStorage.setItem('DRO_CARGAS_V35_ULTIMO',payload)}catch(e){}}
-function login(){const e=document.getElementById('email').value.trim(); const s=document.getElementById('senha').value.trim(); if(e!=='diego@drocargas.com'||s!=='123456'){alert('E-mail ou senha incorretos.'); return;} sessionStorage.setItem('DRO_CARGAS_SESSAO','1');document.getElementById('login').classList.remove('show');document.getElementById('login').style.display='none'; page='dashboard'; render()}
-function logout(){sessionStorage.removeItem('DRO_CARGAS_SESSAO'); document.getElementById('login').style.display='flex'; document.getElementById('login').classList.add('show');}
-function toggleSide(){let s=document.getElementById('side'); s.classList.toggle('closed'); s.querySelector('.toggle').textContent=s.classList.contains('closed')?'▶':'◀'}
+// Centraliza a persistência do estado atual da aplicação.
+function persist(){normalize(); save();}
+// Centraliza as mudanças de status para manter o fluxo operacional consistente.
+function updateStatus(carga, novoStatus){if(!carga)return; const statusFinal=String(novoStatus||'Disponível').trim()||'Disponível'; carga.status=statusFinal;}
+// Helper interno para acessar elementos do DOM sem repetir document.getElementById.
+const $ = id => document.getElementById(id);
+function getValue(id, fallback=''){const el=$(id); return el ? el.value : fallback;}
+function getNumberValue(id, fallback=0){const value=Number(getValue(id, fallback)); return Number.isFinite(value) ? value : fallback;}
+function syncCargaStatusFromManifesto(carga, manifesto){if(!carga||!manifesto)return; if(manifesto.finalizado)updateStatus(carga,'Finalizado'); else if(manifesto.transito)updateStatus(carga,'Em trânsito'); else if(manifesto.carregado)updateStatus(carga,'Carregado'); else if(manifesto.manifestado)updateStatus(carga,'Manifestado'); else updateStatus(carga,'Agendado');}
+function upsertAgendamentoAndManifesto(cargaId, agendamentoData){const carga=db.cargas.find(x=>x.id===cargaId); if(!carga)return null; const existingAgendamento=db.agendamentos.find(x=>x.cargaId===cargaId); const nextAgendamento=existingAgendamento?Object.assign(existingAgendamento,{...agendamentoData,id:existingAgendamento.id,cargaId,createdAt:existingAgendamento.createdAt||Date.now()}):{id:crypto.randomUUID(),cargaId,createdAt:Date.now(),...agendamentoData}; if(!existingAgendamento)db.agendamentos.push(nextAgendamento); db.agendamentos=db.agendamentos.filter(x=>x.cargaId!==cargaId||x.id===nextAgendamento.id); const existingManifesto=db.manifestos.find(x=>x.cargaId===cargaId); const nextManifesto=existingManifesto?Object.assign(existingManifesto,{agendamentoId:nextAgendamento.id,agendado:true,manifestado:false,carregado:false,transito:false,finalizado:false}):{id:crypto.randomUUID(),cargaId,agendamentoId:nextAgendamento.id,agendado:true,manifestado:false,carregado:false,transito:false,finalizado:false}; if(!existingManifesto)db.manifestos.push(nextManifesto); db.manifestos=db.manifestos.filter(x=>x.cargaId!==cargaId||x.id===nextManifesto.id); return {carga,nextAgendamento,nextManifesto};}
+function login(){const e=$('email').value.trim(); const s=$('senha').value.trim(); if(e!=='diego@drocargas.com'||s!=='123456'){alert('E-mail ou senha incorretos.'); return;} sessionStorage.setItem('DRO_CARGAS_SESSAO','1');$('login').classList.remove('show');$('login').style.display='none'; page='dashboard'; render()}
+function logout(){sessionStorage.removeItem('DRO_CARGAS_SESSAO'); $('login').style.display='flex'; $('login').classList.add('show');}
+function toggleSide(){let s=$('side'); s.classList.toggle('closed'); s.querySelector('.toggle').textContent=s.classList.contains('closed')?'▶':'◀'}
 function go(p){page=p; if(p!=='cargas'){search=''; dashboardFilter=''} render()}
 function filtrarDashboard(status){dashboardFilter=status; search=''; page='cargas'; render()}
 function limparFiltroDashboard(){dashboardFilter=''; search=''; page='dashboard'; render()}
@@ -373,13 +383,20 @@ let navClosedGroups={'OPERAÇÃO':true,'LOGÍSTICA':true,'COMERCIAL':true,'CADAS
 function toggleNavGroup(g){navClosedGroups[g]=!navClosedGroups[g];renderNav()}
 function renderNav(){
   const grupos=[...new Set(pages.map(p=>p[3]))];
-  document.getElementById('nav').innerHTML=grupos.map(g=>{
+  $('nav').innerHTML=grupos.map(g=>{
     const items=pages.filter(p=>p[3]===g).map(p=>`<a title="${p[2]}" class="${page==p[0]?'active':''}" onclick="go('${p[0]}')"><span class="ico">${p[1]}</span><span class="label">${p[2]}</span></a>`).join('');
     return `<div class="navGroup ${navClosedGroups[g]?'closed':''}"><button class="navGroupTitle" onclick="toggleNavGroup('${g}')"><span>${g}</span><b>▾</b></button><div class="navGroupItems">${items}</div></div>`
   }).join('')
 }
-function render(){normalize(); save(); renderNav(); const m=document.getElementById('main'); const title=pages.find(x=>x[0]==page)?.[2]||''; if(page==='dashboard') return dashboard(m); if(page==='rascunhos') return rascunhosPage(m); if(page==='cargas') return cargasPage(m); if(page==='agendamentos') return agPage(m); if(page==='manifestos') return manPage(m); if(page==='ordemg10') return ordemG10Page(m); if(page==='cotacao') return cotacaoPage(m); if(page==='anuncios') return adsPage(m); if(page==='pendencias') return pendPage(m); if(page==='importar') return importPage(m); if(page==='clientes') return simplePage(m,'clientes','Clientes',['nome','cidade','uf','contato','cnpj','localizacao','telefone','email','observacoes']); if(page==='motoristas') return motorVeiculoPage(m); if(page==='veiculos') return motorVeiculoPage(m); if(page==='agenda') return simplePage(m,'agenda','Agenda',['titulo','descricao','data']); if(page==='relatorios') return reports(m);}
-function topHtml(title,sub='Resumo operacional do DRO Cargas'){return `<div class="top"><div><h1>${title}<span class="versionBadge">v9.1</span></h1><div class="sub">${sub}</div></div><div class="actions"><button class="btn" onclick="backup()">Backup JSON</button><button class="btn" onclick="document.getElementById('restoreFile').click()">Restaurar Backup</button><button class="primary" onclick="openCarga()">+ Nova Carga</button><button class="ghost" onclick="go('importar')">Importação Inteligente</button><button class="dark" onclick="logout()">Sair</button></div></div>`}
+function render(){
+  // Atualiza a interface e persiste o estado após qualquer mudança de fluxo.
+  persist();
+  renderNav();
+  const m=$('main');
+  // Remove a variável local sem uso no fluxo de renderização.
+  if(page==='dashboard') return dashboard(m); if(page==='rascunhos') return rascunhosPage(m); if(page==='cargas') return cargasPage(m); if(page==='agendamentos') return agPage(m); if(page==='manifestos') return manPage(m); if(page==='ordemg10') return ordemG10Page(m); if(page==='cotacao') return cotacaoPage(m); if(page==='anuncios') return adsPage(m); if(page==='pendencias') return pendPage(m); if(page==='importar') return importPage(m); if(page==='clientes') return simplePage(m,'clientes','Clientes',['nome','cidade','uf','contato','cnpj','localizacao','telefone','email','observacoes']); if(page==='motoristas') return motorVeiculoPage(m); if(page==='veiculos') return motorVeiculoPage(m); if(page==='agenda') return simplePage(m,'agenda','Agenda',['titulo','descricao','data']); if(page==='relatorios') return reports(m);
+}
+function topHtml(title,sub='Resumo operacional do DRO Cargas'){return `<div class="top"><div><h1>${title}<span class="versionBadge">v9.1</span></h1><div class="sub">${sub}</div></div><div class="actions"><button class="btn" onclick="backup()">Backup JSON</button><button class="btn" onclick="$('#restoreFile').click()">Restaurar Backup</button><button class="primary" onclick="openCarga()">+ Nova Carga</button><button class="ghost" onclick="go('importar')">Importação Inteligente</button><button class="dark" onclick="logout()">Sair</button></div></div>`}
 function statusClass(s){return String(s||'Disponível').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace('Em transito','Transito')}
 function dateBR(d){if(!d)return''; if(d.includes('/'))return d; let [y,m,da]=d.split('-'); return y&&m&&da?`${da}/${m}/${y}`:d}
 function today(){return new Date().toISOString().slice(0,10)}
@@ -401,6 +418,7 @@ function ensureCotacoes(){
 }
 
 function normalize(){
+  // Normaliza os dados e reconcilia o status das cargas com o fluxo de manifesto.
   ensureCotacoes();
   // V9: Manifesto sempre pertence a uma ORDEM/AGENDAMENTO existente.
   db.manifestos=(db.manifestos||[]).filter(f=>db.agendamentos.some(a=>a.id===f.agendamentoId));
@@ -409,8 +427,8 @@ function normalize(){
     if(!c.op)c.op=nextOp();
     if(!c.id)c.id=crypto.randomUUID();
     if(!c.data)c.data=today();
-    if(c.status==='ativo')c.status='Disponível';
-    if(!c.status)c.status='Disponível';
+    if(c.status==='ativo')updateStatus(c,'Disponível');
+    if(!c.status)updateStatus(c,'Disponível');
     c.valorEmpresa=Number(c.valorEmpresa ?? c.valor ?? 0);
     c.margem=Number(c.margem ?? 10);
     c.valorMotorista=Number(c.valorMotorista ?? c.valorEmpresa*(1-c.margem/100));
@@ -429,13 +447,7 @@ function normalize(){
     let c=db.cargas.find(x=>x.id===m.cargaId);
     // Regra principal: o Manifesto é a fonte da verdade do fluxo operacional.
     // Nunca apagar marcações feitas pelo usuário ao trocar de tela.
-    if(c){
-      if(m.finalizado)c.status='Finalizado';
-      else if(m.transito)c.status='Em trânsito';
-      else if(m.carregado)c.status='Carregado';
-      else if(m.manifestado)c.status='Manifestado';
-      else if(m.agendado)c.status='Agendado';
-    }
+    if(c){syncCargaStatusFromManifesto(c,m);}
   });
 }
 function statusKey(s){return normalizeText(s||'Disponível').replace(/\s+/g,'')}
@@ -461,8 +473,8 @@ function statusDot(c){
 function rotaCurta(c){return `${escapeHtml(c.origem||'')} <span class="arrow">➜</span> ${escapeHtml(c.destino||'')}`}
 function cargasTable(rows,title){return `<div class="panel"><div class="toolbar"><div><h2>${title}</h2>${dashboardFilter?`<div class="filterInfo">Filtro ativo: ${dashboardFilter} <button class="btn clearFilter" onclick="limparFiltroDashboard()">Mostrar Todas</button></div>`:''}</div><input class="search" placeholder="Buscar..." oninput="search=this.value;render()" value="${escapeHtml(search||'')}"></div><table class="table cargasTable"><thead><tr><th>OP</th><th>Cliente</th><th>Rota</th><th>Produto</th><th>Valor</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead><tbody>${rows.length?rows.map(c=>`<tr onclick="detailsCarga('${c.id}')"><td class="opCol">${c.op}</td><td class="clienteCol">${escapeHtml(c.cliente||'')}</td><td class="route">${rotaCurta(c)}</td><td class="produtoCol" title="${escapeHtml(c.produto||'')}">${escapeHtml(c.produto||'')}</td><td class="valorCol">${currency(c.valorMotorista)}</td><td>${dateBR(c.data)}</td><td>${statusDot(c)}</td><td onclick="event.stopPropagation()"><div class="actionsRow v8Actions"><button class="green small" onclick="openAg('${c.id}')">Agendar</button><button class="red small" onclick="delCarga('${c.id}')">Excluir</button><button class="btn small" onclick="openCarga('${c.id}')">Editar</button><button class="btn small" onclick="dupCarga('${c.id}')">Duplicar</button><button class="primary small" onclick="openOrderFromCarga('${c.id}')">ORDEM</button></div></td></tr>`).join(''):`<tr><td colspan="9" style="text-align:center;color:#60708a">Nenhuma carga cadastrada</td></tr>`}</tbody></table></div>`}
 
-function openModal(html){document.getElementById('modalBox').innerHTML=html; document.getElementById('modal').classList.add('show')}
-function closeModal(){document.getElementById('modal').classList.remove('show')}
+function openModal(html){$('modalBox').innerHTML=html; $('modal').classList.add('show')}
+function closeModal(){$('modal').classList.remove('show')}
 
 // ===== V8.1 - Bases inteligentes e autocomplete =====
 const CIDADES_BASE=[
@@ -575,7 +587,7 @@ function smartWrap(id,label,value,kind){
   return `<div class="field smartField"><label>${label}</label><input id="${id}" value="${value||''}" autocomplete="off" data-smart="${kind}" oninput="showSmartList(this)" onfocus="showSmartList(this)"><div class="smartList" id="smart_${id}"></div></div>`
 }
 function showSmartList(input){
-  const list=document.getElementById('smart_'+input.id); if(!list)return;
+  const list=$('smart_'+input.id); if(!list)return;
   const q=normalizeText(input.value);
   const data=sourceList(input.dataset.smart);
   const found=data.filter(x=>!q||normalizeText(x).includes(q)).slice(0,40);
@@ -583,9 +595,9 @@ function showSmartList(input){
   list.style.display=found.length?'block':'none';
 }
 function selectSmart(id,value){
-  const input=document.getElementById(id); if(!input)return;
+  const input=$(id); if(!input)return;
   input.value=value;
-  const list=document.getElementById('smart_'+id); if(list)list.style.display='none';
+  const list=$('smart_'+id); if(list)list.style.display='none';
   input.dispatchEvent(new Event('change'));
   if(id==='clienteOrigem')preencherDadosOrigem();
   if(id==='localDescarga')preencherDadosDestino();
@@ -595,16 +607,16 @@ function clientePorNome(nome){
   return (db.clientes||[]).find(c=>normalizeText(c.nome||'')===q) || (db.clientes||[]).find(c=>normalizeText(c.nome||'').includes(q));
 }
 function preencherDadosOrigem(){
-  const nome=document.getElementById('clienteOrigem')?.value||'';
+  const nome=$('clienteOrigem')?.value||'';
   const cli=clientePorNome(nome); if(!cli)return;
-  const loc=document.getElementById('localEmbarque'), contato=document.getElementById('contatoOrigem');
+  const loc=$('localEmbarque'), contato=$('contatoOrigem');
   if(loc && !loc.value.trim())loc.value=cli.localizacao||[cli.nome,cli.cidade,cli.uf].filter(Boolean).join(' - ');
   if(contato && !contato.value.trim())contato.value=[cli.contato,cli.telefone].filter(Boolean).join(' / ');
 }
 function preencherDadosDestino(){
-  const nome=document.getElementById('localDescarga')?.value||'';
+  const nome=$('localDescarga')?.value||'';
   const cli=clientePorNome(nome); if(!cli)return;
-  const el=document.getElementById('localDescarga');
+  const el=$('localDescarga');
   if(el && cli.localizacao && !String(el.dataset.locationFilled||'')){
     el.title='Localização: '+cli.localizacao;
     el.dataset.locationFilled='1';
@@ -641,17 +653,22 @@ ${smartWrap('tipoVeiculo','Tipo de Caminhão',c.tipoVeiculo||'','caminhoes')}
 <div style="margin-top:14px"><button class="green" onclick="saveCarga('${id||''}')">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button></div>`);
 calcMot();
 }
-function calcMot(){let ve=Number(document.getElementById('valorEmpresa')?.value||0), mg=Number(document.getElementById('margem')?.value||0); let el=document.getElementById('valorMotorista'); if(el)el.value=currency(ve*(1-mg/100))}
+function calcMot(){let ve=getNumberValue('valorEmpresa',0), mg=getNumberValue('margem',0); let el=$('valorMotorista'); if(el)el.value=currency(ve*(1-mg/100))}
 function saveCarga(id){
-  let c=id?db.cargas.find(x=>x.id===id):{id:crypto.randomUUID(),op:document.getElementById('op').value||nextOp(),createdAt:Date.now()};
-  const novoStatus=status.value;
+  // Salva ou atualiza uma carga e aplica o status pelo helper centralizado.
+  let c=id?db.cargas.find(x=>x.id===id):{id:crypto.randomUUID(),op:getValue('op',nextOp()),createdAt:Date.now()};
+  const statusEl=$('status');
+  const novoStatus=statusEl ? statusEl.value : (c.status || 'Disponível');
+  const valorEmpresa=getNumberValue('valorEmpresa', Number(c.valorEmpresa || 0));
+  const margem=getNumberValue('margem', Number(c.margem || 10));
   Object.assign(c,{
-    op:document.getElementById('op').value||c.op||nextOp(),
-    cliente:cliente.value,tomadorFrete:cliente.value,origem:origem.value,destino:destino.value,
-    clienteOrigem:clienteOrigem.value,localEmbarque:localEmbarque.value,contatoOrigem:contatoOrigem.value,localDescarga:localDescarga.value,
-    produto:produto.value,quantidade:quantidade.value,valorEmpresa:Number(valorEmpresa.value||0),margem:Number(margem.value||10),
-    valorMotorista:Number(valorEmpresa.value||0)*(1-Number(margem.value||10)/100),data:data.value||today(),tipoVeiculo:tipoVeiculo.value,status:novoStatus,obs:obs.value
+    op:getValue('op', c.op || nextOp()),
+    cliente:getValue('cliente', c.cliente || ''),tomadorFrete:getValue('cliente', c.tomadorFrete || ''),origem:getValue('origem', c.origem || ''),destino:getValue('destino', c.destino || ''),
+    clienteOrigem:getValue('clienteOrigem', c.clienteOrigem || ''),localEmbarque:getValue('localEmbarque', c.localEmbarque || ''),contatoOrigem:getValue('contatoOrigem', c.contatoOrigem || ''),localDescarga:getValue('localDescarga', c.localDescarga || ''),
+    produto:getValue('produto', c.produto || ''),quantidade:getValue('quantidade', c.quantidade || ''),valorEmpresa,margem,
+    valorMotorista:valorEmpresa*(1-margem/100),data:getValue('data', c.data || today()),tipoVeiculo:getValue('tipoVeiculo', c.tipoVeiculo || ''),obs:getValue('obs', c.obs || '')
   });
+  updateStatus(c, novoStatus);
   if(novoStatus==='Disponível'){
     const tinhaVinculos=db.agendamentos.some(a=>a.cargaId===c.id)||db.manifestos.some(m=>m.cargaId===c.id);
     if(tinhaVinculos && !confirm('Ao voltar para Disponível, a ORDEM/AGENDAMENTO e o manifesto desta carga serão removidos. Continuar?'))return;
@@ -661,8 +678,12 @@ function saveCarga(id){
   if(!id){db.cargas.push(c); recordCotacao(c)}
   addHist(c.id,id?'Carga editada':'Carga criada'); closeModal(); render()
 }
-function delCarga(id){if(confirm('Excluir carga?')){db.cargas=db.cargas.filter(c=>c.id!==id);db.agendamentos=db.agendamentos.filter(a=>a.cargaId!==id);render()}}
-function dupCarga(id){let c=db.cargas.find(x=>x.id===id); if(!c)return; let n=Object.assign({},c,{id:crypto.randomUUID(),op:nextOp(),createdAt:Date.now(),status:'Disponível'}); db.cargas.push(n); recordCotacao(n); addHist(n.id,'Carga duplicada da OP '+c.op); render();}
+function delCarga(id){
+  // Exclui a carga e remove os vínculos de agendamento e manifesto relacionados.
+  if(confirm('Excluir carga?')){db.cargas=db.cargas.filter(c=>c.id!==id);db.agendamentos=db.agendamentos.filter(a=>a.cargaId!==id);db.manifestos=db.manifestos.filter(m=>m.cargaId!==id);persist();render()}}
+function dupCarga(id){
+  // Duplica uma carga preservando os dados e reiniciando o status para disponibilidade.
+  let c=db.cargas.find(x=>x.id===id); if(!c)return; let n=Object.assign({},c,{id:crypto.randomUUID(),op:nextOp(),createdAt:Date.now()}); updateStatus(n,'Disponível'); db.cargas.push(n); recordCotacao(n); addHist(n.id,'Carga duplicada da OP '+c.op); render();}
 function detailsCarga(id){
 let c=db.cargas.find(x=>x.id===id); 
 let hist=db.historico.filter(h=>h.cargaId===id); 
@@ -704,27 +725,28 @@ ${info.map(x=>`<div class="readonly"><small>${x[0]}</small><b>${escapeHtml(x[1]|
 </div>`);
 }
 function openAg(id){let c=db.cargas.find(x=>x.id===id); let motors=db.motoristas||[]; openModal(`<h2>Agendar carga</h2><p><b>${c.op} - ${c.origem} x ${c.destino}</b></p><div class="grid"><div class="field"><label>Motorista cadastrado</label><select id="motorSel" onchange="fillMotor()"><option value="">Selecionar...</option>${motors.map(m=>`<option value="${m.id}">${m.nome||m.placa}</option>`).join('')}</select></div><div class="field"><label>Motorista</label><input id="mot" value=""></div><div class="field"><label>Placa</label><input id="placa" value=""></div><div class="field"><label>Telefone</label><input id="tel" value=""></div><div class="field"><label>Data</label><input id="dtAg" type="date" value="${today()}"></div><div class="field"><label>Peso previsto (ton)</label><input id="pesoAg" type="number" step="0.01" value="32"></div><div class="field span2"><label>Observações</label><textarea id="obsAg"></textarea></div></div><div style="margin-top:14px"><button class="green" onclick="saveAg('${id}')">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button></div>`)}
-function fillMotor(){let m=db.motoristas.find(x=>x.id===motorSel.value); if(m){mot.value=m.nome||'';placa.value=m.placa||'';tel.value=m.telefone||''}}
+function fillMotor(){let sel=$('motorSel'); let motEl=$('mot'); let placaEl=$('placa'); let telEl=$('tel'); let m=db.motoristas.find(x=>x.id===sel?.value); if(m){if(motEl)motEl.value=m.nome||''; if(placaEl)placaEl.value=m.placa||''; if(telEl)telEl.value=m.telefone||''}}
 function saveAg(cargaId){
+  // Salva ou atualiza um agendamento ativo por carga sem duplicar ordens e manifestos.
   let c=db.cargas.find(x=>x.id===cargaId); if(!c)return;
-  const motorista=mot.value.trim(), placaValor=placa.value.trim().toUpperCase();
+  const motorista=getValue('mot','').trim(), placaValor=getValue('placa','').trim().toUpperCase();
   if(!motorista||!placaValor){alert('Informe motorista e placa.');return;}
-  let a={id:crypto.randomUUID(),tipo:'ORDEM_AGENDAMENTO',cargaId,motoristaId:motorSel.value||'',veiculoId:'',motorista,placa:placaValor,telefone:tel.value.trim(),data:dtAg.value||today(),peso:Number(document.getElementById('pesoAg')?.value||32),obs:obsAg.value.trim(),createdAt:Date.now()};
-  db.agendamentos.push(a);
-  db.manifestos.push({id:crypto.randomUUID(),cargaId,agendamentoId:a.id,agendado:true,manifestado:false,carregado:false,transito:false,finalizado:false});
-  c.status='Agendado'; addHist(cargaId,'Ordem/Agendamento criado: '+a.motorista+' - '+a.placa); save(); closeModal(); render();
+  const result=upsertAgendamentoAndManifesto(cargaId,{type:'ORDEM_AGENDAMENTO',motoristaId:getValue('motorSel','')||'',motorista,placa:placaValor,telefone:getValue('tel','').trim(),data:getValue('dtAg',today()),peso:getNumberValue('pesoAg',32),obs:getValue('obsAg','').trim()});
+  if(!result)return;
+  updateStatus(c,'Agendado'); addHist(cargaId,'Ordem/Agendamento criado: '+motorista+' - '+placaValor); persist(); closeModal(); render();
 }
 function agPage(m){
   const lista=[...db.agendamentos].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
   m.innerHTML=topHtml('Agendamentos','ORDEM e AGENDAMENTO são o mesmo registro')+`<div class="panel"><div class="tableWrap"><table class="table"><thead><tr><th>Data</th><th>OP</th><th>Motorista</th><th>Placa</th><th>Telefone</th><th>Peso</th><th>Rota</th><th>Ação</th></tr></thead><tbody>${lista.length?lista.map(a=>{let c=db.cargas.find(x=>x.id===a.cargaId)||{};return`<tr><td>${dateBR(a.data)}</td><td><b>${c.op||'-'}</b></td><td>${escapeHtml(a.motorista||'')}</td><td>${escapeHtml(a.placa||'')}</td><td>${escapeHtml(a.telefone||'')}</td><td>${Number(a.peso||32)} ton</td><td>${escapeHtml(c.origem||'')} → ${escapeHtml(c.destino||'')}</td><td><button class="green small" onclick="go('manifestos')">Manifesto</button> <button class="red small" onclick="deleteAgendamento('${a.id}')">Excluir</button></td></tr>`}).join(''):'<tr><td colspan="8" style="text-align:center">Nenhuma ordem/agendamento</td></tr>'}</tbody></table></div></div>`
 }
 function deleteAgendamento(id){
+  // Remove a ordem/agendamento atual e limpa o manifesto associado sem deixar vínculos órfãos.
   if(!confirm('Excluir esta ordem/agendamento?'))return;
   const a=db.agendamentos.find(x=>x.id===id);
   db.agendamentos=db.agendamentos.filter(x=>x.id!==id);
   db.manifestos=db.manifestos.filter(x=>x.agendamentoId!==id);
-  if(a){const c=db.cargas.find(x=>x.id===a.cargaId); if(c){const restantes=db.agendamentos.filter(x=>x.cargaId===c.id); if(!restantes.length)c.status='Disponível'; addHist(c.id,'Ordem/Agendamento excluído: '+(a.motorista||'')+' - '+(a.placa||''));}}
-  save();render();
+  if(a){const c=db.cargas.find(x=>x.id===a.cargaId); if(c){const restantes=db.agendamentos.filter(x=>x.cargaId===c.id); if(!restantes.length)updateStatus(c,'Disponível'); addHist(c.id,'Ordem/Agendamento excluído: '+(a.motorista||'')+' - '+(a.placa||''));}}
+  persist();render();
 }
 function manPage(m){
   let lista=db.manifestos.map(f=>({f,a:db.agendamentos.find(x=>x.id===f.agendamentoId)||{},c:db.cargas.find(x=>x.id===f.cargaId)||{}})).filter(x=>x.a.id)
@@ -740,8 +762,9 @@ function manPage(m){
   m.innerHTML=topHtml('Manifestos','Controle operacional')+`<div class="panel"><div class="tableWrap"><table class="table manifest-table"><thead><tr><th>Motorista</th><th>Placa</th><th>OP / Rota</th><th>Agendado</th><th>Manifestado</th><th>Carregado</th><th>Em trânsito</th><th>Finalizado</th><th>Ação</th></tr><tr><th><input class="search" placeholder="Filtrar" value="${manFilter.motorista}" oninput="manFilter.motorista=this.value;render()"></th><th><input class="search" placeholder="Filtrar" value="${manFilter.placa}" oninput="manFilter.placa=this.value;render()"></th><th></th><th>${selectFilter('agendado')}</th><th>${selectFilter('manifestado')}</th><th>${selectFilter('carregado')}</th><th>${selectFilter('transito')}</th><th>${selectFilter('finalizado')}</th><th><button class="btn small" onclick="${reset}">Limpar</button></th></tr></thead><tbody>${lista.length?lista.map(({f,a,c})=>{const cell=(k,label)=>`<td><label class="step"><input id="mf_${f.id}_${k}" type="checkbox" ${f[k]?'checked':''} ${k==='agendado'?'disabled':''}> <span>${label}</span></label></td>`;return`<tr><td>${escapeHtml(a.motorista||'')}</td><td>${escapeHtml(a.placa||'')}</td><td><b>OP ${escapeHtml(c.op||'-')}</b><br><small>${escapeHtml(c.origem||'')} → ${escapeHtml(c.destino||'')}</small></td>${cell('agendado','Agendado')}${cell('manifestado','Manifestado')}${cell('carregado','Carregado')}${cell('transito','Em trânsito')}${cell('finalizado','Finalizado')}<td><button class="green small manifest-save" onclick="saveManifesto('${f.id}')">Salvar</button></td></tr>`}).join(''):'<tr><td colspan="9" style="text-align:center">Nenhum manifesto</td></tr>'}</tbody></table></div><p class="sub">Marque as etapas e clique em <b>Salvar</b>. Se desmarcar uma etapa, as próximas serão desmarcadas ao salvar.</p></div>`
 }
 function saveManifesto(id){
+  // Salva as etapas do manifesto e atualiza o status da carga pelo helper centralizado.
   let f=db.manifestos.find(x=>x.id===id); if(!f)return;
-  const get=k=>!!document.getElementById(`mf_${id}_${k}`)?.checked;
+  const get=k=>!!$(`mf_${id}_${k}`)?.checked;
   let novo={manifestado:get('manifestado'),carregado:get('carregado'),transito:get('transito'),finalizado:get('finalizado')};
   if(novo.finalizado && !novo.transito){alert('Para finalizar, marque primeiro Em trânsito.'); return;}
   if(novo.transito && !novo.carregado){alert('Para marcar Em trânsito, marque primeiro Carregado.'); return;}
@@ -750,16 +773,11 @@ function saveManifesto(id){
   if(!novo.carregado){novo.transito=false; novo.finalizado=false;}
   if(!novo.transito){novo.finalizado=false;}
   f.agendado=true; f.manifestado=novo.manifestado; f.carregado=novo.carregado; f.transito=novo.transito; f.finalizado=novo.finalizado;
+  const manifestsDuplicados=db.manifestos.filter(x=>x.cargaId===f.cargaId && x.id!==f.id);
+  if(manifestsDuplicados.length){db.manifestos=db.manifestos.filter(x=>x.cargaId!==f.cargaId || x.id===f.id);}
   let c=db.cargas.find(x=>x.id===f.cargaId);
-  if(c){
-    if(f.finalizado)c.status='Finalizado';
-    else if(f.transito)c.status='Em trânsito';
-    else if(f.carregado)c.status='Carregado';
-    else if(f.manifestado)c.status='Manifestado';
-    else c.status='Agendado';
-    addHist(c.id,'Manifesto salvo: '+c.status);
-  }
-  normalize(); save(); alert('Manifesto salvo.'); render();
+  if(c){syncCargaStatusFromManifesto(c,f); addHist(c.id,'Manifesto salvo: '+c.status);}
+  persist(); alert('Manifesto salvo.'); render();
 }
 
 
@@ -794,7 +812,7 @@ function importPage(m){m.innerHTML=topHtml('Importação Inteligente','Cole text
   <div style="margin-top:14px"><button class="primary" onclick="previewImport()">Analisar</button> <button class="green" onclick="createImport()">Criar cargas selecionadas</button> <button class="btn" onclick="clearImport()">Limpar</button></div>
 </div>`}
 let impList=[];
-function impSetStatus(t){let e=document.getElementById('impStatus'); if(e)e.textContent=t}
+function impSetStatus(t){let e=$('impStatus'); if(e)e.textContent=t}
 function normalizeTextBasic(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();}
 function cleanOCR(s){
   return String(s||'')
@@ -843,7 +861,7 @@ function parseWhatsapp(t){
     if(flag>=0)destino=cleanOCR(lines[flag].replace(/🏁|DESTINO:?/ig,''));
   }
   let cliente=findKnownCompany(raw);
-  return {cliente,origem,destino,produto:product,quantidade:'',valorEmpresa:value,margem:Number(document.getElementById('impMarg')?.value||10),valorMotorista:value*(1-Number(document.getElementById('impMarg')?.value||10)/100),data:today(),tipoVeiculo:vehicle,status:'Disponível',obs:''};
+  return {cliente,origem,destino,produto:product,quantidade:'',valorEmpresa:value,margem:Number($('impMarg')?.value||10),valorMotorista:value*(1-Number($('impMarg')?.value||10)/100),data:today(),tipoVeiculo:vehicle,status:'Disponível',obs:''};
 }
 function tableSegments(t){
   let raw=String(t||'').replace(/\r/g,'\n');
@@ -876,7 +894,7 @@ function parseTableByColumns(seg){
   return buildCarga(fields[0], fields[2], fields[3], extractProduct(fields[productIndex]), value, '');
 }
 function buildCarga(cliente,origem,destino,produto,valor,veiculo){
-  let mg=Number(document.getElementById('impMarg')?.value||10), ve=Number(valor||0);
+  let mg=Number($('impMarg')?.value||10), ve=Number(valor||0);
   return {cliente:titleCaseFrete(cliente),origem:titleCaseFrete(origem),destino:titleCaseFrete(destino),produto:titleCaseFrete(produto),quantidade:'',valorEmpresa:ve,margem:mg,valorMotorista:ve*(1-mg/100),data:today(),tipoVeiculo:titleCaseFrete(veiculo||''),status:'Disponível',obs:''};
 }
 function tokenizePlaces(s){
@@ -935,9 +953,9 @@ function parseImportAll(t){
   return out;
 }
 function previewImport(){
-  let txt=document.getElementById('impText')?.value||'';
+  let txt=$('impText')?.value||'';
   impList=parseImportAll(txt);
-  let prev=document.getElementById('prev'); if(!prev)return;
+  let prev=$('prev'); if(!prev)return;
   if(!impList.length){prev.innerHTML='<div class="notice span2">Nenhuma carga encontrada. Você pode ajustar o texto lido acima e clicar em Analisar.</div>'; impSetStatus('Nenhuma carga válida encontrada.'); return;}
   impSetStatus(`${impList.length} carga(s) encontrada(s). Confira antes de salvar.`);
   prev.innerHTML=impList.map((c,i)=>`<div class="panel span2" style="box-shadow:none;margin:0"><label style="font-weight:900"><input type="checkbox" id="imp_sel_${i}" checked> Criar carga ${i+1}</label><div class="grid" style="margin-top:10px">
@@ -950,7 +968,7 @@ function createImport(){
   if(!impList.length)previewImport();
   let created=0, ignored=0;
   impList.forEach((c,i)=>{
-    let sel=document.getElementById(`imp_sel_${i}`); if(sel&&!sel.checked)return;
+    let sel=$(`imp_sel_${i}`); if(sel&&!sel.checked)return;
     let carga={id:crypto.randomUUID(),op:nextOp(),createdAt:Date.now(),cliente:valImp(i,'cliente'),origem:valImp(i,'origem'),destino:valImp(i,'destino'),produto:valImp(i,'produto'),quantidade:valImp(i,'quantidade'),valorEmpresa:Number(valImp(i,'valorEmpresa')||0),margem:Number(valImp(i,'margem')||10),valorMotorista:Number(valImp(i,'valorMotorista')||0),tipoVeiculo:valImp(i,'tipoVeiculo'),data:valImp(i,'data')||today(),status:'Disponível',obs:'Criada por Importação Inteligente'};
     if(!isUseful(carga)){ignored++; return;}
     db.cargas.push(carga); recordCotacao(carga); addHist(carga.id,'Carga criada por importação inteligente'); created++;
@@ -958,8 +976,8 @@ function createImport(){
   if(!created){alert('Nenhuma carga válida foi criada. Confira a prévia ou edite os campos.'); return;}
   save(); alert(`${created} carga(s) criada(s).`+(ignored?` ${ignored} ignorada(s).`:'')); go('cargas');
 }
-function valImp(i,k){let e=document.getElementById(`imp_${i}_${k}`); return e?e.value:''}
-function clearImport(){impList=[]; let t=document.getElementById('impText'); if(t)t.value=''; let p=document.getElementById('prev'); if(p)p.innerHTML='<div class="readonly span2">Cole ou envie um print para analisar.</div>'; impSetStatus('Aguardando conteúdo...')}
+function valImp(i,k){let e=$(`imp_${i}_${k}`); return e?e.value:''}
+function clearImport(){impList=[]; let t=$('impText'); if(t)t.value=''; let p=$('prev'); if(p)p.innerHTML='<div class="readonly span2">Cole ou envie um print para analisar.</div>'; impSetStatus('Aguardando conteúdo...')}
 async function showImg(file){
   let r=new FileReader(); r.onload=async()=>{
     drop.innerHTML=`<img src="${r.result}"><p>Imagem recebida. Fazendo OCR...</p>`;
@@ -967,7 +985,7 @@ async function showImg(file){
       try{
         impSetStatus('Lendo imagem...');
         const ret=await Tesseract.recognize(file,'por+eng');
-        document.getElementById('impText').value=(ret.data&&ret.data.text)||'';
+        $('impText').value=(ret.data&&ret.data.text)||'';
         previewImport();
       }catch(e){console.error(e); impSetStatus('Não consegui ler a imagem. Cole o texto manualmente.');}
     }else{impSetStatus('OCR indisponível. Cole o texto manualmente.')}
@@ -1026,9 +1044,9 @@ function orderDataFromObjects(c,mot,vei){return {
   remetente:c.cliente||'', localOrigem:c.origem||'', destinatario:c.cliente||'', localDestino:c.destino||'', pedido:'', produto:c.produto||'', quantidade:c.quantidade||'', frete:c.valorMotorista||c.valorEmpresa||'', observacao:c.obs||'',
   cavalo:vei.placaCavalo||vei.placa||mot.placa||'', carreta:vei.placaCarreta||'', proprietario:vei.proprietario||'', cpfCnpjProprietario:vei.cpfCnpjProprietario||'', municipio:vei.municipio||vei.cidade||mot.municipio||mot.cidade||'', uf:vei.uf||mot.uf||'', motorista:mot.nome||'', nomeWhatsapp:mot.nomeWhatsapp||'', cnh:mot.cnh||'', rg:mot.rg||'', cpf:mot.cpf||'', telefone:mot.telefone||''
 }}
-function getOrd(id){let e=document.getElementById('ord_'+id); return e?e.value:''}
-function currentOrderData(){let {c,m,v}=selectedOrderData(); let d=orderDataFromObjects(c,m,v); ['remetente','localOrigem','destinatario','localDestino','pedido','produto','quantidade','frete','observacao'].forEach(k=>{let val=getOrd(k); if(val!==''||document.getElementById('ord_'+k))d[k]=val}); return d}
-function updateOrderPreview(){let el=document.getElementById('orderPreview'); if(el)el.innerHTML=orderDocHTML(currentOrderData()); let fn=document.getElementById('orderFileName'); if(fn){let {v}=selectedOrderData(); fn.textContent=`ORDEM G10 PLACA ${placaOrdem(v)}.pdf`;}}
+function getOrd(id){let e=$('ord_'+id); return e?e.value:''}
+function currentOrderData(){let {c,m,v}=selectedOrderData(); let d=orderDataFromObjects(c,m,v); ['remetente','localOrigem','destinatario','localDestino','pedido','produto','quantidade','frete','observacao'].forEach(k=>{let val=getOrd(k); if(val!==''||$('ord_'+k))d[k]=val}); return d}
+function updateOrderPreview(){let el=$('orderPreview'); if(el)el.innerHTML=orderDocHTML(currentOrderData()); let fn=$('orderFileName'); if(fn){let {v}=selectedOrderData(); fn.textContent=`ORDEM G10 PLACA ${placaOrdem(v)}.pdf`;}}
 function orderDocHTML(d){return `<div class="orderDoc" id="orderDoc"><div class="orderSheet">${orderViaHTML(d)}<div class="orderCut">✂ corte aqui</div>${orderViaHTML(d)}</div></div>`}
 function orderViaHTML(d){return `<div class="orderVia">
   <div class="titleBar">AUTORIZAÇÃO DE CARREGAMENTO</div>
@@ -1147,24 +1165,19 @@ function pdfVia(doc,d,y0){
   pdfCell(doc,x0,y,32,7,'',{size:7}); pdfCell(doc,x0+32,y,95,7,'',{size:7}); pdfCell(doc,x0+127,y,63,7,'',{size:7});
 }
 function saveCurrentOrderAsAgendamento(){
+  // Salva a ordem/agendamento atual sem criar duplicatas por carga.
   const {c,m,v}=selectedOrderData();
   if(!c.id){alert('Selecione uma carga.');return null;}
   if(!m.id){alert('Selecione um motorista.');return null;}
   const placaValor=String(v.placaCavalo||v.placa||m.placa||'').trim().toUpperCase();
   if(!placaValor){alert('Selecione um caminhão com placa.');return null;}
   const d=currentOrderData();
-  let a={
-    id:crypto.randomUUID(), tipo:'ORDEM_AGENDAMENTO', cargaId:c.id, motoristaId:m.id, veiculoId:v.id||'',
-    motorista:m.nome||m.nomeWhatsapp||'', placa:placaValor, placaCarreta:v.placaCarreta||'', telefone:m.telefone||'',
-    data:today(), obs:d.observacao||'', pedido:d.pedido||'', produto:d.produto||c.produto||'', quantidade:d.quantidade||c.quantidade||'',
-    frete:Number(d.frete||0), remetente:d.remetente||'', localOrigem:d.localOrigem||'', destinatario:d.destinatario||'', localDestino:d.localDestino||'', createdAt:Date.now()
-  };
-  db.agendamentos.push(a);
-  db.manifestos.push({id:crypto.randomUUID(),cargaId:c.id,agendamentoId:a.id,agendado:true,manifestado:false,carregado:false,transito:false,finalizado:false});
-  c.status='Agendado';
-  addHist(c.id,'ORDEM/AGENDAMENTO salvo: '+a.motorista+' - '+a.placa);
+  const result=upsertAgendamentoAndManifesto(c.id,{tipo:'ORDEM_AGENDAMENTO',motoristaId:m.id,veiculoId:v.id||'',motorista:m.nome||m.nomeWhatsapp||'',placa:placaValor,placaCarreta:v.placaCarreta||'',telefone:m.telefone||'',data:today(),obs:d.observacao||'',pedido:d.pedido||'',produto:d.produto||c.produto||'',quantidade:d.quantidade||c.quantidade||'',frete:Number(d.frete||0),remetente:d.remetente||'',localOrigem:d.localOrigem||'',destinatario:d.destinatario||'',localDestino:d.localDestino||''});
+  if(!result)return null;
+  updateStatus(c,'Agendado');
+  addHist(c.id,'ORDEM/AGENDAMENTO salvo: '+result.nextAgendamento.motorista+' - '+result.nextAgendamento.placa);
   save();
-  return a;
+  return result.nextAgendamento;
 }
 
 async function saveOrderPdf(){
@@ -1188,7 +1201,7 @@ function printOrder(){updateOrderPreview(); const ordemSalva=saveCurrentOrderAsA
 function rascunhosPage(m){
   m.innerHTML=topHtml('Rascunhos','Bloco simples para anotar textos rápidos')+`<div class="panel"><div class="field"><label>Escreva aqui</label><textarea id="rascunhoTxt" style="min-height:420px" placeholder="Anote aqui fretes, telefones, ideias ou lembretes...">${escapeHtml(db.rascunho||'')}</textarea></div><br><button class="green" onclick="saveRascunho()">Salvar</button> <button class="btn" onclick="clearRascunho()">Limpar</button><p class="sub">O rascunho fica salvo neste navegador.</p></div>`
 }
-function saveRascunho(){db.rascunho=document.getElementById('rascunhoTxt').value; save(); alert('Rascunho salvo.')}
+function saveRascunho(){db.rascunho=$('rascunhoTxt').value; save(); alert('Rascunho salvo.')}
 function clearRascunho(){if(confirm('Limpar todo o rascunho?')){db.rascunho=''; save(); render()}}
 function escapeHtml(v){return String(v??'').replace(/[&<>"]/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]))}
 function niceLabel(f){return ({nome:'Nome',nomeWhatsapp:'Nome no WhatsApp',cidade:'Cidade',municipio:'Município',uf:'UF',contato:'Contato',cnpj:'CNPJ',localizacao:'Localização (link)',telefone:'Telefone',email:'E-mail',observacoes:'Observações',placa:'Placa',placaCavalo:'Placa Cavalo',placaCarreta:'Placa Carreta / S. Reb.',tipo:'Tipo',motorista:'Motorista',situacao:'Situação',tipoVeiculo:'Tipo veículo',titulo:'Título',descricao:'Descrição',data:'Data',cpf:'CPF',rg:'RG',cnh:'CNH',veiculoId:'Veículo vinculado',proprietario:'Proprietário',cpfCnpjProprietario:'CPF/CNPJ Proprietário',rntrc:'RNTRC'}[f]||f)}
@@ -1248,8 +1261,8 @@ function simplePage(m,key,title,fields){
 }
 function openSimple(key,title,fields){openModal(`<h2>Novo ${title}</h2><div class="grid">${fields.map(f=>simpleInputField(f,{})).join('')}</div><br><button class="green" onclick="saveSimple('${key}',${JSON.stringify(fields).replaceAll('\"','&quot;')})">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button>`)}
 function editSimple(key,id,fields,title){let item=db[key].find(x=>x.id===id); if(!item)return; openModal(`<h2>Editar ${title}</h2><div class="grid">${fields.map(f=>simpleInputField(f,item)).join('')}</div><br><button class="green" onclick="updateSimple('${key}','${id}',${JSON.stringify(fields).replaceAll('\"','&quot;')})">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button>`)}
-function saveSimple(key,fields){let obj={id:crypto.randomUUID()}; fields.forEach(f=>obj[f]=document.getElementById('s_'+f).value); if(key==='clientes' && !obj.localizacao)obj.localizacao=mapsLinkCliente(obj.nome,obj.cidade,obj.observacoes); if(!db[key])db[key]=[]; db[key].push(obj); save(); closeModal(); render()}
-function updateSimple(key,id,fields){let obj=db[key].find(x=>x.id===id); if(!obj)return; fields.forEach(f=>obj[f]=document.getElementById('s_'+f).value); if(key==='clientes' && !obj.localizacao)obj.localizacao=mapsLinkCliente(obj.nome,obj.cidade,obj.observacoes); save(); closeModal(); render()}
+function saveSimple(key,fields){let obj={id:crypto.randomUUID()}; fields.forEach(f=>obj[f]=$('s_'+f).value); if(key==='clientes' && !obj.localizacao)obj.localizacao=mapsLinkCliente(obj.nome,obj.cidade,obj.observacoes); if(!db[key])db[key]=[]; db[key].push(obj); save(); closeModal(); render()}
+function updateSimple(key,id,fields){let obj=db[key].find(x=>x.id===id); if(!obj)return; fields.forEach(f=>obj[f]=$('s_'+f).value); if(key==='clientes' && !obj.localizacao)obj.localizacao=mapsLinkCliente(obj.nome,obj.cidade,obj.observacoes); save(); closeModal(); render()}
 function delSimple(key,id){if(confirm('Excluir cadastro?')){db[key]=db[key].filter(x=>x.id!==id); save(); render()}}
 function veiculoLabelById(id){let v=db.veiculos.find(x=>x.id===id); return v?`${v.placaCavalo||v.placa||''} / ${v.placaCarreta||''}`:''}
 function motoristaVeiculoRows(){
@@ -1284,14 +1297,14 @@ function openMotorVeiculoForm(id=''){
   <br><button class="green" onclick="saveMotorVeiculo('${id}')">Salvar</button> <button class="btn" onclick="closeModal()">Fechar</button>`)
 }
 function mvField(id,label,val=''){return `<div class="field"><label>${label}</label><input id="mv_${id}" value="${escapeHtml(val||'')}"></div>`}
-function mvVal(id){let e=document.getElementById('mv_'+id); return e?e.value:''}
+function mvVal(id){let e=$('mv_'+id); return e?e.value:''}
 function saveMotorVeiculo(id=''){
   let mot=id?db.motoristas.find(x=>x.id===id):null;
   if(!mot){mot={id:crypto.randomUUID()}; db.motoristas.push(mot)}
   let vei=(db.veiculos||[]).find(v=>v.id===mot.veiculoId);
   if(!vei){vei={id:crypto.randomUUID()}; db.veiculos.push(vei); mot.veiculoId=vei.id}
-  Object.assign(mot,{nome:mvVal('nome'),nomeWhatsapp:mvVal('nomeWhatsapp'),telefone:mvVal('telefone'),cpf:mvVal('cpf'),rg:mvVal('rg'),cnh:mvVal('cnh'),municipio:mvVal('municipio'),uf:mvVal('uf'),placa:mvVal('placaCavalo'),observacoes:document.getElementById('mv_observacoes').value,veiculoId:vei.id});
-  Object.assign(vei,{placaCavalo:mvVal('placaCavalo'),placa:mvVal('placaCavalo'),placaCarreta:mvVal('placaCarreta'),tipo:mvVal('tipo'),motorista:mvVal('nome'),proprietario:mvVal('proprietario'),cpfCnpjProprietario:mvVal('cpfCnpjProprietario'),municipio:mvVal('municipioVeiculo')||mvVal('municipio'),uf:mvVal('ufVeiculo')||mvVal('uf'),rntrc:mvVal('rntrc'),observacoes:document.getElementById('mv_observacoes').value});
+  Object.assign(mot,{nome:mvVal('nome'),nomeWhatsapp:mvVal('nomeWhatsapp'),telefone:mvVal('telefone'),cpf:mvVal('cpf'),rg:mvVal('rg'),cnh:mvVal('cnh'),municipio:mvVal('municipio'),uf:mvVal('uf'),placa:mvVal('placaCavalo'),observacoes:$('mv_observacoes').value,veiculoId:vei.id});
+  Object.assign(vei,{placaCavalo:mvVal('placaCavalo'),placa:mvVal('placaCavalo'),placaCarreta:mvVal('placaCarreta'),tipo:mvVal('tipo'),motorista:mvVal('nome'),proprietario:mvVal('proprietario'),cpfCnpjProprietario:mvVal('cpfCnpjProprietario'),municipio:mvVal('municipioVeiculo')||mvVal('municipio'),uf:mvVal('ufVeiculo')||mvVal('uf'),rntrc:mvVal('rntrc'),observacoes:$('mv_observacoes').value});
   save(); closeModal(); render();
 }
 function delMotorVeiculo(id){if(!confirm('Excluir este cadastro de motorista e caminhão?'))return; let mot=db.motoristas.find(x=>x.id===id); if(mot&&mot.veiculoId)db.veiculos=db.veiculos.filter(v=>v.id!==mot.veiculoId); db.motoristas=db.motoristas.filter(m=>m.id!==id); save(); render()}
@@ -1311,12 +1324,12 @@ function cotContains(campo, busca){
   return busca.split(' ').every(p=>alvo.includes(p));
 }
 function aplicarCotacaoFiltros(){
-  window.cotIni=document.getElementById('cotIni')?.value||'';
-  window.cotFim=document.getElementById('cotFim')?.value||'';
-  window.cotOri=document.getElementById('cotOri')?.value||'';
-  window.cotDest=document.getElementById('cotDest')?.value||'';
-  window.cotProd=document.getElementById('cotProd')?.value||'';
-  window.cotCli=document.getElementById('cotCli')?.value||'';
+  window.cotIni=$('cotIni')?.value||'';
+  window.cotFim=$('cotFim')?.value||'';
+  window.cotOri=$('cotOri')?.value||'';
+  window.cotDest=$('cotDest')?.value||'';
+  window.cotProd=$('cotProd')?.value||'';
+  window.cotCli=$('cotCli')?.value||'';
   render();
 }
 function limparCotacaoFiltros(){
@@ -1364,10 +1377,12 @@ m.innerHTML=topHtml('Relatórios','Resumo simples')+`<div class="cards">
 }
 function addHist(cargaId,txt){db.historico.push({id:crypto.randomUUID(),cargaId,txt,data:today(),hora:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})})}
 function backup(){let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'})); a.download='backup-dro-cargas-v9.1.json'; a.click()}
-function restoreBackup(e){let f=e.target.files[0]; if(!f)return; let r=new FileReader(); r.onload=()=>{try{db=Object.assign(defaultDb(),JSON.parse(r.result)); normalize(); save(); alert('Backup restaurado.'); render()}catch(err){alert('Arquivo inválido')}}; r.readAsText(f)}
+function restoreBackup(e){
+  // Restaura o backup e persiste a base normalizada sem alterar a interface.
+  let f=e.target.files[0]; if(!f)return; let r=new FileReader(); r.onload=()=>{try{db=Object.assign(defaultDb(),JSON.parse(r.result)); persist(); alert('Backup restaurado.'); render()}catch(err){alert('Arquivo inválido')}}; r.readAsText(f)}
 seedClientesLocalizacoes();
 completarLocalizacoesClientes();
 completarClientesLocalizacoesFaltantes();
-if(sessionStorage.getItem('DRO_CARGAS_SESSAO')==='1'){document.getElementById('login').classList.remove('show');document.getElementById('login').style.display='none';page='dashboard';render();}else{document.getElementById('login').style.display='flex';document.getElementById('login').classList.add('show');}
+if(sessionStorage.getItem('DRO_CARGAS_SESSAO')==='1'){$('login').classList.remove('show');$('login').style.display='none';page='dashboard';render();}else{$('login').style.display='flex';$('login').classList.add('show');}
 </script>
 </body></html>
