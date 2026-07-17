@@ -2,14 +2,15 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Completo</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <title>DRO Cargas V14</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
         body { background: #040b14; color: #f4f7fe; font-family: sans-serif; margin: 0; padding: 20px; }
         .nav-bar { margin-bottom: 20px; }
-        button { background: #2d8cff; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 4px; }
         .tab-content { display: none; }
         .active { display: block; }
+        button { background: #2d8cff; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 4px; }
         table { width: 100%; border-collapse: collapse; background: #0d1728; margin-top: 10px; }
         th, td { padding: 10px; border-bottom: 1px solid #23374f; font-size: 13px; text-align: left; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
@@ -28,9 +29,10 @@
     <!-- ABA CARGAS -->
     <div id="cargas" class="tab-content active">
         <h2>Cargas</h2>
-        <button onclick="alert('Nova Carga')">+ Nova Carga</button>
-        <table id="tabela-cargas">
-            <thead><tr><th>OP</th><th>Origem</th><th>Destino</th><th>Ações</th></tr></thead>
+        <input type="text" id="buscaCargas" placeholder="Buscar cargas..." onkeyup="filtrarCargas()">
+        <button>+ Nova Carga</button>
+        <table>
+            <thead><tr><th>Origem</th><th>OP</th><th>Destino</th><th>Produto</th><th>Vlr Empresa</th><th>Ações</th></tr></thead>
             <tbody id="lista-cargas"></tbody>
         </table>
     </div>
@@ -38,55 +40,41 @@
     <!-- ABA MOTORISTAS -->
     <div id="motoristas" class="tab-content">
         <h2>Motoristas</h2>
-        <input type="text" id="buscaMot" placeholder="Pesquisar placa ou nome..." onkeyup="filtrarMot()">
         <button onclick="abrirModalMot()">+ Cadastrar Motorista</button>
-        <table>
-            <thead><tr><th>Cavalo</th><th>Motorista</th><th>WhatsApp</th><th>Ações</th></tr></thead>
-            <tbody id="lista-motoristas"></tbody>
-        </table>
     </div>
 
-    <!-- MODAL MOTORISTA -->
-    <div id="modalMot" class="modal">
-        <div class="modal-content">
-            <h3>Cadastro Motorista</h3>
-            <input type="text" id="mCavalo" placeholder="Cavalo">
-            <input type="text" id="mSreb1" placeholder="S. Reb 1">
-            <input type="text" id="mSreb2" placeholder="S. Reb 2">
-            <input type="text" id="mSreb3" placeholder="S. Reb 3">
-            <input type="text" id="mTipo" placeholder="Tipo de Veículo">
-            <input type="text" id="mProp" placeholder="Proprietário">
-            <input type="text" id="mCpfProp" placeholder="CPF/CNPJ Prop" onblur="mascaraDoc(this)">
-            <input type="text" id="mMunicipio" placeholder="Município" onblur="formatarCidade(this)">
-            <input type="text" id="mMot" placeholder="Motorista">
-            <input type="text" id="mZap" placeholder="Nome WhatsApp">
-            <input type="text" id="mCpfMot" placeholder="CPF Mot" onblur="mascaraDoc(this)">
-            <button onclick="salvarMot()">Salvar</button>
-            <button onclick="fecharModal()">Fechar</button>
-        </div>
+    <!-- ABA AGENDA -->
+    <div id="agenda" class="tab-content">
+        <h2>Agenda de Tarefas</h2>
+        <button>+ Nova Tarefa</button>
     </div>
 
     <script>
+        const config = { databaseURL: "https://dro-cargas-default-rtdb.firebaseio.com" };
+        if (!firebase.apps.length) firebase.initializeApp(config);
+
+        // Carregar Cargas
+        firebase.database().ref('cargas').on('value', (snapshot) => {
+            const data = snapshot.val();
+            const tbody = document.getElementById('lista-cargas');
+            tbody.innerHTML = "";
+            for (let id in data) {
+                let c = data[id];
+                tbody.innerHTML += `<tr>
+                    <td>${c.origem_cadastro === 'robo' ? '🤖' : '👤'}</td>
+                    <td>${c.cn||''}</td>
+                    <td>${c.cidadeDestino||''}</td>
+                    <td>${c.produto||''}</td>
+                    <td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td>
+                    <td><button>Ordem</button></td>
+                </tr>`;
+            }
+        });
+
         function trocarTab(tab) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
             document.getElementById(tab).style.display = 'block';
         }
-
-        function formatarCidade(el) {
-            let val = el.value.replace("-RS", "");
-            if(val.trim() !== "") el.value = val.trim() + "-RS";
-        }
-
-        function mascaraDoc(el) {
-            let v = el.value.replace(/\D/g, "");
-            if (v.length === 11) el.value = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-            else if (v.length === 14) el.value = v.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
-        }
-
-        function abrirModalMot() { document.getElementById('modalMot').style.display = 'flex'; }
-        function fecharModal() { document.getElementById('modalMot').style.display = 'none'; }
-        
-        function salvarMot() { alert("Motorista salvo com sucesso!"); fecharModal(); }
     </script>
 </body>
 </html>
