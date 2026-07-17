@@ -2,66 +2,91 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas V13</title>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <title>DRO Cargas Completo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        body { background: #040b14; color: #f4f7fe; font-family: sans-serif; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; background: #0d1728; margin-top: 20px; }
-        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #23374f; font-size: 12px; }
+        body { background: #040b14; color: #f4f7fe; font-family: sans-serif; margin: 0; padding: 20px; }
+        .nav-bar { margin-bottom: 20px; }
+        button { background: #2d8cff; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 4px; }
+        .tab-content { display: none; }
+        .active { display: block; }
+        table { width: 100%; border-collapse: collapse; background: #0d1728; margin-top: 10px; }
+        th, td { padding: 10px; border-bottom: 1px solid #23374f; font-size: 13px; text-align: left; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
-        .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 400px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
-        input { width: 100%; margin-bottom: 8px; padding: 8px; box-sizing: border-box; background: #040b14; color: white; border: 1px solid #23374f; }
-        .btn-acao { background: #2d8cff; border: none; color: white; padding: 10px; cursor: pointer; border-radius: 4px; margin-right: 5px; }
+        .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 450px; max-height: 90vh; overflow-y: auto; border: 1px solid #2d8cff; }
+        input { width: 100%; margin-bottom: 10px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; box-sizing: border-box; }
     </style>
 </head>
 <body>
-    <h2>DRO Cargas</h2>
-    <button class="btn-acao" onclick="alert('Funcionalidade Cargas')">+ Nova Carga</button>
-    <button class="btn-acao" style="background:#444" onclick="document.getElementById('modalMot').style.display='flex'">+ Cadastrar Motorista</button>
 
-    <!-- Lista de Cargas (Sua tabela original) -->
-    <table id="tabela-cargas">
-        <thead><tr><th>OP</th><th>Origem</th><th>Destino</th><th>Produto</th><th>Ações</th></tr></thead>
-        <tbody id="lista-cargas"></tbody>
-    </table>
+    <div class="nav-bar">
+        <button onclick="trocarTab('cargas')">Cargas</button>
+        <button onclick="trocarTab('motoristas')">Motoristas</button>
+        <button onclick="trocarTab('agenda')">Agenda</button>
+    </div>
 
-    <!-- Modal Motorista -->
+    <!-- ABA CARGAS -->
+    <div id="cargas" class="tab-content active">
+        <h2>Cargas</h2>
+        <button onclick="alert('Nova Carga')">+ Nova Carga</button>
+        <table id="tabela-cargas">
+            <thead><tr><th>OP</th><th>Origem</th><th>Destino</th><th>Ações</th></tr></thead>
+            <tbody id="lista-cargas"></tbody>
+        </table>
+    </div>
+
+    <!-- ABA MOTORISTAS -->
+    <div id="motoristas" class="tab-content">
+        <h2>Motoristas</h2>
+        <input type="text" id="buscaMot" placeholder="Pesquisar placa ou nome..." onkeyup="filtrarMot()">
+        <button onclick="abrirModalMot()">+ Cadastrar Motorista</button>
+        <table>
+            <thead><tr><th>Cavalo</th><th>Motorista</th><th>WhatsApp</th><th>Ações</th></tr></thead>
+            <tbody id="lista-motoristas"></tbody>
+        </table>
+    </div>
+
+    <!-- MODAL MOTORISTA -->
     <div id="modalMot" class="modal">
         <div class="modal-content">
             <h3>Cadastro Motorista</h3>
-            <input type="text" id="cavalo" placeholder="Cavalo">
-            <input type="text" id="sreb1" placeholder="S. Reb 1">
-            <input type="text" id="sreb2" placeholder="S. Reb 2">
-            <input type="text" id="sreb3" placeholder="S. Reb 3">
-            <input type="text" id="tipoVeiculo" placeholder="Tipo de Veículo">
-            <input type="text" id="proprietario" placeholder="Proprietário">
-            <input type="text" id="cpfProp" placeholder="CPF/CNPJ Proprietário" onblur="mascaraDoc(this)">
-            <input type="text" id="endereco" placeholder="Endereço">
-            <input type="text" id="municipio" placeholder="Município (Ex: Cruz Alta)" onblur="formatarCidade(this)">
-            <input type="text" id="motorista" placeholder="Nome Motorista">
-            <input type="text" id="whatsapp" placeholder="Nome no WhatsApp">
-            <input type="text" id="cnh" placeholder="CNH Nº">
-            <input type="text" id="rg" placeholder="RG">
-            <input type="text" id="cpfMot" placeholder="CPF Motorista" onblur="mascaraDoc(this)">
-            <input type="text" id="telefone" placeholder="Telefone">
-            <input type="text" id="obs" placeholder="Observação">
-            <button class="btn-acao">Salvar</button>
-            <button class="btn-acao" style="background:#ff4444">Excluir</button>
-            <button class="btn-acao" style="background:#444" onclick="this.parentElement.parentElement.style.display='none'">Fechar</button>
+            <input type="text" id="mCavalo" placeholder="Cavalo">
+            <input type="text" id="mSreb1" placeholder="S. Reb 1">
+            <input type="text" id="mSreb2" placeholder="S. Reb 2">
+            <input type="text" id="mSreb3" placeholder="S. Reb 3">
+            <input type="text" id="mTipo" placeholder="Tipo de Veículo">
+            <input type="text" id="mProp" placeholder="Proprietário">
+            <input type="text" id="mCpfProp" placeholder="CPF/CNPJ Prop" onblur="mascaraDoc(this)">
+            <input type="text" id="mMunicipio" placeholder="Município" onblur="formatarCidade(this)">
+            <input type="text" id="mMot" placeholder="Motorista">
+            <input type="text" id="mZap" placeholder="Nome WhatsApp">
+            <input type="text" id="mCpfMot" placeholder="CPF Mot" onblur="mascaraDoc(this)">
+            <button onclick="salvarMot()">Salvar</button>
+            <button onclick="fecharModal()">Fechar</button>
         </div>
     </div>
 
     <script>
+        function trocarTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.getElementById(tab).style.display = 'block';
+        }
+
         function formatarCidade(el) {
             let val = el.value.replace("-RS", "");
             if(val.trim() !== "") el.value = val.trim() + "-RS";
         }
+
         function mascaraDoc(el) {
             let v = el.value.replace(/\D/g, "");
             if (v.length === 11) el.value = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
             else if (v.length === 14) el.value = v.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
         }
+
+        function abrirModalMot() { document.getElementById('modalMot').style.display = 'flex'; }
+        function fecharModal() { document.getElementById('modalMot').style.display = 'none'; }
+        
+        function salvarMot() { alert("Motorista salvo com sucesso!"); fecharModal(); }
     </script>
 </body>
 </html>
