@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas V15</title>
+    <title>DRO Cargas V16</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -28,25 +28,21 @@
     <!-- ABA CARGAS -->
     <div id="cargas" class="tab-content active">
         <h2>Cargas</h2>
-        <input type="text" id="buscaCargas" placeholder="Buscar cargas..." onkeyup="filtrarCargas()" style="width:100%; padding:8px; margin-bottom:10px; background:#0d1728; border:1px solid #23374f; color:white;">
+        <input type="text" id="buscaCargas" placeholder="Buscar cargas..." style="width:100%; padding:8px; margin-bottom:10px; background:#0d1728; border:1px solid #23374f; color:white;">
         <button>+ Nova Carga</button>
         <table>
-            <thead><tr><th>Origem</th><th>OP</th><th>Destino</th><th>Produto</th><th>Vlr Empresa</th><th>Ações</th></tr></thead>
+            <thead>
+                <tr>
+                    <th></th><th>OP</th><th>Origem</th><th>Destino</th><th>Produto</th>
+                    <th>Vlr Empresa</th><th>Vlr Mot</th><th>Ações</th>
+                </tr>
+            </thead>
             <tbody id="lista-cargas"></tbody>
         </table>
     </div>
 
-    <!-- ABA MOTORISTAS -->
-    <div id="motoristas" class="tab-content">
-        <h2>Motoristas</h2>
-        <button>+ Cadastrar Motorista</button>
-    </div>
-
-    <!-- ABA AGENDA -->
-    <div id="agenda" class="tab-content">
-        <h2>Agenda / Notas</h2>
-        <textarea id="notas" placeholder="Escreva suas anotações aqui..."></textarea>
-    </div>
+    <div id="motoristas" class="tab-content"><h2>Motoristas</h2><button>+ Cadastrar</button></div>
+    <div id="agenda" class="tab-content"><h2>Agenda</h2><textarea></textarea></div>
 
     <script>
         const config = { databaseURL: "https://dro-cargas-default-rtdb.firebaseio.com" };
@@ -63,12 +59,19 @@
             tbody.innerHTML = "";
             for (let id in data) {
                 let c = data[id];
+                // Cálculo simples do valor do motorista baseado no percentual
+                let valEmpresa = parseFloat(c.valor || 0);
+                let perc = parseFloat(c.percentual || 10);
+                let valMot = (valEmpresa * (perc / 100)).toFixed(2);
+                
                 tbody.innerHTML += `<tr>
                     <td>${c.origem_cadastro === 'robo' ? '🤖' : '👤'}</td>
                     <td>${c.cn||''}</td>
+                    <td>${c.cidadeOrigem||''}</td>
                     <td>${c.cidadeDestino||''}</td>
                     <td>${c.produto||''}</td>
-                    <td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td>
+                    <td>R$ ${valEmpresa.toFixed(2)}</td>
+                    <td>R$ ${valMot}</td>
                     <td>
                         <button class="btn-acao">Ordem</button>
                         <button class="btn-acao">Editar</button>
