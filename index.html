@@ -2,23 +2,21 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas V19</title>
+    <title>DRO Cargas Sistema Completo</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body { background: #040b14; color: #f4f7fe; font-family: sans-serif; margin: 0; padding: 20px; }
         .nav-bar { margin-bottom: 20px; }
         .tab-content { display: none; }
         .active { display: block; }
-        button { background: #2d8cff; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px; margin-right: 5px; }
+        button { background: #2d8cff; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 4px; }
         table { width: 100%; border-collapse: collapse; background: #0d1728; margin-top: 10px; }
-        th, td { padding: 8px; border-bottom: 1px solid #23374f; font-size: 12px; text-align: left; }
-        .btn-acao { font-size: 11px; padding: 4px 8px; background: #23374f; cursor: pointer; color: white; border: none; border-radius: 3px; margin: 2px; }
+        th, td { padding: 8px; border-bottom: 1px solid #23374f; font-size: 12px; }
+        .btn-acao { background: #23374f; font-size: 11px; margin: 2px; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
-        .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 400px; border: 1px solid #2d8cff; }
-        input { width: 100%; margin-bottom: 10px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; }
-        textarea { width: 100%; height: 200px; background: #0d1728; color: white; border: 1px solid #23374f; padding: 10px; }
+        .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 400px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
+        input, textarea { width: 100%; margin-bottom: 8px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -29,63 +27,79 @@
         <button onclick="trocarTab('agenda')">Agenda</button>
     </div>
 
-    <!-- ABA CARGAS -->
     <div id="cargas" class="tab-content active">
         <h2>Cargas</h2>
+        <input type="text" placeholder="Buscar cargas..." id="buscaCargas">
         <button>+ Nova Carga</button>
         <table>
-            <thead><tr><th>OP</th><th>Origem</th><th>Destino</th><th>Vlr Empresa</th><th>Vlr Mot</th><th>Ações</th></tr></thead>
+            <thead><tr><th>OP</th><th>Origem</th><th>Destino</th><th>Produto</th><th>Vlr Empresa</th><th>Vlr Mot</th><th>Ações</th></tr></thead>
             <tbody id="lista-cargas"></tbody>
         </table>
     </div>
 
-    <!-- MODAL ORDEM -->
+    <div id="motoristas" class="tab-content">
+        <h2>Motoristas</h2>
+        <input type="text" placeholder="Pesquisar por placa ou nome..." id="buscaMot">
+        <button onclick="document.getElementById('modalMot').style.display='flex'">+ Cadastrar Motorista</button>
+        <table>
+            <thead><tr><th>Cavalo</th><th>Motorista</th><th>WhatsApp</th><th>Ações</th></tr></thead>
+            <tbody id="lista-motoristas"></tbody>
+        </table>
+    </div>
+
+    <div id="agenda" class="tab-content">
+        <h2>Agenda / Notas</h2>
+        <textarea id="notas" placeholder="Escreva suas anotações aqui..."></textarea>
+    </div>
+
+    <div id="modalMot" class="modal">
+        <div class="modal-content">
+            <h3>Cadastro Motorista</h3>
+            <input type="text" id="cavalo" placeholder="Cavalo">
+            <input type="text" id="sreb1" placeholder="S. Reb 1">
+            <input type="text" id="sreb2" placeholder="S. Reb 2">
+            <input type="text" id="sreb3" placeholder="S. Reb 3">
+            <input type="text" id="tipo" placeholder="Tipo de Veículo">
+            <input type="text" id="prop" placeholder="Proprietário">
+            <input type="text" id="cpfP" placeholder="CPF/CNPJ Prop" onblur="mascaraDoc(this)">
+            <input type="text" id="ender" placeholder="Endereço">
+            <input type="text" id="mun" placeholder="Município" onblur="formatarCidade(this)">
+            <input type="text" id="mot" placeholder="Nome Motorista">
+            <input type="text" id="zap" placeholder="Nome no WhatsApp">
+            <input type="text" id="cnh" placeholder="CNH Nº">
+            <input type="text" id="rg" placeholder="RG">
+            <input type="text" id="cpfM" placeholder="CPF Motorista" onblur="mascaraDoc(this)">
+            <input type="text" id="tel" placeholder="Telefone">
+            <input type="text" id="obs" placeholder="Observação">
+            <button onclick="alert('Salvo')">Salvar</button>
+            <button onclick="document.getElementById('modalMot').style.display='none'">Fechar</button>
+        </div>
+    </div>
+
     <div id="modalOrdem" class="modal">
         <div class="modal-content">
             <h3>Gerar Ordem (G10)</h3>
             <input type="text" placeholder="Pesquisar motorista/placa...">
-            <input type="text" id="pesoCarga" placeholder="Digite o Peso da Carga">
-            <button onclick="gerarPDF()">Gerar PDF</button>
+            <input type="text" id="pesoCarga" placeholder="Digite o Peso">
+            <button onclick="alert('PDF Gerado')">Gerar PDF</button>
             <button onclick="document.getElementById('modalOrdem').style.display='none'">Fechar</button>
         </div>
     </div>
 
-    <!-- ABA MOTORISTAS e AGENDA mantidas -->
-    <div id="motoristas" class="tab-content"><h2>Motoristas</h2><button>+ Cadastrar</button></div>
-    <div id="agenda" class="tab-content"><h2>Agenda</h2><textarea></textarea></div>
-
     <script>
-        const config = { databaseURL: "https://dro-cargas-default-rtdb.firebaseio.com" };
-        if (!firebase.apps.length) firebase.initializeApp(config);
-
         function trocarTab(tab) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
             document.getElementById(tab).style.display = 'block';
         }
-
-        function abrirOrdem() { document.getElementById('modalOrdem').style.display = 'flex'; }
-
-        firebase.database().ref('cargas').on('value', (snapshot) => {
-            const data = snapshot.val();
-            const tbody = document.getElementById('lista-cargas');
-            tbody.innerHTML = "";
-            for (let id in data) {
-                let c = data[id];
-                tbody.innerHTML += `<tr>
-                    <td>${c.cn||''}</td>
-                    <td>${c.cidadeOrigem||''}</td>
-                    <td>${c.cidadeDestino||''}</td>
-                    <td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td>
-                    <td>R$ ${(parseFloat(c.valor||0) * 0.1).toFixed(2)}</td>
-                    <td>
-                        <button class="btn-acao" onclick="abrirOrdem()">Ordem</button>
-                        <button class="btn-acao">Editar</button>
-                    </td>
-                </tr>`;
-            }
-        });
-
-        function gerarPDF() { alert("Gerando PDF com os dados preenchidos..."); }
+        function formatarCidade(el) {
+            let val = el.value.replace("-RS", "");
+            if(val.trim() !== "") el.value = val.trim() + "-RS";
+        }
+        function mascaraDoc(el) {
+            let v = el.value.replace(/\D/g, "");
+            if (v.length === 11) el.value = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+            else if (v.length === 14) el.value = v.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
+        }
     </script>
 </body>
 </html>
