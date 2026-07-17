@@ -1,33 +1,91 @@
-<!-- Adicione estas funções dentro da sua tag <script> -->
-<script>
-    // Função para abrir o Modal de Ordem e preencher o PDF
-    function gerarOrdem(idCarga) {
-        // Aqui você abrirá um modal com o campo de busca de motorista
-        // e o campo para digitar o PESO.
-        alert("Gerando ordem para a carga: " + idCarga);
-        
-        // Exemplo da lógica de PDF
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        doc.text("AUTORIZACAO DE CARREGAMENTO - G10", 10, 10);
-        // Aqui incluiremos os campos que você pediu:
-        // doc.text("Placa: " + placaSelecionada, 10, 20);
-        // doc.text("Peso: " + pesoDigitado, 10, 30);
-        
-        doc.save("Ordem_" + idCarga + ".pdf");
-    }
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <title>DRO Cargas V19</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body { background: #040b14; color: #f4f7fe; font-family: sans-serif; margin: 0; padding: 20px; }
+        .nav-bar { margin-bottom: 20px; }
+        .tab-content { display: none; }
+        .active { display: block; }
+        button { background: #2d8cff; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px; margin-right: 5px; }
+        table { width: 100%; border-collapse: collapse; background: #0d1728; margin-top: 10px; }
+        th, td { padding: 8px; border-bottom: 1px solid #23374f; font-size: 12px; text-align: left; }
+        .btn-acao { font-size: 11px; padding: 4px 8px; background: #23374f; cursor: pointer; color: white; border: none; border-radius: 3px; margin: 2px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
+        .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 400px; border: 1px solid #2d8cff; }
+        input { width: 100%; margin-bottom: 10px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; }
+        textarea { width: 100%; height: 200px; background: #0d1728; color: white; border: 1px solid #23374f; padding: 10px; }
+    </style>
+</head>
+<body>
 
-    // Função de Editar
-    function editarCarga(idCarga) {
-        alert("Abrindo edição da carga: " + idCarga);
-        // Aqui abriremos o modal de edição com os campos da carga
-    }
-</script>
+    <div class="nav-bar">
+        <button onclick="trocarTab('cargas')">Cargas</button>
+        <button onclick="trocarTab('motoristas')">Motoristas</button>
+        <button onclick="trocarTab('agenda')">Agenda</button>
+    </div>
 
-<!-- Na montagem da linha da tabela, atualize os botões para chamar estas funções -->
-/* 
-No seu loop do Firebase, ajuste os botões assim:
-<button class="btn-acao" onclick="gerarOrdem('${id}')">Ordem</button>
-<button class="btn-acao" onclick="editarCarga('${id}')">Editar</button>
-*/
+    <!-- ABA CARGAS -->
+    <div id="cargas" class="tab-content active">
+        <h2>Cargas</h2>
+        <button>+ Nova Carga</button>
+        <table>
+            <thead><tr><th>OP</th><th>Origem</th><th>Destino</th><th>Vlr Empresa</th><th>Vlr Mot</th><th>Ações</th></tr></thead>
+            <tbody id="lista-cargas"></tbody>
+        </table>
+    </div>
+
+    <!-- MODAL ORDEM -->
+    <div id="modalOrdem" class="modal">
+        <div class="modal-content">
+            <h3>Gerar Ordem (G10)</h3>
+            <input type="text" placeholder="Pesquisar motorista/placa...">
+            <input type="text" id="pesoCarga" placeholder="Digite o Peso da Carga">
+            <button onclick="gerarPDF()">Gerar PDF</button>
+            <button onclick="document.getElementById('modalOrdem').style.display='none'">Fechar</button>
+        </div>
+    </div>
+
+    <!-- ABA MOTORISTAS e AGENDA mantidas -->
+    <div id="motoristas" class="tab-content"><h2>Motoristas</h2><button>+ Cadastrar</button></div>
+    <div id="agenda" class="tab-content"><h2>Agenda</h2><textarea></textarea></div>
+
+    <script>
+        const config = { databaseURL: "https://dro-cargas-default-rtdb.firebaseio.com" };
+        if (!firebase.apps.length) firebase.initializeApp(config);
+
+        function trocarTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.getElementById(tab).style.display = 'block';
+        }
+
+        function abrirOrdem() { document.getElementById('modalOrdem').style.display = 'flex'; }
+
+        firebase.database().ref('cargas').on('value', (snapshot) => {
+            const data = snapshot.val();
+            const tbody = document.getElementById('lista-cargas');
+            tbody.innerHTML = "";
+            for (let id in data) {
+                let c = data[id];
+                tbody.innerHTML += `<tr>
+                    <td>${c.cn||''}</td>
+                    <td>${c.cidadeOrigem||''}</td>
+                    <td>${c.cidadeDestino||''}</td>
+                    <td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td>
+                    <td>R$ ${(parseFloat(c.valor||0) * 0.1).toFixed(2)}</td>
+                    <td>
+                        <button class="btn-acao" onclick="abrirOrdem()">Ordem</button>
+                        <button class="btn-acao">Editar</button>
+                    </td>
+                </tr>`;
+            }
+        });
+
+        function gerarPDF() { alert("Gerando PDF com os dados preenchidos..."); }
+    </script>
+</body>
+</html>
