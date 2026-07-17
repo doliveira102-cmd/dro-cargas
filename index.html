@@ -9,18 +9,18 @@
     <style>
         body { background: #040b14; color: #f4f7fe; font-family: sans-serif; margin: 0; padding: 20px; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        input { padding: 10px; border-radius: 5px; border: 1px solid #23374f; background: #0d1728; color: white; width: 250px; }
-        button { background: #2d8cff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        input { padding: 8px; border-radius: 4px; border: 1px solid #23374f; background: #0d1728; color: white; }
+        button { background: #2d8cff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
         table { width: 100%; border-collapse: collapse; background: #0d1728; }
         th, td { padding: 10px; text-align: left; border-bottom: 1px solid #23374f; font-size: 13px; }
-        .icon { font-size: 18px; }
+        .btn-acao { font-size: 11px; padding: 4px 8px; margin-right: 5px; background: #23374f; color: white; border: none; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="top-bar">
         <h2>DRO Cargas V11</h2>
         <input type="text" id="busca" placeholder="Buscar..." onkeyup="filtrar()">
-        <button onclick="alert('Formulário de cadastro em breve!')">+ Nova Carga</button>
+        <button onclick="alert('Funcionalidade em breve!')">+ Nova Carga</button>
     </div>
     <table>
         <thead><tr><th>Origem</th><th>OP</th><th>Cliente</th><th>Pagador</th><th>Produto</th><th>Vlr Empresa</th><th>Vlr Motorista</th><th>Ações</th></tr></thead>
@@ -35,37 +35,46 @@
 
         firebase.database().ref('cargas').on('value', (snapshot) => {
             const data = snapshot.val();
-            listaCargas = data ? Object.values(data) : [];
+            // Criamos um array com a chave (ID) do Firebase para podermos editar
+            listaCargas = data ? Object.entries(data).map(([id, val]) => ({id, ...val})) : [];
             renderizar(listaCargas);
         });
 
         function renderizar(dados) {
             const tbody = document.getElementById('tabela-cargas');
             tbody.innerHTML = dados.map(c => {
-                // Cálculo: Valor Motorista = Valor Empresa - 10%
                 const vlrEmpresa = parseFloat(c.valor || 0);
                 const vlrMotorista = (vlrEmpresa * 0.9).toFixed(2);
-                const iconeOrigem = c.origem_cadastro === 'robo' ? '🤖' : '👤';
+                const icone = c.origem_cadastro === 'robo' ? '🤖' : '👤';
                 
                 return `<tr>
-                    <td class="icon">${iconeOrigem}</td>
+                    <td>${icone}</td>
                     <td>${c.cn || ''}</td>
                     <td>${c.destino || ''}</td>
                     <td>${c.pagador || 'N/A'}</td>
                     <td>${c.produto || ''}</td>
                     <td>R$ ${vlrEmpresa.toFixed(2)}</td>
                     <td>R$ ${vlrMotorista}</td>
-                    <td><button class="btn-acao">Agendar</button></td>
+                    <td>
+                        <button class="btn-acao" onclick="editarCarga('${c.id}')">Editar</button>
+                    </td>
                 </tr>`;
             }).join('');
+        }
+
+        function editarCarga(id) {
+            const novoValor = prompt("Digite o novo valor total da empresa:");
+            if (novoValor) {
+                firebase.database().ref('cargas/' + id).update({ valor: novoValor });
+                alert("Valor atualizado!");
+            }
         }
 
         function filtrar() {
             const b = document.getElementById('busca').value.toLowerCase();
             renderizar(listaCargas.filter(c => 
                 (c.cn && c.cn.toLowerCase().includes(b)) || 
-                (c.destino && c.destino.toLowerCase().includes(b)) ||
-                (c.pagador && c.pagador.toLowerCase().includes(b))
+                (c.destino && c.destino.toLowerCase().includes(b))
             ));
         }
     </script>
