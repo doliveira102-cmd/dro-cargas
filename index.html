@@ -2,9 +2,10 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V26</title>
+    <title>DRO Cargas Sistema Completo V27</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body { background: #040b14; color: #f4f7fe; font-family: sans-serif; margin: 0; padding: 20px; }
         .nav-bar { margin-bottom: 20px; }
@@ -30,7 +31,7 @@
     <!-- ABA CARGAS -->
     <div id="cargas" class="tab-content active">
         <h2>Cargas</h2>
-        <input type="text" placeholder="Buscar cargas..." id="buscaCargas">
+        <input type="text" placeholder="Buscar cargas..." id="buscaCargas" onkeyup="filtrarTabela('lista-cargas', 'buscaCargas')">
         <button>+ Nova Carga</button>
         <table>
             <thead>
@@ -46,7 +47,7 @@
     <!-- ABA MOTORISTAS -->
     <div id="motoristas" class="tab-content">
         <h2>Motoristas</h2>
-        <input type="text" placeholder="Pesquisar por placa ou nome..." id="buscaMot">
+        <input type="text" placeholder="Pesquisar por placa ou nome..." id="buscaMot" onkeyup="filtrarTabela('lista-motoristas', 'buscaMot')">
         <button onclick="document.getElementById('modalMot').style.display='flex'">+ Cadastrar Motorista</button>
         <table>
             <thead><tr><th>Cavalo</th><th>Motorista</th><th>WhatsApp</th><th>Ações</th></tr></thead>
@@ -60,7 +61,7 @@
         <textarea id="notas" placeholder="Escreva suas anotações aqui..."></textarea>
     </div>
 
-    <!-- MODAL CADASTRO MOTORISTA -->
+    <!-- MODAIS (CADASTRO, EDITAR, ORDEM) -->
     <div id="modalMot" class="modal">
         <div class="modal-content">
             <h3>Cadastro Motorista</h3>
@@ -80,15 +81,15 @@
             <input type="text" id="cpfM" placeholder="CPF Motorista" onblur="mascaraDoc(this)">
             <input type="text" id="tel" placeholder="Telefone">
             <input type="text" id="obs" placeholder="Observação">
-            <button onclick="alert('Salvo')">Salvar</button>
+            <button onclick="alert('Motorista Salvo')">Salvar</button>
             <button onclick="document.getElementById('modalMot').style.display='none'">Fechar</button>
         </div>
     </div>
 
-    <!-- MODAL EDITAR CARGA -->
     <div id="modalEditar" class="modal">
         <div class="modal-content">
             <h3>Editar Carga</h3>
+            <input type="hidden" id="editId">
             <input type="text" id="editOp" placeholder="OP">
             <input type="text" id="editCidOrig" placeholder="Cidade Origem">
             <input type="text" id="editCidDest" placeholder="Cidade Destino">
@@ -98,13 +99,12 @@
             <input type="text" id="editContato" placeholder="Contato Embarque">
             <input type="text" id="editEmail" placeholder="Email Embarque">
             <textarea id="editObs" placeholder="Observações"></textarea>
-            <button onclick="alert('Salvo')">Salvar</button>
+            <button onclick="alert('Salvando...')">Salvar</button>
             <button onclick="document.getElementById('modalEditar').style.display='none'">Fechar</button>
             <button style="background: #ff4d4d;" onclick="alert('Excluído')">Excluir</button>
         </div>
     </div>
 
-    <!-- MODAL ORDEM -->
     <div id="modalOrdem" class="modal">
         <div class="modal-content">
             <h3>Gerar Ordem (G10)</h3>
@@ -116,10 +116,58 @@
     </div>
 
     <script>
+        const config = { databaseURL: "https://dro-cargas-default-rtdb.firebaseio.com" };
+        if (!firebase.apps.length) firebase.initializeApp(config);
+
         function trocarTab(tab) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
             document.getElementById(tab).style.display = 'block';
         }
+
+        function filtrarTabela(idTabela, idInput) {
+            let input = document.getElementById(idInput).value.toUpperCase();
+            let table = document.getElementById(idTabela);
+            let tr = table.getElementsByTagName("tr");
+            for (let i = 0; i < tr.length; i++) {
+                let txt = tr[i].textContent || tr[i].innerText;
+                tr[i].style.display = txt.toUpperCase().indexOf(input) > -1 ? "" : "none";
+            }
+        }
+
+        function editarCarga(id, op, cidOrig, cidDest, cliOrig, cliDest, prod, val) {
+            document.getElementById('editId').value = id;
+            document.getElementById('editOp').value = op;
+            document.getElementById('editCidOrig').value = cidOrig;
+            document.getElementById('editCidDest').value = cidDest;
+            document.getElementById('editCliOrig').value = cliOrig;
+            document.getElementById('editCliDest').value = cliDest;
+            document.getElementById('modalEditar').style.display = 'flex';
+        }
+
+        firebase.database().ref('cargas').on('value', (snapshot) => {
+            const data = snapshot.val();
+            const tbody = document.getElementById('lista-cargas');
+            tbody.innerHTML = "";
+            for (let id in data) {
+                let c = data[id];
+                tbody.innerHTML += `<tr>
+                    <td>${c.origem_cadastro === 'robo' ? '🤖' : '👤'}</td>
+                    <td>${c.cn||''}</td>
+                    <td>${c.cidadeOrigem||''}</td>
+                    <td>${c.cidadeDestino||''}</td>
+                    <td>${c.clienteOrigem||''}</td>
+                    <td>${c.clienteDestino||''}</td>
+                    <td>${c.produto||''}</td>
+                    <td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td>
+                    <td>R$ ${(parseFloat(c.valor||0) * 0.1).toFixed(2)}</td>
+                    <td>
+                        <button class="btn-acao" onclick="document.getElementById('modalOrdem').style.display='flex'">Ordem</button>
+                        <button class="btn-acao" onclick="editarCarga('${id}', '${c.cn||''}', '${c.cidadeOrigem||''}', '${c.cidadeDestino||''}', '${c.clienteOrigem||''}', '${c.clienteDestino||''}')">Editar</button>
+                    </td>
+                </tr>`;
+            }
+        });
+
         function formatarCidade(el) {
             let val = el.value.replace("-RS", "");
             if(val.trim() !== "") el.value = val.trim() + "-RS";
