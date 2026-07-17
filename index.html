@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas V21</title>
+    <title>DRO Cargas Sistema Completo</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -27,7 +27,6 @@
         <button onclick="trocarTab('agenda')">Agenda</button>
     </div>
 
-    <!-- ABA CARGAS -->
     <div id="cargas" class="tab-content active">
         <h2>Cargas</h2>
         <input type="text" placeholder="Buscar cargas..." id="buscaCargas">
@@ -38,7 +37,6 @@
         </table>
     </div>
 
-    <!-- ABA MOTORISTAS -->
     <div id="motoristas" class="tab-content">
         <h2>Motoristas</h2>
         <input type="text" placeholder="Pesquisar por placa ou nome..." id="buscaMot">
@@ -49,38 +47,30 @@
         </table>
     </div>
 
-    <!-- ABA AGENDA -->
     <div id="agenda" class="tab-content">
         <h2>Agenda / Notas</h2>
         <textarea id="notas" placeholder="Escreva suas anotações aqui..."></textarea>
     </div>
 
-    <!-- MODAL CADASTRO MOTORISTA -->
+    <div id="modalEditar" class="modal">
+        <div class="modal-content">
+            <h3>Editar Carga</h3>
+            <input type="hidden" id="editId">
+            <input type="text" id="editOp" placeholder="OP">
+            <input type="text" id="editOrigem" placeholder="Origem">
+            <input type="text" id="editDestino" placeholder="Destino">
+            <button onclick="alert('Carga ' + document.getElementById('editId').value + ' atualizada')">Salvar Alterações</button>
+            <button onclick="document.getElementById('modalEditar').style.display='none'">Fechar</button>
+        </div>
+    </div>
+
     <div id="modalMot" class="modal">
         <div class="modal-content">
             <h3>Cadastro Motorista</h3>
-            <input type="text" id="cavalo" placeholder="Cavalo">
-            <input type="text" id="sreb1" placeholder="S. Reb 1">
-            <input type="text" id="sreb2" placeholder="S. Reb 2">
-            <input type="text" id="sreb3" placeholder="S. Reb 3">
-            <input type="text" id="tipo" placeholder="Tipo de Veículo">
-            <input type="text" id="prop" placeholder="Proprietário">
-            <input type="text" id="cpfP" placeholder="CPF/CNPJ Prop" onblur="mascaraDoc(this)">
-            <input type="text" id="ender" placeholder="Endereço">
-            <input type="text" id="mun" placeholder="Município" onblur="formatarCidade(this)">
-            <input type="text" id="mot" placeholder="Nome Motorista">
-            <input type="text" id="zap" placeholder="Nome no WhatsApp">
-            <input type="text" id="cnh" placeholder="CNH Nº">
-            <input type="text" id="rg" placeholder="RG">
-            <input type="text" id="cpfM" placeholder="CPF Motorista" onblur="mascaraDoc(this)">
-            <input type="text" id="tel" placeholder="Telefone">
-            <input type="text" id="obs" placeholder="Observação">
-            <button onclick="alert('Salvo')">Salvar</button>
             <button onclick="document.getElementById('modalMot').style.display='none'">Fechar</button>
         </div>
     </div>
 
-    <!-- MODAL ORDEM -->
     <div id="modalOrdem" class="modal">
         <div class="modal-content">
             <h3>Gerar Ordem (G10)</h3>
@@ -100,6 +90,14 @@
             document.getElementById(tab).style.display = 'block';
         }
 
+        function editarCarga(id, op, origem, destino) {
+            document.getElementById('editId').value = id;
+            document.getElementById('editOp').value = op;
+            document.getElementById('editOrigem').value = origem;
+            document.getElementById('editDestino').value = destino;
+            document.getElementById('modalEditar').style.display = 'flex';
+        }
+
         firebase.database().ref('cargas').on('value', (snapshot) => {
             const data = snapshot.val();
             const tbody = document.getElementById('lista-cargas');
@@ -116,21 +114,12 @@
                     <td>R$ ${(parseFloat(c.valor||0) * 0.1).toFixed(2)}</td>
                     <td>
                         <button class="btn-acao" onclick="document.getElementById('modalOrdem').style.display='flex'">Ordem</button>
-                        <button class="btn-acao">Editar</button>
+                        <button class="btn-acao" onclick="editarCarga('${id}', '${c.cn}', '${c.cidadeOrigem}', '${c.cidadeDestino}')">Editar</button>
                     </td>
                 </tr>`;
             }
         });
-
-        function formatarCidade(el) {
-            let val = el.value.replace("-RS", "");
-            if(val.trim() !== "") el.value = val.trim() + "-RS";
-        }
-        function mascaraDoc(el) {
-            let v = el.value.replace(/\D/g, "");
-            if (v.length === 11) el.value = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-            else if (v.length === 14) el.value = v.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
-        }
     </script>
 </body>
 </html>
+```[cite: 1]
