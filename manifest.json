@@ -1,0 +1,26 @@
+{
+  "manifest_version":3,
+  "name":"DRO BOT V10",
+  "version":"10.0.0-alpha1",
+  "description":"DRO BOT - Sincronização das plataformas de cargas com o DRO.",
+  "permissions":["storage","tabs"],
+  "host_permissions":[
+    "https://velog.com.br/*",
+    "https://velog2.vertti.com.br/*",
+    "https://*.supabase.co/*"
+  ],
+  "background":{"service_worker":"background.js"},
+  "action":{
+    "default_popup":"popup.html",
+    "default_title":"DRO BOT V10"
+  },
+  "options_page":"options.html",
+  "content_scripts":[{
+    "matches":[
+      "https://velog.com.br/*",
+      "https://velog2.vertti.com.br/*"
+    ],
+    "js":["content.js"],
+    "run_at":"document_idle"
+  }]
+}
