@@ -2,130 +2,62 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>DRO Cargas V11</title>
+    <title>DRO Cargas V12</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
-        body { background: #040b14; color: #f4f7fe; font-family: sans-serif; margin: 0; padding: 20px; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        input { padding: 8px; border-radius: 4px; border: 1px solid #23374f; background: #0d1728; color: white; width: 250px; }
-        table { width: 100%; border-collapse: collapse; background: #0d1728; }
-        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #23374f; font-size: 12px; }
-        .btn-acao { font-size: 11px; padding: 4px 8px; margin: 2px; background: #23374f; color: white; border: none; cursor: pointer; border-radius: 3px; }
-        
+        body { background: #040b14; color: #f4f7fe; font-family: sans-serif; padding: 20px; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
-        .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 350px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
-        .modal-content input { width: 100%; margin-bottom: 8px; padding: 8px; box-sizing: border-box; background: #040b14; color: white; border: 1px solid #23374f; }
-        .btn-modal { width: 100%; margin-top: 5px; padding: 10px; cursor: pointer; border: none; border-radius: 4px; }
+        .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 400px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
+        input { width: 100%; margin-bottom: 8px; padding: 8px; box-sizing: border-box; background: #040b14; color: white; border: 1px solid #23374f; }
+        .btn-acao { background: #2d8cff; border: none; color: white; padding: 10px; cursor: pointer; border-radius: 4px; width: 100%; margin-top: 5px; }
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        <h2>DRO Cargas V11</h2>
-        <input type="text" id="busca" placeholder="Buscar..." onkeyup="filtrar()">
-        <button>+ Nova Carga</button>
-    </div>
-    <table>
-        <thead><tr><th>Origem</th><th>OP</th><th>Origem</th><th>Destino</th><th>Produto</th><th>Vlr Empresa</th><th>Ações</th></tr></thead>
-        <tbody id="tabela-cargas"></tbody>
-    </table>
+    <h2>DRO Cargas - Cadastro Motorista</h2>
+    <button class="btn-acao" onclick="document.getElementById('modalMot').style.display='flex'">+ Novo Motorista</button>
 
-    <div id="modalEdicao" class="modal">
+    <!-- Modal Motorista -->
+    <div id="modalMot" class="modal">
         <div class="modal-content">
-            <h3>Editar Carga</h3>
-            <input type="text" id="editCn" placeholder="OP (CN)">
-            <input type="text" id="editCidadeOrigem" placeholder="Cidade Origem">
-            <input type="text" id="editClienteOrigem" placeholder="Cliente Origem">
-            <input type="text" id="editCidadeDestino" placeholder="Cidade Destino">
-            <input type="text" id="editClienteDestino" placeholder="Cliente Destino">
-            <input type="text" id="editLocalCarregamento" placeholder="Local Carregamento">
-            <input type="text" id="editContatoEmbarque" placeholder="Contato Embarque">
-            <input type="text" id="editProduto" placeholder="Produto">
-            <input type="number" id="editValor" placeholder="Valor Empresa">
-            <input type="number" id="editPerc" placeholder="% Motorista">
-            <button class="btn-modal" style="background:#2d8cff" onclick="salvarEdicao()">Salvar</button>
-            <button class="btn-modal" style="background:#ff4444" onclick="excluirCarga()">Excluir</button>
-            <button class="btn-modal" style="background:#444" onclick="fecharModal()">Sair</button>
+            <h3>Cadastro Motorista</h3>
+            <input type="text" id="cavalo" placeholder="Cavalo">
+            <input type="text" id="sreb1" placeholder="S. Reb 1">
+            <input type="text" id="sreb2" placeholder="S. Reb 2">
+            <input type="text" id="sreb3" placeholder="S. Reb 3">
+            <input type="text" id="tipoVeiculo" placeholder="Tipo de Veículo">
+            <input type="text" id="proprietario" placeholder="Proprietário">
+            <input type="text" id="cpfProp" placeholder="CPF/CNPJ Proprietário" onblur="mascaraDoc(this)">
+            <input type="text" id="endereco" placeholder="Endereço">
+            <input type="text" id="municipio" placeholder="Município (Ex: Cruz Alta)" onblur="formatarCidade(this)">
+            <input type="text" id="motorista" placeholder="Nome Motorista">
+            <input type="text" id="whatsapp" placeholder="Nome no WhatsApp">
+            <input type="text" id="cnh" placeholder="CNH Nº">
+            <input type="text" id="rg" placeholder="RG">
+            <input type="text" id="cpfMot" placeholder="CPF Motorista" onblur="mascaraDoc(this)">
+            <input type="text" id="telefone" placeholder="Telefone">
+            <input type="text" id="obs" placeholder="Observação">
+            
+            <button class="btn-acao" style="background:#2d8cff">Salvar</button>
+            <button class="btn-acao" style="background:#ff4444">Excluir</button>
+            <button class="btn-acao" style="background:#444" onclick="this.parentElement.parentElement.style.display='none'">Fechar</button>
         </div>
     </div>
 
     <script>
-        const config = { databaseURL: "https://dro-cargas-default-rtdb.firebaseio.com" };
-        if (!firebase.apps.length) firebase.initializeApp(config);
-        
-        let listaCargas = [], cargaAtualId = "";
-
-        firebase.database().ref('cargas').on('value', (snapshot) => {
-            const data = snapshot.val();
-            listaCargas = data ? Object.entries(data).map(([id, val]) => ({id, ...val})) : [];
-            renderizar(listaCargas);
-        });
-
-        function renderizar(dados) {
-            const tbody = document.getElementById('tabela-cargas');
-            tbody.innerHTML = dados.map(c => `<tr>
-                <td>${c.origem_cadastro === 'robo' ? '🤖' : '👤'}</td>
-                <td>${c.cn||''}</td>
-                <td>${c.cidadeOrigem||''}</td>
-                <td>${c.cidadeDestino||''}</td>
-                <td>${c.produto||''}</td>
-                <td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td>
-                <td>
-                    <button class="btn-acao">Ordem</button>
-                    <button class="btn-acao" onclick="abrirModal('${c.id}')">Editar</button>
-                </td>
-            </tr>`).join('');
+        // Função de Máscara para Cidade
+        function formatarCidade(el) {
+            let val = el.value.replace("-RS", "");
+            if(val.trim() !== "") el.value = val.trim() + "-RS";
         }
 
-        function filtrar() {
-            const b = document.getElementById('busca').value.toLowerCase();
-            renderizar(listaCargas.filter(c => 
-                (c.cn && c.cn.toLowerCase().includes(b)) || 
-                (c.cidadeOrigem && c.cidadeOrigem.toLowerCase().includes(b)) ||
-                (c.cidadeDestino && c.cidadeDestino.toLowerCase().includes(b)) ||
-                (c.produto && c.produto.toLowerCase().includes(b))
-            ));
-        }
-
-        function abrirModal(id) {
-            const c = listaCargas.find(x => x.id === id);
-            cargaAtualId = id;
-            document.getElementById('editCn').value = c.cn || "";
-            document.getElementById('editCidadeOrigem').value = c.cidadeOrigem || "";
-            document.getElementById('editClienteOrigem').value = c.clienteOrigem || "";
-            document.getElementById('editCidadeDestino').value = c.cidadeDestino || "";
-            document.getElementById('editClienteDestino').value = c.clienteDestino || "";
-            document.getElementById('editLocalCarregamento').value = c.localCarregamento || "";
-            document.getElementById('editContatoEmbarque').value = c.contatoEmbarque || "";
-            document.getElementById('editProduto').value = c.produto || "";
-            document.getElementById('editValor').value = c.valor || 0;
-            document.getElementById('editPerc').value = c.percentual || 10;
-            document.getElementById('modalEdicao').style.display = 'flex';
-        }
-
-        function fecharModal() { document.getElementById('modalEdicao').style.display = 'none'; }
-
-        function salvarEdicao() {
-            firebase.database().ref('cargas/' + cargaAtualId).update({
-                cn: document.getElementById('editCn').value,
-                cidadeOrigem: document.getElementById('editCidadeOrigem').value,
-                clienteOrigem: document.getElementById('editClienteOrigem').value,
-                cidadeDestino: document.getElementById('editCidadeDestino').value,
-                clienteDestino: document.getElementById('editClienteDestino').value,
-                localCarregamento: document.getElementById('editLocalCarregamento').value,
-                contatoEmbarque: document.getElementById('editContatoEmbarque').value,
-                produto: document.getElementById('editProduto').value,
-                valor: document.getElementById('editValor').value,
-                percentual: document.getElementById('editPerc').value
-            });
-            fecharModal();
-        }
-
-        function excluirCarga() {
-            if(confirm("Confirmar exclusão?")) {
-                firebase.database().ref('cargas/' + cargaAtualId).remove();
-                fecharModal();
+        // Função de Máscara para CPF/CNPJ
+        function mascaraDoc(el) {
+            let v = el.value.replace(/\D/g, "");
+            if (v.length === 11) {
+                el.value = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+            } else if (v.length === 14) {
+                el.value = v.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
             }
         }
     </script>
