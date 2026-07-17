@@ -2,15 +2,23 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>DRO Cargas V11</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <style>
+        body { background: #040b14; color: #f4f7fe; font-family: Inter, sans-serif; margin: 0; padding: 20px; }
+        h2 { border-bottom: 2px solid #2d8cff; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #0d1728; }
+        th { background: #071320; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #23374f; }
+    </style>
 </head>
 <body>
     <h2>DRO Cargas</h2>
-    <table id="tabela-cargas" border="1">
-        <thead><tr><th>OP (CN)</th><th>Destino</th><th>Origem</th><th>Status</th></tr></thead>
-        <tbody></tbody>
+    <table>
+        <thead><tr><th>OP</th><th>Destino</th><th>Origem</th><th>Status</th></tr></thead>
+        <tbody id="tabela-cargas"></tbody>
     </table>
 
     <script>
@@ -19,16 +27,15 @@
 
         firebase.database().ref('cargas').on('value', (snapshot) => {
             const data = snapshot.val();
-            const tbody = document.querySelector('#tabela-cargas tbody');
+            const tbody = document.getElementById('tabela-cargas');
             tbody.innerHTML = '';
-            
             if (data) {
                 Object.values(data).forEach(c => {
                     tbody.innerHTML += `<tr>
                         <td>${c.cn || ''}</td>
                         <td>${c.destino || ''}</td>
                         <td>${c.origem || ''}</td>
-                        <td>${c.disponivel ? 'Disponível' : 'Indisponível'}</td>
+                        <td>Disponível</td>
                     </tr>`;
                 });
             }
