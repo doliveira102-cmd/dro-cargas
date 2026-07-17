@@ -9,6 +9,7 @@
     <style>
         body { background: #040b14; color: #f4f7fe; font-family: sans-serif; margin: 0; padding: 20px; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        input { padding: 8px; border-radius: 4px; border: 1px solid #23374f; background: #0d1728; color: white; width: 250px; }
         table { width: 100%; border-collapse: collapse; background: #0d1728; }
         th, td { padding: 8px; text-align: left; border-bottom: 1px solid #23374f; font-size: 12px; }
         .btn-acao { font-size: 11px; padding: 4px 8px; margin: 2px; background: #23374f; color: white; border: none; cursor: pointer; border-radius: 3px; }
@@ -22,10 +23,11 @@
 <body>
     <div class="top-bar">
         <h2>DRO Cargas V11</h2>
+        <input type="text" id="busca" placeholder="Buscar..." onkeyup="filtrar()">
         <button>+ Nova Carga</button>
     </div>
     <table>
-        <thead><tr><th>OP</th><th>Origem</th><th>Destino</th><th>Produto</th><th>Vlr Empresa</th><th>Ações</th></tr></thead>
+        <thead><tr><th>Origem</th><th>OP</th><th>Origem</th><th>Destino</th><th>Produto</th><th>Vlr Empresa</th><th>Ações</th></tr></thead>
         <tbody id="tabela-cargas"></tbody>
     </table>
 
@@ -63,10 +65,27 @@
         function renderizar(dados) {
             const tbody = document.getElementById('tabela-cargas');
             tbody.innerHTML = dados.map(c => `<tr>
-                <td>${c.cn||''}</td><td>${c.cidadeOrigem||''}</td><td>${c.cidadeDestino||''}</td>
-                <td>${c.produto||''}</td><td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td>
-                <td><button class="btn-acao">Ordem</button><button class="btn-acao" onclick="abrirModal('${c.id}')">Editar</button></td>
+                <td>${c.origem_cadastro === 'robo' ? '🤖' : '👤'}</td>
+                <td>${c.cn||''}</td>
+                <td>${c.cidadeOrigem||''}</td>
+                <td>${c.cidadeDestino||''}</td>
+                <td>${c.produto||''}</td>
+                <td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td>
+                <td>
+                    <button class="btn-acao">Ordem</button>
+                    <button class="btn-acao" onclick="abrirModal('${c.id}')">Editar</button>
+                </td>
             </tr>`).join('');
+        }
+
+        function filtrar() {
+            const b = document.getElementById('busca').value.toLowerCase();
+            renderizar(listaCargas.filter(c => 
+                (c.cn && c.cn.toLowerCase().includes(b)) || 
+                (c.cidadeOrigem && c.cidadeOrigem.toLowerCase().includes(b)) ||
+                (c.cidadeDestino && c.cidadeDestino.toLowerCase().includes(b)) ||
+                (c.produto && c.produto.toLowerCase().includes(b))
+            ));
         }
 
         function abrirModal(id) {
