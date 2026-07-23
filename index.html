@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V37 - Localizações e Raio</title>
+    <title>DRO Cargas Sistema Completo V38 - Raio de Cargas Ativas</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -92,13 +92,13 @@
         </table>
     </div>
 
-    <!-- ABA EMBARQUES POR RAIO -->
+    <!-- ABA EMBARQUES POR RAIO (BUSCA CARGAS PRÓXIMAS) -->
     <div id="raio" class="tab-content">
-        <h2>Embarques por Raio / Região</h2>
+        <h2>Buscar Cargas Próximas por Raio</h2>
         <div class="calc-inputs" style="background: #0d1728; padding: 15px; border-radius: 8px;">
             <div class="calc-bloco">
-                <label>Cidade Base (Raio)</label>
-                <input type="text" id="raioCidadeBase" placeholder="Ex: Passo Fundo - RS" style="width: 250px;">
+                <label>Cidade onde o Caminhão está</label>
+                <input type="text" id="raioCidadeCaminhao" placeholder="Ex: Passo Fundo - RS" style="width: 250px;">
             </div>
             <div class="calc-bloco">
                 <label>Raio Máximo (km)</label>
@@ -106,21 +106,24 @@
             </div>
             <div class="calc-bloco">
                 <label>&nbsp;</label>
-                <button onclick="calcularEmbarquesPorRaio()" style="background: #17a2b8;">🔍 Filtrar por Raio</button>
+                <button onclick="buscarCargasPorRaio()" style="background: #17a2b8;">🔍 Encontrar Cargas Próximas</button>
             </div>
         </div>
         <table>
             <thead>
                 <tr>
-                    <th>Cidade da Base</th>
-                    <th>Cliente / Unidade</th>
-                    <th>Localidade</th>
-                    <th>Distância Aproximada</th>
+                    <th>Distância</th>
+                    <th>OP / CN</th>
+                    <th>Cidade Origem</th>
+                    <th>Cidade Destino</th>
+                    <th>Cliente Origem</th>
+                    <th>Produto</th>
+                    <th>Vlr Empresa</th>
                     <th>Ações</th>
                 </tr>
             </thead>
             <tbody id="lista-raio">
-                <tr><td colspan="5" style="text-align: center; padding: 20px;">Digite a cidade base e clique em Filtrar por Raio.</td></tr>
+                <tr><td colspan="8" style="text-align: center; padding: 20px;">Informe a cidade do caminhão e clique em Encontrar Cargas Próximas.</td></tr>
             </tbody>
         </table>
     </div>
@@ -263,7 +266,7 @@
         if (!firebase.apps.length) firebase.initializeApp(config);
 
         let listaClientesCache = {};
-        let arrayClientesGlobal = [];
+        let cargasCacheGlobal = {};
 
         function trocarTab(tab) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
@@ -295,7 +298,6 @@
             }
         }
 
-        // ARRAY COM OS 364 LOCAIS EXTRAÍDOS DA SUA PLANILHA
         const dadosLocaisIniciais = [
             {cidade: "RS/IPE", nome: "Adir Carlos Dagnese", desc: "Porteirinha", loc: "Fazenda Dagnese"},
             {cidade: "SC/IMBITUBA", nome: "Adubos Coxilha", desc: "-", loc: "Adubos Coxilha"},
@@ -665,42 +667,28 @@
 
         function importarBaseLocalizacoes() {
             if(!confirm(`Deseja cadastrar automaticamente os ${dadosLocaisIniciais.length} locais na aba Clientes?`)) return;
-            
             let dbRef = firebase.database().ref('clientes');
-            let salvos = 0;
-
             dadosLocaisIniciais.forEach(item => {
                 let mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.nome + ' ' + item.cidade)}`;
-                let novoCli = {
-                    nome: item.nome,
-                    cidade: item.cidade,
-                    responsavel: item.desc,
-                    cnpj: "",
-                    telefone: "",
-                    email: "",
-                    localizacao: mapsLink
-                };
-                dbRef.push(novoCli);
-                salvos++;
+                dbRef.push({ nome: item.nome, cidade: item.cidade, responsavel: item.desc, cnpj: "", telefone: "", email: "", localizacao: mapsLink });
             });
-
-            alert(`${salvos} locais importados com sucesso para o Firebase!`);
+            alert("Locais importados com sucesso!");
         }
 
-        // LÓGICA DA ABA EMBARQUES POR RAIO
-        async function calcularEmbarquesPorRaio() {
-            let base = document.getElementById('raioCidadeBase').value.trim();
+        // LÓGICA DE BUSCAR CARGAS ATIVAS POR RAIO
+        async function buscarCargasPorRaio() {
+            let base = document.getElementById('raioCidadeCaminhao').value.trim();
             let raioMax = parseFloat(document.getElementById('raioDistanciaMax').value) || 100;
             let tbody = document.getElementById('lista-raio');
 
-            if(!base) return alert("Digite a cidade base.");
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px;">Calculando distâncias por raio a partir de ${base}...</td></tr>`;
+            if(!base) return alert("Digite a cidade onde o caminhão está.");
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px;">Varrendo cargas ativas e calculando distâncias a partir de ${base}...</td></tr>`;
 
             try {
                 let resBase = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(base)}`);
                 let dataBase = await resBase.json();
                 if(dataBase.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px; color: #ff4d4d;">Cidade base não encontrada no mapa.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px; color: #ff4d4d;">Cidade base do caminhão não encontrada.</td></tr>`;
                     return;
                 }
                 let lonBase = parseFloat(dataBase[0].lon);
@@ -709,15 +697,14 @@
                 tbody.innerHTML = "";
                 let encontrados = 0;
 
-                // Percorre os locais cadastrados na memória/cache
-                for(let id in arrayClientesGlobal) {
-                    let cli = arrayClientesGlobal[id];
-                    let cidadeCli = cli.cidade || "";
-                    if(!cidadeCli) continue;
+                // Varre as cargas ativas cadastradas no Firebase
+                for(let id in cargasCacheGlobal) {
+                    let c = cargasCacheGlobal[id];
+                    let origemCarga = c.cidadeOrigem || "";
+                    if(!origemCarga) continue;
 
-                    // Consulta rápida OSRM para calcular distância real por estrada
                     try {
-                        let resDest = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cidadeCli)}`);
+                        let resDest = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(origemCarga)}`);
                         let dataDest = await resDest.json();
                         if(dataDest.length > 0) {
                             let lonDest = dataDest[0].lon;
@@ -728,46 +715,118 @@
 
                             if(dataRota.routes && dataRota.routes.length > 0) {
                                 let distKm = (dataRota.routes[0].distance / 1000).toFixed(0);
-                                if(distKm <= raioMax) {
+                                if(parseInt(distKm) <= raioMax) {
                                     encontrados++;
                                     tbody.innerHTML += `<tr>
-                                        <td><strong>${cidadeCli}</strong></td>
-                                        <td>${cli.nome || ''}</td>
-                                        <td>${cli.responsavel || '-'}</td>
                                         <td style="color: #2d8cff; font-weight: bold;">~${distKm} km</td>
-                                        <td><a href="${cli.localizacao || '#'}" target="_blank" style="color: #2d8cff;">Abrir Maps</a></td>
+                                        <td>${c.cn || ''}</td>
+                                        <td><strong>${origemCarga}</strong></td>
+                                        <td>${c.cidadeDestino || ''}</td>
+                                        <td>${c.clienteOrigem || ''}</td>
+                                        <td>${c.produto || ''}</td>
+                                        <td>R$ ${parseFloat(c.valor || 0).toFixed(2)}</td>
+                                        <td><button class="btn-acao" onclick="editarCargaObj('${id}', ${JSON.stringify(c).replace(/"/g, '&quot;')})">Ver Carga</button></td>
                                     </tr>`;
                                 }
                             }
                         }
                     } catch(err) {
-                        // Ignora falhas pontuais de requisição de rota
+                        // Ignora falhas de rota individuais
                     }
                 }
 
                 if(encontrados === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px;">Nenhum embarque encontrado dentro do raio de ${raioMax} km.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px;">Nenhuma carga ativa encontrada dentro do raio de ${raioMax} km de ${base}.</td></tr>`;
                 }
             } catch(e) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px; color: #ff4d4d;">Erro ao processar as rotas de raio.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px; color: #ff4d4d;">Erro ao processar o raio das cargas.</td></tr>`;
             }
         }
 
-        // Listener Firebase de Clientes
+        // Listener Firebase de Cargas Ativas
+        firebase.database().ref('cargas').on('value', (snapshot) => {
+            const data = snapshot.val();
+            cargasCacheGlobal = data || {};
+            const tbody = document.getElementById('lista-cargas');
+            if(tbody) {
+                tbody.innerHTML = "";
+                for (let id in data) {
+                    let c = data[id];
+                    let icone = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
+                    let vlrEmp = parseFloat(c.valor || 0);
+                    let vlrMot = vlrEmp * 0.1;
+
+                    tbody.innerHTML += `<tr>
+                        <td><input type="checkbox" class="check-carga" data-id="${id}"></td>
+                        <td>${icone}</td>
+                        <td>${c.cn||''}</td>
+                        <td>${c.cidadeOrigem||''}</td>
+                        <td>${c.cidadeDestino||''}</td>
+                        <td>${c.clienteOrigem||''}</td>
+                        <td>${c.clienteDestino||''}</td>
+                        <td>${c.produto||''}</td>
+                        <td>R$ ${vlrEmp.toFixed(2)}</td>
+                        <td>R$ ${vlrMot.toFixed(2)}</td>
+                        <td>
+                            <button class="btn-acao" onclick="document.getElementById('modalOrdem').style.display='flex'">Ordem</button>
+                            <button class="btn-acao" onclick='editarCargaObj("${id}", ${JSON.stringify(c)})'>Editar</button>
+                        </td>
+                    </tr>`;
+                }
+            }
+        });
+
+        // Função de Edição de Carga
+        function editarCargaObj(id, cargaObj) {
+            document.getElementById('editFirebaseKey').value = id;
+            document.getElementById('editOp').value = cargaObj.cn || '';
+            document.getElementById('editCidOrig').value = cargaObj.cidadeOrigem || '';
+            document.getElementById('editCidDest').value = cargaObj.cidadeDestino || '';
+            document.getElementById('editCliOrig').value = cargaObj.clienteOrigem || '';
+            document.getElementById('editCliDest').value = cargaObj.clienteDestino || '';
+            document.getElementById('editProduto').value = cargaObj.produto || '';
+            document.getElementById('editVlrEmpresa').value = cargaObj.valor || 0;
+            document.getElementById('editVlrMot').value = (parseFloat(cargaObj.valor || 0) * 0.1).toFixed(2);
+            document.getElementById('editObs').value = cargaObj.obs || '';
+            document.getElementById('modalEditar').style.display = 'flex';
+        }
+
+        function salvarEdicaoCarga() {
+            let key = document.getElementById('editFirebaseKey').value;
+            let dadosAtualizados = {
+                cn: document.getElementById('editOp').value,
+                cidadeOrigem: document.getElementById('editCidOrig').value,
+                cidadeDestino: document.getElementById('editCidDest').value,
+                clienteOrigem: document.getElementById('editCliOrig').value,
+                clienteDestino: document.getElementById('editCliDest').value,
+                produto: document.getElementById('editProduto').value,
+                valor: parseFloat(document.getElementById('editVlrEmpresa').value) || 0,
+                obs: document.getElementById('editObs').value
+            };
+            firebase.database().ref('cargas/' + key).update(dadosAtualizados).then(() => {
+                alert("Carga atualizada!"); document.getElementById('modalEditar').style.display = 'none';
+            });
+        }
+
+        function excluirCargaUnica() {
+            let key = document.getElementById('editFirebaseKey').value;
+            if (confirm("Excluir esta carga?")) {
+                firebase.database().ref('cargas/' + key).remove().then(() => {
+                    alert("Carga excluída!"); document.getElementById('modalEditar').style.display = 'none';
+                });
+            }
+        }
+
+        // Listener Clientes
         firebase.database().ref('clientes').on('value', (snapshot) => {
             const data = snapshot.val();
-            arrayClientesGlobal = data || {};
-            listaClientesCache = {};
             const tbody = document.getElementById('lista-clientes');
             if(tbody) {
                 tbody.innerHTML = "";
                 for (let id in data) {
                     let cli = data[id];
-                    listaClientesCache[(cli.nome||'').toUpperCase()] = cli.localizacao;
                     tbody.innerHTML += `<tr>
-                        <td>${cli.nome||''}</td>
-                        <td>${cli.cidade||''}</td>
-                        <td>${cli.responsavel||''}</td>
+                        <td>${cli.nome||''}</td><td>${cli.cidade||''}</td><td>${cli.responsavel||''}</td>
                         <td><a href="${cli.localizacao||'#'}" target="_blank" style="color: #2d8cff;">Abrir Maps</a></td>
                         <td><button class="btn-acao">Editar</button></td>
                     </tr>`;
@@ -775,17 +834,15 @@
             }
         });
 
-        // Demais funções do sistema (Cargas, Motoristas, Edição, ANTT) mantidas e integradas...
         function salvarCliente() {
             let nome = document.getElementById('cliNome').value;
             let cidade = document.getElementById('cliCidade').value;
             if(!nome) return alert("Preencha ao menos o nome do cliente.");
             let mapsLink = document.getElementById('cliLoc').value || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(nome + ' ' + cidade)}`;
-            let novoCliente = {
+            firebase.database().ref('clientes').push({
                 nome: nome, cidade: cidade, responsavel: document.getElementById('cliLocDesc').value,
                 cnpj: "", telefone: "", email: "", localizacao: mapsLink
-            };
-            firebase.database().ref('clientes').push(novoCliente).then(() => {
+            }).then(() => {
                 alert("Cliente salvo!"); document.getElementById('modalCliente').style.display = 'none';
             });
         }
