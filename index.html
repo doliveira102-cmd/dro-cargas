@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V41 - Raio Otimizado</title>
+    <title>DRO Cargas Sistema Completo V42 - Sincronização Corrigida</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -266,7 +266,30 @@
             }
         }
 
-        // COORDENADAS APROXIMADAS DAS PRINCIPAIS CIDADES DO RS PARA CÁLCULO INSTANTÂNEO DE RAIO
+        // MÁSCARAS
+        function mascaraCnpjCpf(el) {
+            let v = el.value.replace(/\D/g, "");
+            if (v.length <= 11) {
+                v = v.replace(/(\d{3})(\d)/, "$1.$2");
+                v = v.replace(/(\d{3})(\d)/, "$1.$2");
+                v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            } else {
+                v = v.replace(/^(\d{2})(\d)/, "$1.$2");
+                v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
+                v = v.replace(/\.(\d{3})(\d)/, ".$1/$2");
+                v = v.replace(/(\d{4})(\d{1,2})$/, "$1-$2");
+            }
+            el.value = v;
+        }
+
+        function mascaraFone(el) {
+            let v = el.value.replace(/\D/g, "");
+            v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+            v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+            el.value = v;
+        }
+
+        // COORDENADAS PARA RAIO
         const coordenadasCidades = {
             "SANANDUVA": [-27.7375, -51.8153],
             "PASSO FUNDO": [-28.2628, -52.4087],
@@ -301,33 +324,28 @@
             for(let key in coordenadasCidades) {
                 if(limpo.includes(key)) return coordenadasCidades[key];
             }
-            // Coordenada padrão (Centro do RS) caso não ache exato
             return [-29.0, -52.0];
         }
 
-        // CÁLCULO DE DISTÂNCIA (FÓRMULA DE HAVERSINE)
         function calcularDistanciaKm(lat1, lon1, lat2, lon2) {
-            let R = 6371; // Raio da terra em km
+            let R = 6371;
             let dLat = (lat2 - lat1) * Math.PI / 180;
             let dLon = (lon2 - lon1) * Math.PI / 180;
             let a = Math.sin(dLat/2) * Math.sin(dLat/2) +
                     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
                     Math.sin(dLon/2) * Math.sin(dLon/2);
             let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            let dist = R * c;
-            return dist * 1.2; // Fator 1.2 para aproximar de distância rodoviária
+            return (R * c) * 1.2;
         }
 
-        // BUSCAR CARGAS POR RAIO (INSTANTÂNEO E SEM ERROS DE REDE)
         function buscarCargasPorRaio() {
             let base = document.getElementById('raioCidadeCaminhao').value.trim();
             let raioMax = parseFloat(document.getElementById('raioDistanciaMax').value) || 200;
             let tbody = document.getElementById('lista-raio');
 
             if(!base) return alert("Digite a cidade onde o caminhão está.");
-            
             let coordBase = obterCoordenadas(base);
-            if(!coordBase) return alert("Cidade base não encontrada na base de coordenadas.");
+            if(!coordBase) return alert("Cidade base não encontrada.");
 
             tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px;">Filtrando cargas próximas...</td></tr>`;
 
@@ -366,7 +384,7 @@
             }, 100);
         }
 
-        // LISTENER FIREBASE DE CARGAS
+        // --- LISTENERS FIREBASE ATIVOS (CARGAS E CLIENTES) ---
         firebase.database().ref('cargas').on('value', (snapshot) => {
             const data = snapshot.val();
             cargasCacheGlobal = data || {};
@@ -398,6 +416,118 @@
                 }
             }
         });
+
+        firebase.database().ref('clientes').on('value', (snapshot) => {
+            const data = snapshot.val();
+            clientesCacheGlobal = data || {};
+            const tbody = document.getElementById('lista-clientes');
+            if(tbody) {
+                tbody.innerHTML = "";
+                for (let id in data) {
+                    let cli = data[id];
+                    let mapsBtn = cli.localizacao ? `<a href="${cli.localizacao}" target="_blank" style="color: #2d8cff;">Abrir Maps</a>` : '-';
+                    tbody.innerHTML += `<tr>
+                        <td><strong>${cli.nome||''}</strong></td>
+                        <td>${cli.cidade||''}</td>
+                        <td>${cli.responsavel||'-'}</td>
+                        <td>${cli.cnpj||'-'}</td>
+                        <td>${cli.telefone||'-'}</td>
+                        <td>${mapsBtn}</td>
+                        <td><button class="btn-acao" onclick="abrirModalEditarCliente('${id}')">Editar</button></td>
+                    </tr>`;
+                }
+            }
+        });
+
+        // FUNÇÕES DE CLIENTES
+        function abrirModalNovoCliente() {
+            document.getElementById('cliFirebaseKey').value = "";
+            document.getElementById('modalClienteTitulo').innerText = "Cadastrar Novo Cliente";
+            document.getElementById('cliNome').value = "";
+            document.getElementById('cliCidade').value = "";
+            document.getElementById('cliResponsavel').value = "";
+            document.getElementById('cliCnpjCpf').value = "";
+            document.getElementById('cliTelefone').value = "";
+            document.getElementById('cliEmail').value = "";
+            document.getElementById('cliLocalizacao').value = "";
+            document.getElementById('cliObs').value = "";
+            document.getElementById('btnExcluirCliente').style.display = "none";
+            document.getElementById('modalCliente').style.display = 'flex';
+        }
+
+        function abrirModalEditarCliente(id) {
+            let cli = clientesCacheGlobal[id];
+            if(!cli) return;
+            document.getElementById('cliFirebaseKey').value = id;
+            document.getElementById('modalClienteTitulo').innerText = "Editar Cliente / Unidade";
+            document.getElementById('cliNome').value = cli.nome || "";
+            document.getElementById('cliCidade').value = cli.cidade || "";
+            document.getElementById('cliResponsavel').value = cli.responsavel || "";
+            document.getElementById('cliCnpjCpf').value = cli.cnpj || "";
+            document.getElementById('cliTelefone').value = cli.telefone || "";
+            document.getElementById('cliEmail').value = cli.email || "";
+            document.getElementById('cliLocalizacao').value = cli.localizacao || "";
+            document.getElementById('cliObs').value = cli.obs || "";
+            document.getElementById('btnExcluirCliente').style.display = "block";
+            document.getElementById('modalCliente').style.display = 'flex';
+        }
+
+        function salvarClienteFirebase() {
+            let key = document.getElementById('cliFirebaseKey').value;
+            let nome = document.getElementById('cliNome').value;
+            let cidade = document.getElementById('cliCidade').value;
+            if(!nome) return alert("Preencha ao menos o nome do cliente.");
+
+            let mapsLink = document.getElementById('cliLocalizacao').value || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(nome + ' ' + cidade)}`;
+            
+            let dadosCli = {
+                nome: nome, cidade: cidade,
+                responsavel: document.getElementById('cliResponsavel').value,
+                cnpj: document.getElementById('cliCnpjCpf').value,
+                telefone: document.getElementById('cliTelefone').value,
+                email: document.getElementById('cliEmail').value,
+                localizacao: mapsLink,
+                obs: document.getElementById('cliObs').value
+            };
+
+            let dbRef = firebase.database().ref('clientes');
+            if(key) {
+                dbRef.child(key).update(dadosCli).then(() => {
+                    alert("Cliente atualizado!"); document.getElementById('modalCliente').style.display = 'none';
+                });
+            } else {
+                dbRef.push(dadosCli).then(() => {
+                    alert("Cliente cadastrado!"); document.getElementById('modalCliente').style.display = 'none';
+                });
+            }
+        }
+
+        function excluirClienteFirebase() {
+            let key = document.getElementById('cliFirebaseKey').value;
+            if(confirm("Deseja excluir este cliente?")) {
+                firebase.database().ref('clientes/' + key).remove().then(() => {
+                    alert("Cliente excluído!"); document.getElementById('modalCliente').style.display = 'none';
+                });
+            }
+        }
+
+        const dadosLocaisIniciais = [
+            {cidade: "RS/IPE", nome: "Adir Carlos Dagnese", desc: "Porteirinha", loc: "Fazenda Dagnese"},
+            {cidade: "SC/IMBITUBA", nome: "Adubos Coxilha", desc: "-", loc: "Adubos Coxilha"},
+            {cidade: "RS/BOM JESUS", nome: "Agricola Dois Capões", desc: "-", loc: "Fruticula Cesar (Mario da Rosa)"},
+            {cidade: "RS/PASSO FUNDO", nome: "Agricola Ferrari", desc: "BR 285", loc: "Agricola Ferrari"},
+            {cidade: "RS/MACHADINHO", nome: "Agricola Grandi", desc: "-", loc: "Agrícola Grandi"}
+        ];
+
+        function importarBaseLocalizacoes() {
+            if(!confirm(`Deseja importar a base inicial de locais?`)) return;
+            let dbRef = firebase.database().ref('clientes');
+            dadosLocaisIniciais.forEach(item => {
+                let mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.nome + ' ' + item.cidade)}`;
+                dbRef.push({ nome: item.nome, cidade: item.cidade, responsavel: item.desc, cnpj: "", telefone: "", email: "", obs: "", localizacao: mapsLink });
+            });
+            alert("Locais importados!");
+        }
 
         function editarCargaObj(id, cargaObj) {
             document.getElementById('editFirebaseKey').value = id;
