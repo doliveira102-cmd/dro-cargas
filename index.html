@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V28</title>
+    <title>DRO Cargas Sistema Completo V29</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -14,10 +14,11 @@
         table { width: 100%; border-collapse: collapse; background: #0d1728; margin-top: 10px; }
         th, td { padding: 8px; border-bottom: 1px solid #23374f; font-size: 11px; text-align: left; }
         .btn-acao { background: #23374f; font-size: 10px; margin: 2px; }
-        .btn-excluir-todas { background: #ff4d4d; margin-left: 10px; }
+        .btn-excluir-selecionadas { background: #ff4d4d; margin-left: 10px; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
         .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 500px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
         input, textarea { width: 100%; margin-bottom: 8px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; box-sizing: border-box; }
+        input[type="checkbox"] { width: auto; }
     </style>
 </head>
 <body>
@@ -33,10 +34,11 @@
         <h2>Cargas</h2>
         <input type="text" placeholder="Buscar cargas..." id="buscaCargas" onkeyup="filtrarTabela('lista-cargas', 'buscaCargas')">
         <button>+ Nova Carga</button>
-        <button class="btn-excluir-todas" onclick="excluirTodasCargas()">🗑️ Excluir Todas as Cargas</button>
+        <button class="btn-excluir-selecionadas" onclick="excluirSelecionadas()">🗑️ Excluir Selecionadas</button>
         <table>
             <thead>
                 <tr>
+                    <th><input type="checkbox" id="selecionarTodos" onclick="alternarTodos(this)"></th>
                     <th></th><th>OP</th><th>Cidade Origem</th><th>Cidade Destino</th><th>Cliente Orig</th><th>Cliente Dest</th>
                     <th>Produto</th><th>Vlr Empresa</th><th>Vlr Mot</th><th>Ações</th>
                 </tr>
@@ -132,11 +134,25 @@
             }
         }
 
-        function excluirTodasCargas() {
-            if (confirm("Tem certeza que deseja excluir TODAS as cargas do sistema?")) {
-                firebase.database().ref('cargas').remove()
-                    .then(() => alert("Todas as cargas foram apagadas!"))
-                    .catch((err) => alert("Erro ao excluir: " + err));
+        function alternarTodos(master) {
+            let checkboxes = document.querySelectorAll('.check-carga');
+            checkboxes.forEach(cb => cb.checked = master.checked);
+        }
+
+        function excluirSelecionadas() {
+            let checkboxes = document.querySelectorAll('.check-carga:checked');
+            if (checkboxes.length === 0) {
+                alert("Selecione ao menos uma carga para excluir.");
+                return;
+            }
+
+            if (confirm(`Deseja realmente excluir as ${checkboxes.length} cargas selecionadas?`)) {
+                let dbRef = firebase.database().ref('cargas');
+                checkboxes.forEach(cb => {
+                    let id = cb.getAttribute('data-id');
+                    dbRef.child(id).remove();
+                });
+                alert("Cargas selecionadas excluídas com sucesso!");
             }
         }
 
@@ -157,6 +173,7 @@
             for (let id in data) {
                 let c = data[id];
                 tbody.innerHTML += `<tr>
+                    <td><input type="checkbox" class="check-carga" data-id="${id}"></td>
                     <td>${c.origem_cadastro === 'robo' ? '🤖' : '👤'}</td>
                     <td>${c.cn||''}</td>
                     <td>${c.cidadeOrigem||''}</td>
