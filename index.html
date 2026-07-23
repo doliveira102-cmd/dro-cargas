@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V34 - Rotas Automáticas</title>
+    <title>DRO Cargas Sistema Completo V35 - Correção Editar</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -264,8 +264,17 @@
             }
         }
 
+        function editarCarga(id, op, cidOrig, cidDest, cliOrig, cliDest) {
+            document.getElementById('editId').value = id;
+            document.getElementById('editOp').value = op;
+            document.getElementById('editCidOrig').value = cidOrig;
+            document.getElementById('editCidDest').value = cidDest;
+            document.getElementById('editCliOrig').value = cliOrig;
+            document.getElementById('editCliDest').value = cliDest;
+            document.getElementById('modalEditar').style.display = 'flex';
+        }
+
         /* --- LÓGICA DE MAPAS E CALCULADORA ANTT --- */
-        
         async function buscarDistanciaAutomatica() {
             let origem = document.getElementById('anttOrigem').value;
             let destino = document.getElementById('anttDestino').value;
@@ -280,11 +289,9 @@
             inputDist.placeholder = "Buscando...";
 
             try {
-                // Busca Coordenadas Origem (OpenStreetMap)
                 let resO = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(origem)}`);
                 let dataO = await resO.json();
                 
-                // Busca Coordenadas Destino
                 let resD = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destino)}`);
                 let dataD = await resD.json();
 
@@ -297,7 +304,6 @@
                 let lon1 = dataO[0].lon, lat1 = dataO[0].lat;
                 let lon2 = dataD[0].lon, lat2 = dataD[0].lat;
 
-                // Busca Rota (OSRM)
                 let resRota = await fetch(`https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=false`);
                 let dataRota = await resRota.json();
 
@@ -423,10 +429,19 @@
                     let icone = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
                     tbody.innerHTML += `<tr>
                         <td><input type="checkbox" class="check-carga" data-id="${id}"></td>
-                        <td>${icone}</td><td>${c.cn||''}</td><td>${c.cidadeOrigem||''}</td><td>${c.cidadeDestino||''}</td>
-                        <td>${c.clienteOrigem||''}</td><td>${c.clienteDestino||''}</td><td>${c.produto||''}</td>
-                        <td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td><td>R$ ${(parseFloat(c.valor||0) * 0.1).toFixed(2)}</td>
-                        <td><button class="btn-acao" onclick="document.getElementById('modalOrdem').style.display='flex'">Ordem</button></td>
+                        <td>${icone}</td>
+                        <td>${c.cn||''}</td>
+                        <td>${c.cidadeOrigem||''}</td>
+                        <td>${c.cidadeDestino||''}</td>
+                        <td>${c.clienteOrigem||''}</td>
+                        <td>${c.clienteDestino||''}</td>
+                        <td>${c.produto||''}</td>
+                        <td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td>
+                        <td>R$ ${(parseFloat(c.valor||0) * 0.1).toFixed(2)}</td>
+                        <td>
+                            <button class="btn-acao" onclick="document.getElementById('modalOrdem').style.display='flex'">Ordem</button>
+                            <button class="btn-acao" onclick="editarCarga('${id}', '${c.cn||''}', '${c.cidadeOrigem||''}', '${c.cidadeDestino||''}', '${c.clienteOrigem||''}', '${c.clienteDestino||''}')">Editar</button>
+                        </td>
                     </tr>`;
                 }
             }
