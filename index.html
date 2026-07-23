@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V30</title>
+    <title>DRO Cargas Sistema Completo V32 - Clientes</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -27,6 +27,7 @@
         <button onclick="trocarTab('cargas')">Cargas</button>
         <button onclick="trocarTab('motoristas')">Motoristas</button>
         <button onclick="trocarTab('agenda')">Agenda</button>
+        <button onclick="trocarTab('clientes')">Clientes</button>
     </div>
 
     <!-- ABA CARGAS -->
@@ -64,7 +65,22 @@
         <textarea id="notas" placeholder="Escreva suas anotações aqui..."></textarea>
     </div>
 
-    <!-- MODAIS -->
+    <!-- ABA CLIENTES -->
+    <div id="clientes" class="tab-content">
+        <h2>Clientes</h2>
+        <input type="text" placeholder="Pesquisa inteligente de clientes (nome, cidade, cnpj...)" id="buscaClientes" onkeyup="filtrarTabela('lista-clientes', 'buscaClientes')">
+        <button onclick="document.getElementById('modalCliente').style.display='flex'">+ Cadastrar Cliente</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th><th>Cidade</th><th>Responsável</th><th>CNPJ</th><th>Telefone</th><th>E-mail</th><th>Localização (Maps)</th><th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="lista-clientes"></tbody>
+        </table>
+    </div>
+
+    <!-- MODAL CADASTRO MOTORISTA -->
     <div id="modalMot" class="modal">
         <div class="modal-content">
             <h3>Cadastro Motorista</h3>
@@ -89,6 +105,23 @@
         </div>
     </div>
 
+    <!-- MODAL CADASTRO CLIENTE -->
+    <div id="modalCliente" class="modal">
+        <div class="modal-content">
+            <h3>Cadastro de Cliente</h3>
+            <input type="text" id="cliNome" placeholder="Nome do Cliente">
+            <input type="text" id="cliCidade" placeholder="Cidade" onblur="formatarCidade(this)">
+            <input type="text" id="cliResp" placeholder="Responsável">
+            <input type="text" id="cliCnpj" placeholder="CNPJ" onblur="mascaraDoc(this)">
+            <input type="text" id="cliTel" placeholder="Telefone">
+            <input type="text" id="cliEmail" placeholder="E-mail">
+            <input type="text" id="cliLoc" placeholder="Localização (Link Google Maps - Automático ou Manual)">
+            <button onclick="salvarCliente()">Salvar Cliente</button>
+            <button onclick="document.getElementById('modalCliente').style.display='none'">Fechar</button>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR CARGA -->
     <div id="modalEditar" class="modal">
         <div class="modal-content">
             <h3>Editar Carga</h3>
@@ -105,6 +138,7 @@
         </div>
     </div>
 
+    <!-- MODAL ORDEM -->
     <div id="modalOrdem" class="modal">
         <div class="modal-content">
             <h3>Gerar Ordem (G10)</h3>
@@ -156,6 +190,71 @@
             }
         }
 
+        function salvarCliente() {
+            let nome = document.getElementById('cliNome').value;
+            let cidade = document.getElementById('cliCidade').value;
+            let resp = document.getElementById('cliResp').value;
+            let cnpj = document.getElementById('cliCnpj').value;
+            let tel = document.getElementById('cliTel').value;
+            let email = document.getElementById('cliEmail').value;
+            let locManual = document.getElementById('cliLoc').value;
+
+            if(!nome) {
+                alert("Preencha ao menos o nome do cliente.");
+                return;
+            }
+
+            // Geração automática do link do Google Maps baseada no nome e cidade se o campo manual estiver vazio
+            let mapsLink = locManual ? locManual : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(nome + ' ' + cidade)}`;
+
+            let novoCliente = {
+                nome: nome,
+                cidade: cidade,
+                responsavel: resp,
+                cnpj: cnpj,
+                telefone: tel,
+                email: email,
+                localizacao: mapsLink
+            };
+
+            firebase.database().ref('clientes').push(novoCliente)
+                .then(() => {
+                    alert("Cliente cadastrado com sucesso!");
+                    document.getElementById('modalCliente').style.display = 'none';
+                    // Limpar campos
+                    document.getElementById('cliNome').value = '';
+                    document.getElementById('cliCidade').value = '';
+                    document.getElementById('cliResp').value = '';
+                    document.getElementById('cliCnpj').value = '';
+                    document.getElementById('cliTel').value = '';
+                    document.getElementById('cliEmail').value = '';
+                    document.getElementById('cliLoc').value = '';
+                })
+                .catch(err => alert("Erro ao salvar cliente: " + err));
+        }
+
+        // Listener para carregar a lista de clientes do Firebase em tempo real
+        firebase.database().ref('clientes').on('value', (snapshot) => {
+            const data = snapshot.val();
+            const tbody = document.getElementById('lista-clientes');
+            if(tbody) {
+                tbody.innerHTML = "";
+                for (let id in data) {
+                    let cli = data[id];
+                    tbody.innerHTML += `<tr>
+                        <td>${cli.nome||''}</td>
+                        <td>${cli.cidade||''}</td>
+                        <td>${cli.responsavel||''}</td>
+                        <td>${cli.cnpj||''}</td>
+                        <td>${cli.telefone||''}</td>
+                        <td>${cli.email||''}</td>
+                        <td><a href="${cli.localizacao||'#'}" target="_blank" style="color: #2d8cff;">Abrir Maps</a></td>
+                        <td><button class="btn-acao" onclick="alert('Editar Cliente')">Editar</button></td>
+                    </tr>`;
+                }
+            }
+        });
+
         function editarCarga(id, op, cidOrig, cidDest, cliOrig, cliDest) {
             document.getElementById('editId').value = id;
             document.getElementById('editOp').value = op;
@@ -169,28 +268,29 @@
         firebase.database().ref('cargas').on('value', (snapshot) => {
             const data = snapshot.val();
             const tbody = document.getElementById('lista-cargas');
-            tbody.innerHTML = "";
-            for (let id in data) {
-                let c = data[id];
-                // Define o ícone correto dependendo se veio do robô ou manual
-                let iconeOrigem = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
+            if(tbody) {
+                tbody.innerHTML = "";
+                for (let id in data) {
+                    let c = data[id];
+                    let iconeOrigem = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
 
-                tbody.innerHTML += `<tr>
-                    <td><input type="checkbox" class="check-carga" data-id="${id}"></td>
-                    <td>${iconeOrigem}</td>
-                    <td>${c.cn||''}</td>
-                    <td>${c.cidadeOrigem||''}</td>
-                    <td>${c.cidadeDestino||''}</td>
-                    <td>${c.clienteOrigem||''}</td>
-                    <td>${c.clienteDestino||''}</td>
-                    <td>${c.produto||''}</td>
-                    <td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td>
-                    <td>R$ ${(parseFloat(c.valor||0) * 0.1).toFixed(2)}</td>
-                    <td>
-                        <button class="btn-acao" onclick="document.getElementById('modalOrdem').style.display='flex'">Ordem</button>
-                        <button class="btn-acao" onclick="editarCarga('${id}', '${c.cn||''}', '${c.cidadeOrigem||''}', '${c.cidadeDestino||''}', '${c.clienteOrigem||''}', '${c.clienteDestino||''}')">Editar</button>
-                    </td>
-                </tr>`;
+                    tbody.innerHTML += `<tr>
+                        <td><input type="checkbox" class="check-carga" data-id="${id}"></td>
+                        <td>${iconeOrigem}</td>
+                        <td>${c.cn||''}</td>
+                        <td>${c.cidadeOrigem||''}</td>
+                        <td>${c.cidadeDestino||''}</td>
+                        <td>${c.clienteOrigem||''}</td>
+                        <td>${c.clienteDestino||''}</td>
+                        <td>${c.produto||''}</td>
+                        <td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td>
+                        <td>R$ ${(parseFloat(c.valor||0) * 0.1).toFixed(2)}</td>
+                        <td>
+                            <button class="btn-acao" onclick="document.getElementById('modalOrdem').style.display='flex'">Ordem</button>
+                            <button class="btn-acao" onclick="editarCarga('${id}', '${c.cn||''}', '${c.cidadeOrigem||''}', '${c.cidadeDestino||''}', '${c.clienteOrigem||''}', '${c.clienteDestino||''}')">Editar</button>
+                        </td>
+                    </tr>`;
+                }
             }
         });
 
