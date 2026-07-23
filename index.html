@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V32 - Clientes</title>
+    <title>DRO Cargas Sistema Completo V33 - ANTT</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -10,15 +10,20 @@
         .nav-bar { margin-bottom: 20px; }
         .tab-content { display: none; }
         .active { display: block; }
-        button { background: #2d8cff; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 4px; }
+        button { background: #2d8cff; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 4px; font-weight: bold; }
+        button:hover { background: #1a6fd8; }
         table { width: 100%; border-collapse: collapse; background: #0d1728; margin-top: 10px; }
         th, td { padding: 8px; border-bottom: 1px solid #23374f; font-size: 11px; text-align: left; }
         .btn-acao { background: #23374f; font-size: 10px; margin: 2px; }
         .btn-excluir-selecionadas { background: #ff4d4d; margin-left: 10px; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
         .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 500px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
-        input, textarea { width: 100%; margin-bottom: 8px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; box-sizing: border-box; }
+        input, textarea, select { width: 100%; margin-bottom: 8px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; box-sizing: border-box; }
         input[type="checkbox"] { width: auto; }
+        
+        /* Estilos específicos da calculadora */
+        .calc-inputs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+        .calc-inputs input, .calc-inputs select { margin-bottom: 0; }
     </style>
 </head>
 <body>
@@ -28,6 +33,7 @@
         <button onclick="trocarTab('motoristas')">Motoristas</button>
         <button onclick="trocarTab('agenda')">Agenda</button>
         <button onclick="trocarTab('clientes')">Clientes</button>
+        <button onclick="trocarTab('calculadora')" style="background: #23374f; border: 1px solid #2d8cff;">📊 Piso ANTT</button>
     </div>
 
     <!-- ABA CARGAS -->
@@ -62,7 +68,7 @@
     <!-- ABA AGENDA -->
     <div id="agenda" class="tab-content">
         <h2>Agenda / Notas</h2>
-        <textarea id="notas" placeholder="Escreva suas anotações aqui..."></textarea>
+        <textarea id="notas" placeholder="Escreva suas anotações aqui..." style="height: 300px;"></textarea>
     </div>
 
     <!-- ABA CLIENTES -->
@@ -77,6 +83,43 @@
                 </tr>
             </thead>
             <tbody id="lista-clientes"></tbody>
+        </table>
+    </div>
+
+    <!-- ABA CALCULADORA ANTT -->
+    <div id="calculadora" class="tab-content">
+        <h2>Calculadora de Piso Mínimo ANTT</h2>
+        <div class="calc-inputs">
+            <select id="anttTipo" style="width: 200px;">
+                <option value="Carga Geral">Carga Geral</option>
+                <option value="Granel Sólido">Granel Sólido</option>
+                <option value="Granel Líquido">Granel Líquido</option>
+                <option value="Frigorificada ou Aquecida">Frigorificada ou Aquecida</option>
+                <option value="Conteinerizada">Conteinerizada</option>
+            </select>
+            <input type="number" id="anttDist" placeholder="Distância (km)" style="width: 130px;">
+            <input type="number" id="anttPedEixo" placeholder="Pedágio p/ Eixo (R$)" style="width: 150px;">
+            <input type="number" id="anttIcms" placeholder="ICMS/ISS (%)" style="width: 120px;">
+            <input type="number" id="anttMargem" placeholder="Margem (%)" style="width: 120px;">
+            <button onclick="calcularANTT()">Calcular Frete</button>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Tipo Veículo</th>
+                    <th>Peso (Ton)</th>
+                    <th>Piso Mínimo ANTT</th>
+                    <th>Frete Mot (s/ Ped)</th>
+                    <th>Pedágios (Total)</th>
+                    <th>Frete Mot (+ Ped)</th>
+                    <th>Frete Empresa Total</th>
+                    <th>Frete Empresa Ton</th>
+                </tr>
+            </thead>
+            <tbody id="lista-antt">
+                <tr><td colspan="8" style="text-align: center; padding: 20px;">Preencha os dados acima e clique em Calcular.</td></tr>
+            </tbody>
         </table>
     </div>
 
@@ -115,7 +158,7 @@
             <input type="text" id="cliCnpj" placeholder="CNPJ" onblur="mascaraDoc(this)">
             <input type="text" id="cliTel" placeholder="Telefone">
             <input type="text" id="cliEmail" placeholder="E-mail">
-            <input type="text" id="cliLoc" placeholder="Localização (Link Google Maps - Automático ou Manual)">
+            <input type="text" id="cliLoc" placeholder="Localização (Link Google Maps - Opcional)">
             <button onclick="salvarCliente()">Salvar Cliente</button>
             <button onclick="document.getElementById('modalCliente').style.display='none'">Fechar</button>
         </div>
@@ -175,65 +218,92 @@
 
         function excluirSelecionadas() {
             let checkboxes = document.querySelectorAll('.check-carga:checked');
-            if (checkboxes.length === 0) {
-                alert("Selecione ao menos uma carga para excluir.");
-                return;
-            }
-
+            if (checkboxes.length === 0) return alert("Selecione ao menos uma carga para excluir.");
             if (confirm(`Deseja realmente excluir as ${checkboxes.length} cargas selecionadas?`)) {
                 let dbRef = firebase.database().ref('cargas');
-                checkboxes.forEach(cb => {
-                    let id = cb.getAttribute('data-id');
-                    dbRef.child(id).remove();
-                });
-                alert("Cargas selecionadas excluídas com sucesso!");
+                checkboxes.forEach(cb => dbRef.child(cb.getAttribute('data-id')).remove());
+                alert("Cargas excluídas!");
             }
         }
+
+        /* --- LÓGICA CALCULADORA ANTT --- */
+        const aliquotasANTT = {
+            "Carga Geral": { 3: {ccd: 5.0977, cc: 541.86}, 4: {ccd: 5.7822, cc: 588.86}, 5: {ccd: 6.6718, cc: 657.56}, 6: {ccd: 7.3547, cc: 671.93}, 7: {ccd: 8.0927, cc: 831.66}, 9: {ccd: 9.2027, cc: 903.32} },
+            "Granel Sólido": { 3: {ccd: 5.1355, cc: 552.24}, 4: {ccd: 5.8118, cc: 597.00}, 5: {ccd: 6.6983, cc: 664.83}, 6: {ccd: 7.3841, cc: 680.01}, 7: {ccd: 8.0516, cc: 820.34}, 9: {ccd: 9.2231, cc: 908.91} },
+            "Granel Líquido": { 3: {ccd: 5.2311, cc: 569.57}, 4: {ccd: 5.9661, cc: 621.52}, 5: {ccd: 6.8661, cc: 693.00}, 6: {ccd: 7.5572, cc: 709.72}, 7: {ccd: 8.1920, cc: 840.50}, 9: {ccd: 9.3822, cc: 934.76} },
+            "Frigorificada ou Aquecida": { 3: {ccd: 6.0159, cc: 623.27}, 4: {ccd: 6.8646, cc: 686.63}, 5: {ccd: 7.8666, cc: 757.98}, 6: {ccd: 8.6661, cc: 772.35}, 7: {ccd: 9.5884, cc: 982.76}, 9: {ccd: 10.8870, cc: 1067.06} },
+            "Conteinerizada": { 3: {ccd: 5.1082, cc: 544.75}, 4: {ccd: 5.7396, cc: 577.15}, 5: {ccd: 6.6345, cc: 647.29}, 6: {ccd: 7.3186, cc: 662.01}, 7: {ccd: 8.0492, cc: 819.69} }
+        };
+
+        const veiculosPadrao = [
+            { nome: "3 Eixos", eixos: 3, peso: 14 },
+            { nome: "4 Eixos", eixos: 4, peso: 19 },
+            { nome: "5 Eixos", eixos: 5, peso: 26 },
+            { nome: "6 Eixos", eixos: 6, peso: 32 },
+            { nome: "7 Eixos Bitrem", eixos: 7, peso: 37 },
+            { nome: "7 Eixos 4° Eixo", eixos: 7, peso: 39 },
+            { nome: "9 Eixos", eixos: 9, peso: 48 }
+        ];
+
+        function calcularANTT() {
+            let tipo = document.getElementById('anttTipo').value;
+            let dist = parseFloat(document.getElementById('anttDist').value) || 0;
+            let pedEixo = parseFloat(document.getElementById('anttPedEixo').value) || 0;
+            let icms = parseFloat(document.getElementById('anttIcms').value) || 0;
+            let margem = parseFloat(document.getElementById('anttMargem').value) || 0;
+
+            let tbody = document.getElementById('lista-antt');
+            tbody.innerHTML = "";
+
+            // O Fator da Empresa faz a dedução do Imposto e Margem do valor Bruto
+            let fatorEmpresa = 1 - (icms / 100) - (margem / 100);
+            if (fatorEmpresa <= 0) fatorEmpresa = 0.01; 
+
+            veiculosPadrao.forEach(v => {
+                let aliquota = aliquotasANTT[tipo][v.eixos];
+                if (!aliquota) return; // ignora se a ANTT não tabelou (ex: Conteiner 9 eixos)
+
+                let pisoMinimo = (dist * aliquota.ccd) + aliquota.cc;
+                let pedagioTotal = pedEixo * v.eixos; // Calcula o pedágio multiplicando a tarifa pelos eixos
+                
+                let freteMotSPed = pisoMinimo / v.peso;
+                let freteMotCPed = (pisoMinimo + pedagioTotal) / v.peso;
+                
+                let freteEmpresaTotal = (pisoMinimo + pedagioTotal) / fatorEmpresa;
+                let freteEmpresaTon = freteEmpresaTotal / v.peso;
+
+                tbody.innerHTML += `<tr>
+                    <td><strong>${v.nome}</strong></td>
+                    <td>${v.peso}</td>
+                    <td>R$ ${pisoMinimo.toFixed(2)}</td>
+                    <td>R$ ${freteMotSPed.toFixed(2)}</td>
+                    <td>R$ ${pedagioTotal.toFixed(2)}</td>
+                    <td>R$ ${freteMotCPed.toFixed(2)}</td>
+                    <td style="color: #2d8cff; font-weight: bold;">R$ ${freteEmpresaTotal.toFixed(2)}</td>
+                    <td style="color: #2d8cff; font-weight: bold;">R$ ${freteEmpresaTon.toFixed(2)}</td>
+                </tr>`;
+            });
+        }
+        /* -------------------------------- */
 
         function salvarCliente() {
             let nome = document.getElementById('cliNome').value;
             let cidade = document.getElementById('cliCidade').value;
-            let resp = document.getElementById('cliResp').value;
-            let cnpj = document.getElementById('cliCnpj').value;
-            let tel = document.getElementById('cliTel').value;
-            let email = document.getElementById('cliEmail').value;
-            let locManual = document.getElementById('cliLoc').value;
+            if(!nome) return alert("Preencha ao menos o nome do cliente.");
 
-            if(!nome) {
-                alert("Preencha ao menos o nome do cliente.");
-                return;
-            }
-
-            // Geração automática do link do Google Maps baseada no nome e cidade se o campo manual estiver vazio
-            let mapsLink = locManual ? locManual : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(nome + ' ' + cidade)}`;
+            let mapsLink = document.getElementById('cliLoc').value || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(nome + ' ' + cidade)}`;
 
             let novoCliente = {
-                nome: nome,
-                cidade: cidade,
-                responsavel: resp,
-                cnpj: cnpj,
-                telefone: tel,
-                email: email,
-                localizacao: mapsLink
+                nome: nome, cidade: cidade, responsavel: document.getElementById('cliResp').value,
+                cnpj: document.getElementById('cliCnpj').value, telefone: document.getElementById('cliTel').value,
+                email: document.getElementById('cliEmail').value, localizacao: mapsLink
             };
 
-            firebase.database().ref('clientes').push(novoCliente)
-                .then(() => {
-                    alert("Cliente cadastrado com sucesso!");
-                    document.getElementById('modalCliente').style.display = 'none';
-                    // Limpar campos
-                    document.getElementById('cliNome').value = '';
-                    document.getElementById('cliCidade').value = '';
-                    document.getElementById('cliResp').value = '';
-                    document.getElementById('cliCnpj').value = '';
-                    document.getElementById('cliTel').value = '';
-                    document.getElementById('cliEmail').value = '';
-                    document.getElementById('cliLoc').value = '';
-                })
-                .catch(err => alert("Erro ao salvar cliente: " + err));
+            firebase.database().ref('clientes').push(novoCliente).then(() => {
+                alert("Cliente salvo!"); document.getElementById('modalCliente').style.display = 'none';
+            });
         }
 
-        // Listener para carregar a lista de clientes do Firebase em tempo real
         firebase.database().ref('clientes').on('value', (snapshot) => {
             const data = snapshot.val();
             const tbody = document.getElementById('lista-clientes');
@@ -242,28 +312,14 @@
                 for (let id in data) {
                     let cli = data[id];
                     tbody.innerHTML += `<tr>
-                        <td>${cli.nome||''}</td>
-                        <td>${cli.cidade||''}</td>
-                        <td>${cli.responsavel||''}</td>
-                        <td>${cli.cnpj||''}</td>
-                        <td>${cli.telefone||''}</td>
-                        <td>${cli.email||''}</td>
+                        <td>${cli.nome||''}</td><td>${cli.cidade||''}</td><td>${cli.responsavel||''}</td>
+                        <td>${cli.cnpj||''}</td><td>${cli.telefone||''}</td><td>${cli.email||''}</td>
                         <td><a href="${cli.localizacao||'#'}" target="_blank" style="color: #2d8cff;">Abrir Maps</a></td>
-                        <td><button class="btn-acao" onclick="alert('Editar Cliente')">Editar</button></td>
+                        <td><button class="btn-acao">Editar</button></td>
                     </tr>`;
                 }
             }
         });
-
-        function editarCarga(id, op, cidOrig, cidDest, cliOrig, cliDest) {
-            document.getElementById('editId').value = id;
-            document.getElementById('editOp').value = op;
-            document.getElementById('editCidOrig').value = cidOrig;
-            document.getElementById('editCidDest').value = cidDest;
-            document.getElementById('editCliOrig').value = cliOrig;
-            document.getElementById('editCliDest').value = cliDest;
-            document.getElementById('modalEditar').style.display = 'flex';
-        }
 
         firebase.database().ref('cargas').on('value', (snapshot) => {
             const data = snapshot.val();
@@ -272,32 +328,19 @@
                 tbody.innerHTML = "";
                 for (let id in data) {
                     let c = data[id];
-                    let iconeOrigem = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
-
+                    let icone = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
                     tbody.innerHTML += `<tr>
                         <td><input type="checkbox" class="check-carga" data-id="${id}"></td>
-                        <td>${iconeOrigem}</td>
-                        <td>${c.cn||''}</td>
-                        <td>${c.cidadeOrigem||''}</td>
-                        <td>${c.cidadeDestino||''}</td>
-                        <td>${c.clienteOrigem||''}</td>
-                        <td>${c.clienteDestino||''}</td>
-                        <td>${c.produto||''}</td>
-                        <td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td>
-                        <td>R$ ${(parseFloat(c.valor||0) * 0.1).toFixed(2)}</td>
-                        <td>
-                            <button class="btn-acao" onclick="document.getElementById('modalOrdem').style.display='flex'">Ordem</button>
-                            <button class="btn-acao" onclick="editarCarga('${id}', '${c.cn||''}', '${c.cidadeOrigem||''}', '${c.cidadeDestino||''}', '${c.clienteOrigem||''}', '${c.clienteDestino||''}')">Editar</button>
-                        </td>
+                        <td>${icone}</td><td>${c.cn||''}</td><td>${c.cidadeOrigem||''}</td><td>${c.cidadeDestino||''}</td>
+                        <td>${c.clienteOrigem||''}</td><td>${c.clienteDestino||''}</td><td>${c.produto||''}</td>
+                        <td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td><td>R$ ${(parseFloat(c.valor||0) * 0.1).toFixed(2)}</td>
+                        <td><button class="btn-acao" onclick="document.getElementById('modalOrdem').style.display='flex'">Ordem</button></td>
                     </tr>`;
                 }
             }
         });
 
-        function formatarCidade(el) {
-            let val = el.value.replace("-RS", "");
-            if(val.trim() !== "") el.value = val.trim() + "-RS";
-        }
+        function formatarCidade(el) { let val = el.value.replace("-RS", ""); if(val.trim() !== "") el.value = val.trim() + "-RS"; }
         function mascaraDoc(el) {
             let v = el.value.replace(/\D/g, "");
             if (v.length === 11) el.value = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
