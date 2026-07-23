@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V29</title>
+    <title>DRO Cargas Sistema Completo V30</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -172,9 +172,12 @@
             tbody.innerHTML = "";
             for (let id in data) {
                 let c = data[id];
+                // Define o ícone correto dependendo se veio do robô ou manual
+                let iconeOrigem = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
+
                 tbody.innerHTML += `<tr>
                     <td><input type="checkbox" class="check-carga" data-id="${id}"></td>
-                    <td>${c.origem_cadastro === 'robo' ? '🤖' : '👤'}</td>
+                    <td>${iconeOrigem}</td>
                     <td>${c.cn||''}</td>
                     <td>${c.cidadeOrigem||''}</td>
                     <td>${c.cidadeDestino||''}</td>
