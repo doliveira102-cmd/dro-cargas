@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V35 - Correção Editar</title>
+    <title>DRO Cargas Sistema Completo V36 - Edição Completa</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -16,9 +16,9 @@
         th, td { padding: 8px; border-bottom: 1px solid #23374f; font-size: 11px; text-align: left; }
         .btn-acao { background: #23374f; font-size: 10px; margin: 2px; }
         .btn-excluir-selecionadas { background: #ff4d4d; margin-left: 10px; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
-        .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 500px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
-        input, textarea, select { width: 100%; margin-bottom: 8px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; box-sizing: border-box; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 550px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
+        input, textarea, select { width: 100%; margin-bottom: 8px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; box-sizing: border-box; font-size: 12px; }
         input[type="checkbox"] { width: auto; }
         
         /* Estilos específicos da calculadora */
@@ -26,6 +26,7 @@
         .calc-inputs input, .calc-inputs select { margin-bottom: 0; }
         .calc-bloco { display: flex; flex-direction: column; gap: 5px; }
         .calc-bloco label { font-size: 11px; color: #a0b2c6; }
+        .label-campo { font-size: 10px; color: #a0b2c6; margin-bottom: 2px; display: block; }
     </style>
 </head>
 <body>
@@ -91,8 +92,6 @@
     <!-- ABA CALCULADORA ANTT -->
     <div id="calculadora" class="tab-content">
         <h2>Calculadora de Piso Mínimo ANTT</h2>
-        
-        <!-- Linha 1: Rota -->
         <div class="calc-inputs" style="background: #0d1728; padding: 15px; border-radius: 8px;">
             <div class="calc-bloco">
                 <label>Origem</label>
@@ -112,7 +111,6 @@
             </div>
         </div>
 
-        <!-- Linha 2: Valores -->
         <div class="calc-inputs">
             <div class="calc-bloco">
                 <label>Tipo de Carga</label>
@@ -145,14 +143,8 @@
         <table>
             <thead>
                 <tr>
-                    <th>Tipo Veículo</th>
-                    <th>Peso (Ton)</th>
-                    <th>Piso Mínimo ANTT</th>
-                    <th>Frete Mot (s/ Ped)</th>
-                    <th>Pedágios (Total)</th>
-                    <th>Frete Mot (+ Ped)</th>
-                    <th>Frete Empresa Total</th>
-                    <th>Frete Empresa Ton</th>
+                    <th>Tipo Veículo</th><th>Peso (Ton)</th><th>Piso Mínimo ANTT</th><th>Frete Mot (s/ Ped)</th>
+                    <th>Pedágios (Total)</th><th>Frete Mot (+ Ped)</th><th>Frete Empresa Total</th><th>Frete Empresa Ton</th>
                 </tr>
             </thead>
             <tbody id="lista-antt">
@@ -202,20 +194,46 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR CARGA -->
+    <!-- MODAL EDITAR CARGA COMPLETO -->
     <div id="modalEditar" class="modal">
         <div class="modal-content">
             <h3>Editar Carga</h3>
-            <input type="hidden" id="editId">
-            <input type="text" id="editOp" placeholder="OP">
-            <input type="text" id="editCidOrig" placeholder="Cidade Origem">
-            <input type="text" id="editCidDest" placeholder="Cidade Destino">
-            <input type="text" id="editCliOrig" placeholder="Cliente Origem">
-            <input type="text" id="editCliDest" placeholder="Cliente Destino">
-            <textarea id="editObs" placeholder="Observações"></textarea>
-            <button onclick="alert('Salvando...')">Salvar</button>
-            <button onclick="document.getElementById('modalEditar').style.display='none'">Fechar</button>
-            <button style="background: #ff4d4d;" onclick="alert('Excluído')">Excluir</button>
+            <input type="hidden" id="editFirebaseKey">
+            
+            <span class="label-campo">OP / CN:</span>
+            <input type="text" id="editOp">
+
+            <span class="label-campo">Cidade Origem:</span>
+            <input type="text" id="editCidOrig">
+
+            <span class="label-campo">Cidade Destino:</span>
+            <input type="text" id="editCidDest">
+
+            <span class="label-campo">Cliente Origem:</span>
+            <input type="text" id="editCliOrig">
+
+            <span class="label-campo">Cliente Destino:</span>
+            <input type="text" id="editCliDest">
+
+            <span class="label-campo">Produto:</span>
+            <input type="text" id="editProduto">
+
+            <span class="label-campo">Valor Empresa (R$):</span>
+            <input type="number" id="editVlrEmpresa" step="0.01">
+
+            <span class="label-campo">Valor Motorista (R$):</span>
+            <input type="number" id="editVlrMot" step="0.01">
+
+            <span class="label-campo">Observações:</span>
+            <textarea id="editObs" placeholder="Observações..." style="height: 60px;"></textarea>
+
+            <div id="editMapsContainer" style="margin-bottom: 10px; font-size: 11px;"></div>
+
+            <div style="display: flex; gap: 5px; margin-top: 10px;">
+                <button onclick="salvarEdicaoCarga()" style="background: #28a745; flex: 1;">Salvar Alterações</button>
+                <button onclick="document.getElementById('modalEditar').style.display='none'" style="background: #6c757d;">Fechar</button>
+                <button onclick="excluirCargaUnica()" style="background: #ff4d4d;">Excluir Carga</button>
+            </div>
         </div>
     </div>
 
@@ -233,6 +251,8 @@
     <script>
         const config = { databaseURL: "https://dro-cargas-default-rtdb.firebaseio.com" };
         if (!firebase.apps.length) firebase.initializeApp(config);
+
+        let listaClientesCache = {};
 
         function trocarTab(tab) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
@@ -264,60 +284,144 @@
             }
         }
 
-        function editarCarga(id, op, cidOrig, cidDest, cliOrig, cliDest) {
-            document.getElementById('editId').value = id;
-            document.getElementById('editOp').value = op;
-            document.getElementById('editCidOrig').value = cidOrig;
-            document.getElementById('editCidDest').value = cidDest;
-            document.getElementById('editCliOrig').value = cliOrig;
-            document.getElementById('editCliDest').value = cliDest;
+        // Cache de clientes para buscar localização automática no modal de edição
+        firebase.database().ref('clientes').on('value', (snapshot) => {
+            const data = snapshot.val();
+            listaClientesCache = {};
+            const tbody = document.getElementById('lista-clientes');
+            if(tbody) {
+                tbody.innerHTML = "";
+                for (let id in data) {
+                    let cli = data[id];
+                    listaClientesCache[cli.nome.toUpperCase()] = cli.localizacao;
+                    tbody.innerHTML += `<tr>
+                        <td>${cli.nome||''}</td><td>${cli.cidade||''}</td><td>${cli.responsavel||''}</td>
+                        <td>${cli.cnpj||''}</td><td>${cli.telefone||''}</td><td>${cli.email||''}</td>
+                        <td><a href="${cli.localizacao||'#'}" target="_blank" style="color: #2d8cff;">Abrir Maps</a></td>
+                        <td><button class="btn-acao">Editar</button></td>
+                    </tr>`;
+                }
+            }
+        });
+
+        function editarCargaObj(id, cargaObj) {
+            document.getElementById('editFirebaseKey').value = id;
+            document.getElementById('editOp').value = cargaObj.cn || '';
+            document.getElementById('editCidOrig').value = cargaObj.cidadeOrigem || '';
+            document.getElementById('editCidDest').value = cargaObj.cidadeDestino || '';
+            document.getElementById('editCliOrig').value = cargaObj.clienteOrigem || '';
+            document.getElementById('editCliDest').value = cargaObj.clienteDestino || '';
+            document.getElementById('editProduto').value = cargaObj.produto || '';
+            document.getElementById('editVlrEmpresa').value = cargaObj.valor || 0;
+            document.getElementById('editVlrMot').value = (parseFloat(cargaObj.valor || 0) * 0.1).toFixed(2);
+            document.getElementById('editObs').value = cargaObj.obs || '';
+
+            // Verifica localização do cliente no cache
+            let mapsContainer = document.getElementById('editMapsContainer');
+            let cliNomeUpper = (cargaObj.clienteOrigem || '').toUpperCase();
+            if (listaClientesCache[cliNomeUpper]) {
+                mapsContainer.innerHTML = `📍 Localização do Cliente: <a href="${listaClientesCache[cliNomeUpper]}" target="_blank" style="color: #2d8cff; font-weight: bold;">Abrir no Google Maps</a>`;
+            } else {
+                mapsContainer.innerHTML = `<span style="color: #a0b2c6;">📍 Cliente não possui localização salva no DRO.</span>`;
+            }
+
             document.getElementById('modalEditar').style.display = 'flex';
         }
 
-        /* --- LÓGICA DE MAPAS E CALCULADORA ANTT --- */
+        function salvarEdicaoCarga() {
+            let key = document.getElementById('editFirebaseKey').value;
+            let dadosAtualizados = {
+                cn: document.getElementById('editOp').value,
+                cidadeOrigem: document.getElementById('editCidOrig').value,
+                cidadeDestino: document.getElementById('editCidDest').value,
+                clienteOrigem: document.getElementById('editCliOrig').value,
+                clienteDestino: document.getElementById('editCliDest').value,
+                produto: document.getElementById('editProduto').value,
+                valor: parseFloat(document.getElementById('editVlrEmpresa').value) || 0,
+                obs: document.getElementById('editObs').value
+            };
+
+            firebase.database().ref('cargas/' + key).update(dadosAtualizados)
+                .then(() => {
+                    alert("Carga atualizada com sucesso!");
+                    document.getElementById('modalEditar').style.display = 'none';
+                })
+                .catch(err => alert("Erro ao atualizar: " + err));
+        }
+
+        function excluirCargaUnica() {
+            let key = document.getElementById('editFirebaseKey').value;
+            if (confirm("Tem certeza que deseja excluir esta carga?")) {
+                firebase.database().ref('cargas/' + key).remove()
+                    .then(() => {
+                        alert("Carga excluída!");
+                        document.getElementById('modalEditar').style.display = 'none';
+                    });
+            }
+        }
+
+        let cargasCacheGlobal = {};
+        firebase.database().ref('cargas').on('value', (snapshot) => {
+            const data = snapshot.val();
+            cargasCacheGlobal = data || {};
+            const tbody = document.getElementById('lista-cargas');
+            if(tbody) {
+                tbody.innerHTML = "";
+                for (let id in data) {
+                    let c = data[id];
+                    let icone = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
+                    let vlrEmp = parseFloat(c.valor || 0);
+                    let vlrMot = vlrEmp * 0.1; // 10% padrão ou editável
+
+                    tbody.innerHTML += `<tr>
+                        <td><input type="checkbox" class="check-carga" data-id="${id}"></td>
+                        <td>${icone}</td>
+                        <td>${c.cn||''}</td>
+                        <td>${c.cidadeOrigem||''}</td>
+                        <td>${c.cidadeDestino||''}</td>
+                        <td>${c.clienteOrigem||''}</td>
+                        <td>${c.clienteDestino||''}</td>
+                        <td>${c.produto||''}</td>
+                        <td>R$ ${vlrEmp.toFixed(2)}</td>
+                        <td>R$ ${vlrMot.toFixed(2)}</td>
+                        <td>
+                            <button class="btn-acao" onclick="document.getElementById('modalOrdem').style.display='flex'">Ordem</button>
+                            <button class="btn-acao" onclick='editarCargaObj("${id}", ${JSON.stringify(c)})'>Editar</button>
+                        </td>
+                    </tr>`;
+                }
+            }
+        });
+
+        /* --- MAPAS E CALCULADORA ANTT --- */
         async function buscarDistanciaAutomatica() {
             let origem = document.getElementById('anttOrigem').value;
             let destino = document.getElementById('anttDestino').value;
             let inputDist = document.getElementById('anttDist');
 
-            if(!origem || !destino) {
-                alert("Por favor, digite a Origem e o Destino.");
-                return;
-            }
-
-            inputDist.value = "";
-            inputDist.placeholder = "Buscando...";
+            if(!origem || !destino) return alert("Digite a Origem e o Destino.");
+            inputDist.value = ""; inputDist.placeholder = "Buscando...";
 
             try {
                 let resO = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(origem)}`);
                 let dataO = await resO.json();
-                
                 let resD = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destino)}`);
                 let dataD = await resD.json();
 
                 if(dataO.length === 0 || dataD.length === 0) {
-                    alert("Não foi possível localizar uma das cidades. Tente colocar o estado (ex: Passo Fundo - RS)");
-                    inputDist.placeholder = "Distância";
-                    return;
+                    alert("Cidade não encontrada.");
+                    inputDist.placeholder = "Distância"; return;
                 }
 
-                let lon1 = dataO[0].lon, lat1 = dataO[0].lat;
-                let lon2 = dataD[0].lon, lat2 = dataD[0].lat;
-
-                let resRota = await fetch(`https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=false`);
+                let resRota = await fetch(`https://router.project-osrm.org/route/v1/driving/${dataO[0].lon},${dataO[0].lat};${dataD[0].lon},${dataD[0].lat}?overview=false`);
                 let dataRota = await resRota.json();
 
                 if(dataRota.routes && dataRota.routes.length > 0) {
-                    let distKm = (dataRota.routes[0].distance / 1000).toFixed(0);
-                    inputDist.value = distKm;
-                    inputDist.placeholder = "Distância";
-                } else {
-                    alert("Rota não encontrada no mapa.");
+                    inputDist.value = (dataRota.routes[0].distance / 1000).toFixed(0);
                     inputDist.placeholder = "Distância";
                 }
             } catch(e) {
-                alert("Erro ao conectar com o serviço de rotas. Digite a distância manualmente.");
-                inputDist.placeholder = "Distância";
+                alert("Erro ao buscar rota."); inputDist.placeholder = "Distância";
             }
         }
 
@@ -330,12 +434,9 @@
         };
 
         const veiculosPadrao = [
-            { nome: "3 Eixos", eixos: 3, peso: 14 },
-            { nome: "4 Eixos", eixos: 4, peso: 19 },
-            { nome: "5 Eixos", eixos: 5, peso: 26 },
-            { nome: "6 Eixos", eixos: 6, peso: 32 },
-            { nome: "7 Eixos Bitrem", eixos: 7, peso: 37 },
-            { nome: "7 Eixos 4° Eixo", eixos: 7, peso: 39 },
+            { nome: "3 Eixos", eixos: 3, peso: 14 }, { nome: "4 Eixos", eixos: 4, peso: 19 },
+            { nome: "5 Eixos", eixos: 5, peso: 26 }, { nome: "6 Eixos", eixos: 6, peso: 32 },
+            { nome: "7 Eixos Bitrem", eixos: 7, peso: 37 }, { nome: "7 Eixos 4° Eixo", eixos: 7, peso: 39 },
             { nome: "9 Eixos", eixos: 9, peso: 48 }
         ];
 
@@ -346,10 +447,7 @@
             let icms = parseFloat(document.getElementById('anttIcms').value) || 0;
             let margem = parseFloat(document.getElementById('anttMargem').value) || 0;
 
-            if (dist <= 0) {
-                alert("Insira ou busque uma distância válida primeiro!");
-                return;
-            }
+            if (dist <= 0) return alert("Insira ou busque uma distância válida primeiro!");
 
             let tbody = document.getElementById('lista-antt');
             tbody.innerHTML = "";
@@ -363,26 +461,20 @@
 
                 let pisoMinimo = (dist * aliquota.ccd) + aliquota.cc;
                 let pedagioTotal = pedEixo * v.eixos; 
-                
                 let freteMotSPed = pisoMinimo / v.peso;
                 let freteMotCPed = (pisoMinimo + pedagioTotal) / v.peso;
-                
                 let freteEmpresaTotal = (pisoMinimo + pedagioTotal) / fatorEmpresa;
                 let freteEmpresaTon = freteEmpresaTotal / v.peso;
 
                 tbody.innerHTML += `<tr>
-                    <td><strong>${v.nome}</strong></td>
-                    <td>${v.peso}</td>
-                    <td>R$ ${pisoMinimo.toFixed(2)}</td>
-                    <td>R$ ${freteMotSPed.toFixed(2)}</td>
-                    <td>R$ ${pedagioTotal.toFixed(2)}</td>
-                    <td>R$ ${freteMotCPed.toFixed(2)}</td>
+                    <td><strong>${v.nome}</strong></td><td>${v.peso}</td>
+                    <td>R$ ${pisoMinimo.toFixed(2)}</td><td>R$ ${freteMotSPed.toFixed(2)}</td>
+                    <td>R$ ${pedagioTotal.toFixed(2)}</td><td>R$ ${freteMotCPed.toFixed(2)}</td>
                     <td style="color: #2d8cff; font-weight: bold;">R$ ${freteEmpresaTotal.toFixed(2)}</td>
                     <td style="color: #2d8cff; font-weight: bold;">R$ ${freteEmpresaTon.toFixed(2)}</td>
                 </tr>`;
             });
         }
-        /* -------------------------------- */
 
         function salvarCliente() {
             let nome = document.getElementById('cliNome').value;
@@ -401,51 +493,6 @@
                 alert("Cliente salvo!"); document.getElementById('modalCliente').style.display = 'none';
             });
         }
-
-        firebase.database().ref('clientes').on('value', (snapshot) => {
-            const data = snapshot.val();
-            const tbody = document.getElementById('lista-clientes');
-            if(tbody) {
-                tbody.innerHTML = "";
-                for (let id in data) {
-                    let cli = data[id];
-                    tbody.innerHTML += `<tr>
-                        <td>${cli.nome||''}</td><td>${cli.cidade||''}</td><td>${cli.responsavel||''}</td>
-                        <td>${cli.cnpj||''}</td><td>${cli.telefone||''}</td><td>${cli.email||''}</td>
-                        <td><a href="${cli.localizacao||'#'}" target="_blank" style="color: #2d8cff;">Abrir Maps</a></td>
-                        <td><button class="btn-acao">Editar</button></td>
-                    </tr>`;
-                }
-            }
-        });
-
-        firebase.database().ref('cargas').on('value', (snapshot) => {
-            const data = snapshot.val();
-            const tbody = document.getElementById('lista-cargas');
-            if(tbody) {
-                tbody.innerHTML = "";
-                for (let id in data) {
-                    let c = data[id];
-                    let icone = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
-                    tbody.innerHTML += `<tr>
-                        <td><input type="checkbox" class="check-carga" data-id="${id}"></td>
-                        <td>${icone}</td>
-                        <td>${c.cn||''}</td>
-                        <td>${c.cidadeOrigem||''}</td>
-                        <td>${c.cidadeDestino||''}</td>
-                        <td>${c.clienteOrigem||''}</td>
-                        <td>${c.clienteDestino||''}</td>
-                        <td>${c.produto||''}</td>
-                        <td>R$ ${parseFloat(c.valor||0).toFixed(2)}</td>
-                        <td>R$ ${(parseFloat(c.valor||0) * 0.1).toFixed(2)}</td>
-                        <td>
-                            <button class="btn-acao" onclick="document.getElementById('modalOrdem').style.display='flex'">Ordem</button>
-                            <button class="btn-acao" onclick="editarCarga('${id}', '${c.cn||''}', '${c.cidadeOrigem||''}', '${c.cidadeDestino||''}', '${c.clienteOrigem||''}', '${c.clienteDestino||''}')">Editar</button>
-                        </td>
-                    </tr>`;
-                }
-            }
-        });
 
         function formatarCidade(el) { let val = el.value.replace("-RS", ""); if(val.trim() !== "") el.value = val.trim() + "-RS"; }
         function mascaraDoc(el) {
