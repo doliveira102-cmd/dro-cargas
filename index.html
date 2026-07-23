@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V33 - ANTT</title>
+    <title>DRO Cargas Sistema Completo V34 - Rotas Automáticas</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -24,6 +24,8 @@
         /* Estilos específicos da calculadora */
         .calc-inputs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
         .calc-inputs input, .calc-inputs select { margin-bottom: 0; }
+        .calc-bloco { display: flex; flex-direction: column; gap: 5px; }
+        .calc-bloco label { font-size: 11px; color: #a0b2c6; }
     </style>
 </head>
 <body>
@@ -89,19 +91,55 @@
     <!-- ABA CALCULADORA ANTT -->
     <div id="calculadora" class="tab-content">
         <h2>Calculadora de Piso Mínimo ANTT</h2>
+        
+        <!-- Linha 1: Rota -->
+        <div class="calc-inputs" style="background: #0d1728; padding: 15px; border-radius: 8px;">
+            <div class="calc-bloco">
+                <label>Origem</label>
+                <input type="text" id="anttOrigem" placeholder="Ex: Passo Fundo - RS" style="width: 200px;">
+            </div>
+            <div class="calc-bloco">
+                <label>Destino</label>
+                <input type="text" id="anttDestino" placeholder="Ex: Rio Grande - RS" style="width: 200px;">
+            </div>
+            <div class="calc-bloco">
+                <label>&nbsp;</label>
+                <button onclick="buscarDistanciaAutomatica()" style="background: #28a745;">📍 Buscar KM</button>
+            </div>
+            <div class="calc-bloco">
+                <label>Distância Final (km)</label>
+                <input type="number" id="anttDist" placeholder="Distância" style="width: 120px;">
+            </div>
+        </div>
+
+        <!-- Linha 2: Valores -->
         <div class="calc-inputs">
-            <select id="anttTipo" style="width: 200px;">
-                <option value="Carga Geral">Carga Geral</option>
-                <option value="Granel Sólido">Granel Sólido</option>
-                <option value="Granel Líquido">Granel Líquido</option>
-                <option value="Frigorificada ou Aquecida">Frigorificada ou Aquecida</option>
-                <option value="Conteinerizada">Conteinerizada</option>
-            </select>
-            <input type="number" id="anttDist" placeholder="Distância (km)" style="width: 130px;">
-            <input type="number" id="anttPedEixo" placeholder="Pedágio p/ Eixo (R$)" style="width: 150px;">
-            <input type="number" id="anttIcms" placeholder="ICMS/ISS (%)" style="width: 120px;">
-            <input type="number" id="anttMargem" placeholder="Margem (%)" style="width: 120px;">
-            <button onclick="calcularANTT()">Calcular Frete</button>
+            <div class="calc-bloco">
+                <label>Tipo de Carga</label>
+                <select id="anttTipo" style="width: 180px;">
+                    <option value="Carga Geral">Carga Geral</option>
+                    <option value="Granel Sólido">Granel Sólido</option>
+                    <option value="Granel Líquido">Granel Líquido</option>
+                    <option value="Frigorificada ou Aquecida">Frigorificada ou Aquecida</option>
+                    <option value="Conteinerizada">Conteinerizada</option>
+                </select>
+            </div>
+            <div class="calc-bloco">
+                <label>Pedágio p/ Eixo (R$)</label>
+                <input type="number" id="anttPedEixo" placeholder="R$ 0.00" style="width: 130px;">
+            </div>
+            <div class="calc-bloco">
+                <label>ICMS/ISS (%)</label>
+                <input type="number" id="anttIcms" placeholder="0%" style="width: 100px;">
+            </div>
+            <div class="calc-bloco">
+                <label>Sua Margem (%)</label>
+                <input type="number" id="anttMargem" placeholder="0%" style="width: 100px;">
+            </div>
+            <div class="calc-bloco">
+                <label>&nbsp;</label>
+                <button onclick="calcularANTT()">Calcular Frete</button>
+            </div>
         </div>
         
         <table>
@@ -118,7 +156,7 @@
                 </tr>
             </thead>
             <tbody id="lista-antt">
-                <tr><td colspan="8" style="text-align: center; padding: 20px;">Preencha os dados acima e clique em Calcular.</td></tr>
+                <tr><td colspan="8" style="text-align: center; padding: 20px;">Busque a rota e clique em Calcular Frete.</td></tr>
             </tbody>
         </table>
     </div>
@@ -226,7 +264,57 @@
             }
         }
 
-        /* --- LÓGICA CALCULADORA ANTT --- */
+        /* --- LÓGICA DE MAPAS E CALCULADORA ANTT --- */
+        
+        async function buscarDistanciaAutomatica() {
+            let origem = document.getElementById('anttOrigem').value;
+            let destino = document.getElementById('anttDestino').value;
+            let inputDist = document.getElementById('anttDist');
+
+            if(!origem || !destino) {
+                alert("Por favor, digite a Origem e o Destino.");
+                return;
+            }
+
+            inputDist.value = "";
+            inputDist.placeholder = "Buscando...";
+
+            try {
+                // Busca Coordenadas Origem (OpenStreetMap)
+                let resO = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(origem)}`);
+                let dataO = await resO.json();
+                
+                // Busca Coordenadas Destino
+                let resD = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destino)}`);
+                let dataD = await resD.json();
+
+                if(dataO.length === 0 || dataD.length === 0) {
+                    alert("Não foi possível localizar uma das cidades. Tente colocar o estado (ex: Passo Fundo - RS)");
+                    inputDist.placeholder = "Distância";
+                    return;
+                }
+
+                let lon1 = dataO[0].lon, lat1 = dataO[0].lat;
+                let lon2 = dataD[0].lon, lat2 = dataD[0].lat;
+
+                // Busca Rota (OSRM)
+                let resRota = await fetch(`https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=false`);
+                let dataRota = await resRota.json();
+
+                if(dataRota.routes && dataRota.routes.length > 0) {
+                    let distKm = (dataRota.routes[0].distance / 1000).toFixed(0);
+                    inputDist.value = distKm;
+                    inputDist.placeholder = "Distância";
+                } else {
+                    alert("Rota não encontrada no mapa.");
+                    inputDist.placeholder = "Distância";
+                }
+            } catch(e) {
+                alert("Erro ao conectar com o serviço de rotas. Digite a distância manualmente.");
+                inputDist.placeholder = "Distância";
+            }
+        }
+
         const aliquotasANTT = {
             "Carga Geral": { 3: {ccd: 5.0977, cc: 541.86}, 4: {ccd: 5.7822, cc: 588.86}, 5: {ccd: 6.6718, cc: 657.56}, 6: {ccd: 7.3547, cc: 671.93}, 7: {ccd: 8.0927, cc: 831.66}, 9: {ccd: 9.2027, cc: 903.32} },
             "Granel Sólido": { 3: {ccd: 5.1355, cc: 552.24}, 4: {ccd: 5.8118, cc: 597.00}, 5: {ccd: 6.6983, cc: 664.83}, 6: {ccd: 7.3841, cc: 680.01}, 7: {ccd: 8.0516, cc: 820.34}, 9: {ccd: 9.2231, cc: 908.91} },
@@ -252,19 +340,23 @@
             let icms = parseFloat(document.getElementById('anttIcms').value) || 0;
             let margem = parseFloat(document.getElementById('anttMargem').value) || 0;
 
+            if (dist <= 0) {
+                alert("Insira ou busque uma distância válida primeiro!");
+                return;
+            }
+
             let tbody = document.getElementById('lista-antt');
             tbody.innerHTML = "";
 
-            // O Fator da Empresa faz a dedução do Imposto e Margem do valor Bruto
             let fatorEmpresa = 1 - (icms / 100) - (margem / 100);
             if (fatorEmpresa <= 0) fatorEmpresa = 0.01; 
 
             veiculosPadrao.forEach(v => {
                 let aliquota = aliquotasANTT[tipo][v.eixos];
-                if (!aliquota) return; // ignora se a ANTT não tabelou (ex: Conteiner 9 eixos)
+                if (!aliquota) return; 
 
                 let pisoMinimo = (dist * aliquota.ccd) + aliquota.cc;
-                let pedagioTotal = pedEixo * v.eixos; // Calcula o pedágio multiplicando a tarifa pelos eixos
+                let pedagioTotal = pedEixo * v.eixos; 
                 
                 let freteMotSPed = pisoMinimo / v.peso;
                 let freteMotCPed = (pisoMinimo + pedagioTotal) / v.peso;
