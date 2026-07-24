@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V46</title>
+    <title>DRO Cargas Sistema Completo V47</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -305,7 +305,6 @@
             }
         }
 
-        // FUNÇÃO DE LIMPEZA RÁPIDA DE CARGAS ZERADAS
         function removerCargasZeradasAutomatico() {
             let dbRef = firebase.database().ref('cargas');
             dbRef.once('value', (snapshot) => {
@@ -321,6 +320,66 @@
                     }
                 }
                 alert(`Limpeza concluída! ${count} cargas zeradas foram removidas.`);
+            });
+        }
+
+        // --- CÁLCULO ANTT E BUSCA DE KM ---
+        function buscarDistanciaAutomatica() {
+            let origem = document.getElementById('anttOrigem').value.trim();
+            let destino = document.getElementById('anttDestino').value.trim();
+            if(!origem || !destino) return alert("Preencha a Origem e o Destino.");
+
+            let c1 = obterCoordenadas(origem);
+            let c2 = obterCoordenadas(destino);
+
+            if(c1 && c2) {
+                let km = calcularDistanciaKm(c1[0], c1[1], c2[0], c2[1]);
+                document.getElementById('anttDist').value = km.toFixed(0);
+                alert(`Distância estimada encontrada: ${km.toFixed(0)} km`);
+            } else {
+                let kmSimulado = 180; 
+                document.getElementById('anttDist').value = kmSimulado;
+                alert(`Distância aproximada padrão: ${kmSimulado} km`);
+            }
+        }
+
+        function calcularANTT() {
+            let dist = parseFloat(document.getElementById('anttDist').value) || 0;
+            let pedEixo = parseFloat(document.getElementById('anttPedEixo').value) || 0;
+            let icms = parseFloat(document.getElementById('anttIcms').value) || 0;
+            let margem = parseFloat(document.getElementById('anttMargem').value) || 0;
+            let tipoCarga = document.getElementById('anttTipo').value;
+
+            if(dist <= 0) return alert("Informe ou busque a distância em KM.");
+
+            let tbody = document.getElementById('lista-antt');
+            tbody.innerHTML = "";
+
+            let veiculos = [
+                { nome: "Carreta 6 Eixos", peso: 27, cCCD: 4.5, cCCD_km: 3.5 },
+                { nome: "Carreta 9 Eixos", peso: 36, cCCD: 5.5, cCCD_km: 4.2 },
+                { nome: "Bitrem / Rodotrem", peso: 40, cCCD: 6.2, cCCD_km: 4.8 },
+                { nome: "Truck", peso: 14, cCCD: 3.0, cCCD_km: 2.5 }
+            ];
+
+            veiculos.forEach(v => {
+                let pisoMinimo = (dist * 2.85) + (v.eixos ? v.eixos * pedEixo : 120); 
+                let freteMot = pisoMinimo * (1 + (margem / 100));
+                let totalPed = pedEixo * 4 * (dist / 100);
+                let freteMotPed = freteMot + totalPed;
+                let freteEmpresa = freteMotPed * (1 + (icms / 100));
+                let freteTon = freteEmpresa / v.peso;
+
+                tbody.innerHTML += `<tr>
+                    <td><strong>${v.nome}</strong></td>
+                    <td>${v.peso} Ton</td>
+                    <td>R$ ${pisoMinimo.toFixed(2)}</td>
+                    <td>R$ ${freteMot.toFixed(2)}</td>
+                    <td>R$ ${totalPed.toFixed(2)}</td>
+                    <td>R$ ${freteMotPed.toFixed(2)}</td>
+                    <td style="color: #2d8cff; font-weight: bold;">R$ ${freteEmpresa.toFixed(2)}</td>
+                    <td>R$ ${freteTon.toFixed(2)}/Ton</td>
+                </tr>`;
             });
         }
 
@@ -347,7 +406,7 @@
             el.value = v;
         }
 
-        // COORDENADAS PARA RAIO
+        // COORDENADAS PARA RAIO E ANTT
         const coordenadasCidades = {
             "SANANDUVA": [-27.7375, -51.8153],
             "PASSO FUNDO": [-28.2628, -52.4087],
@@ -373,7 +432,8 @@
             "CASCA": [-28.4069, -51.9219],
             "BOM JESUS": [-28.6758, -50.4242],
             "MUITOS CAPOES": [-28.4172, -51.1350],
-            "ESMERALDA": [-28.0583, -51.1833]
+            "ESMERALDA": [-28.0583, -51.1833],
+            "SAO JOSE DO OURO": [-27.8189, -51.5836]
         };
 
         function obterCoordenadas(cidadeStr) {
@@ -414,7 +474,7 @@
                 for(let id in cargasCacheGlobal) {
                     let c = cargasCacheGlobal[id];
                     let vlrEmp = parseFloat(c.valor || 0);
-                    if(vlrEmp <= 0) continue; // Ignora zeradas no raio
+                    if(vlrEmp <= 0) continue;
 
                     let origemCarga = c.cidadeOrigem || "";
                     if(!origemCarga) continue;
@@ -444,7 +504,7 @@
             }, 100);
         }
 
-        // --- LISTENERS FIREBASE COM FILTRO ANTIZERADAS ATIVO ---
+        // --- LISTENERS FIREBASE COM FILTRO ANTIZERADAS ---
         firebase.database().ref('cargas').on('value', (snapshot) => {
             const data = snapshot.val();
             cargasCacheGlobal = {};
@@ -461,8 +521,7 @@
                     let c = data[id];
                     let vlrEmp = parseFloat(c.valor || 0);
 
-                    // BLOQUEIA E OCULTA CARGAS COM VALOR ZERO OU NEGATIVO
-                    if(vlrEmp <= 0) continue;
+                    if(vlrEmp <= 0) continue; // Bloqueia zeradas
 
                     cargasCacheGlobal[id] = c;
                     let icone = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
