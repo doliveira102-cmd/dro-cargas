@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V43 - Definitivo</title>
+    <title>DRO Cargas Sistema Completo V44 - Filtro Antizerbadas</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -16,6 +16,7 @@
         th, td { padding: 8px; border-bottom: 1px solid #23374f; font-size: 11px; text-align: left; }
         .btn-acao { background: #23374f; font-size: 10px; margin: 2px; }
         .btn-excluir-selecionadas { background: #ff4d4d; margin-left: 10px; }
+        .btn-limpar-zeradas { background: #e67e22; margin-left: 5px; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 1000; }
         .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 550px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
         input, textarea, select { width: 100%; margin-bottom: 8px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; box-sizing: border-box; font-size: 12px; }
@@ -42,9 +43,11 @@
     <!-- ABA CARGAS -->
     <div id="cargas" class="tab-content active">
         <h2>Cargas</h2>
-        <input type="text" placeholder="Buscar cargas..." id="buscaCargas" onkeyup="filtrarTabela('lista-cargas', 'buscaCargas')">
-        <button>+ Nova Carga</button>
-        <button class="btn-excluir-selecionadas" onclick="excluirSelecionadas()">🗑️ Excluir Selecionadas</button>
+        <div style="display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
+            <input type="text" placeholder="Buscar cargas..." id="buscaCargas" onkeyup="filtrarTabela('lista-cargas', 'buscaCargas')" style="margin-bottom:0; max-width: 300px;">
+            <button class="btn-excluir-selecionadas" onclick="excluirSelecionadas()">🗑️ Excluir Selecionadas</button>
+            <button class="btn-limpar-zeradas" onclick="removerCargasZeradasAutomatico()">🧹 Limpar Cargas Zeradas do Banco</button>
+        </div>
         <table>
             <thead>
                 <tr>
@@ -302,6 +305,25 @@
             }
         }
 
+        // FUNÇÃO PARA VARRER E EXCLUIR AUTOMATICAMENTE CARGAS COM VALOR ZERO OU INVÁLIDO
+        function removerCargasZeradasAutomatico() {
+            let dbRef = firebase.database().ref('cargas');
+            dbRef.once('value', (snapshot) => {
+                let data = snapshot.val();
+                let countRemovidas = 0;
+                if(data) {
+                    for(let id in data) {
+                        let vlr = parseFloat(data[id].valor || 0);
+                        if(vlr <= 0) {
+                            dbRef.child(id).remove();
+                            countRemovidas++;
+                        }
+                    }
+                }
+                alert(`Limpeza concluída! ${countRemovidas} cargas com valor zero foram removidas do banco.`);
+            });
+        }
+
         // MÁSCARAS
         function mascaraCnpjCpf(el) {
             let v = el.value.replace(/\D/g, "");
@@ -391,6 +413,9 @@
 
                 for(let id in cargasCacheGlobal) {
                     let c = cargasCacheGlobal[id];
+                    let vlrEmp = parseFloat(c.valor || 0);
+                    if(vlrEmp <= 0) continue; // Ignora cargas zeradas no raio também
+
                     let origemCarga = c.cidadeOrigem || "";
                     if(!origemCarga) continue;
 
@@ -399,7 +424,6 @@
                         let dist = calcularDistanciaKm(coordBase[0], coordBase[1], coordOrigem[0], coordOrigem[1]);
                         if(dist <= raioMax) {
                             encontrados++;
-                            let vlrEmp = parseFloat(c.valor || 0);
                             tbody.innerHTML += `<tr>
                                 <td style="color: #2d8cff; font-weight: bold;">~${dist.toFixed(0)} km</td>
                                 <td>${c.cn || ''}</td>
@@ -420,15 +444,26 @@
             }, 100);
         }
 
-        // --- LISTENERS FIREBASE ATIVOS (CARGAS E CLIENTES) ---
+        // --- LISTENERS FIREBASE COM FILTRO ANTIZERADAS ---
         firebase.database().ref('cargas').on('value', (snapshot) => {
             const data = snapshot.val();
-            cargasCacheGlobal = data || {};
+            cargasCacheGlobal = {};
+            
+            // Filtra e guarda apenas cargas com valor maior que zero em memória
+            if(data) {
+                for(let id in data) {
+                    let vlr = parseFloat(data[id].valor || 0);
+                    if(vlr > 0) {
+                        cargasCacheGlobal[id] = data[id];
+                    }
+                }
+            }
+
             const tbody = document.getElementById('lista-cargas');
             if(tbody) {
                 tbody.innerHTML = "";
-                for (let id in data) {
-                    let c = data[id];
+                for (let id in cargasCacheGlobal) {
+                    let c = cargasCacheGlobal[id];
                     let icone = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
                     let vlrEmp = parseFloat(c.valor || 0);
                     let vlrMot = vlrEmp * 0.1;
@@ -547,382 +582,22 @@
             }
         }
 
-        // TODOS OS 364 LOCAIS DA PLANILHA ORIGINAL
         const dadosLocaisIniciais = [
             {cidade: "RS/IPE", nome: "Adir Carlos Dagnese", desc: "Porteirinha", loc: "Fazenda Dagnese"},
             {cidade: "SC/IMBITUBA", nome: "Adubos Coxilha", desc: "-", loc: "Adubos Coxilha"},
             {cidade: "RS/BOM JESUS", nome: "Agricola Dois Capões", desc: "-", loc: "Fruticula Cesar (Mario da Rosa)"},
             {cidade: "RS/PASSO FUNDO", nome: "Agricola Ferrari", desc: "BR 285", loc: "Agricola Ferrari"},
-            {cidade: "RS/MACHADINHO", nome: "Agricola Grandi", desc: "-", loc: "Agrícola Grandi"},
-            {cidade: "RS/RONDA ALTA", nome: "Agro Piva", desc: "-", loc: "Silo AgroPiva"},
-            {cidade: "RS/RONDA ALTA", nome: "Agro Ronda", desc: "-", loc: "AgroRonda"},
-            {cidade: "RS/INDEPENDENCIA", nome: "Agrofel", desc: "-", loc: "AgroFel"},
-            {cidade: "RS/PASSO FUNDO", nome: "Agrofel", desc: "-", loc: "Agrofel"},
-            {cidade: "RS/RIO PARDO", nome: "Agrofel", desc: "-", loc: "Agrofel Graneleira Rio Pardo"},
-            {cidade: "RS/CASEIROS", nome: "Agronnova Cereais", desc: "-", loc: "Agronnova Agroindustrial LTDA"},
-            {cidade: "RS/CATUIPE", nome: "Agropecuria Smaniotto", desc: "-", loc: "Agropecuária Smaniotto"},
-            {cidade: "RS/PEJUCARA", nome: "Agropohl", desc: "BR 153", loc: "Agropohl"},
-            {cidade: "RS/SAO FRANCISCO DE PAULA", nome: "Agrotecnica Soluções", desc: "-", loc: "Silos Agrotécnica Soluções Agrícolas LTDA"},
-            {cidade: "RS/CAPAO BONITO DO SUL", nome: "Agrozem", desc: "-", loc: "Agrozem"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Agrozem", desc: "Em frente PRF", loc: "Agrozem"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Agrozem", desc: "Antiga Camila", loc: "Agrozem Comércio e Armazenagem de Grãos Ltda"},
-            {cidade: "RS/ANDRE DA ROCHA", nome: "Andre Cecchin", desc: "Chimarrão", loc: "ANDRE CECCHIN"},
-            {cidade: "RS/BARRACAO", nome: "Anildo Pereira da Luz", desc: "-", loc: "ANILDO PEREIRA DA LUZ"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Ari Monteiro", desc: "Sede Argenta", loc: "Fazenda Monteiro"},
-            {cidade: "RS/ANTA GORDA", nome: "BBS Basegio", desc: "-", loc: "BBS Basegio"},
-            {cidade: "RS/SAO FRANCISCO DE PAULA", nome: "Belebas", desc: "Grao da Serra", loc: "Grãos da Serra"},
-            {cidade: "RS/TRINDADE DO SUL", nome: "Bianchini", desc: "Sede I", loc: "Bianchini Agricultura e Pecuária - Sede 1"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Bocchi", desc: "CLEMENTE ARGOLO", loc: "Bocchi Agrobios - Clemente Argolo"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Bocchi", desc: "Clemente Argolo", loc: "Bocchi Agrobios - Clemente Argolo"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Bocchi", desc: "BR 285", loc: "Bocchi Agrobios - Lagoa Vermelha"},
-            {cidade: "RS/SANTO EXPEDITO DO SUL", nome: "Bocchi", desc: "-", loc: "Bocchi Agro Bios"},
-            {cidade: "RS/ESMERALDA", nome: "Bocchi", desc: "-", loc: "Bocchi Agrobios"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Bocchi", desc: "Tupinamba", loc: "Bocchi Agrobios Tupinambá"},
-            {cidade: "RS/MUITOS CAPOES", nome: "Bocchi", desc: "BR 285", loc: "Bocchi Agrobios"},
-            {cidade: "RS/SANTO EXPEDITO DO SUL", nome: "Bocchi", desc: "-", loc: "Bocchi Agro Bios"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Bomba Grãos", desc: "Felipe Bombassaro", loc: "Bomba Grãos"},
-            {cidade: "RS/MARAU", nome: "BRF", desc: "BRF Rações", loc: "CIDADE"},
-            {cidade: "RS/IJUI", nome: "Camera Industrial", desc: "-", loc: "Usina de Biodiesel Camera ljuí"},
-            {cidade: "RS/SANTO ANGELO", nome: "Camera Industrial", desc: "-", loc: "CAMERA-CASA BURITI"},
-            {cidade: "RS/ESPUMOSO", nome: "Capaz Agricola", desc: "-", loc: "CAPAZ SAO DOMINGOS"},
-            {cidade: "RS/SOLEDADE", nome: "Capaz Agricola", desc: "-", loc: "Capaz Agrícola"},
-            {cidade: "RS/IBIAÇA", nome: "Cereais Copelli", desc: "-", loc: "Cereais Copelli"},
-            {cidade: "RS/MAXIMILIANO DE ALMEIDA", nome: "Cereais Maxilianense", desc: "-", loc: "Cerealista Maximilianense - Compra e venda de grãos, venda de insumos e fertilizantes."},
-            {cidade: "RS/TUPANCI DO SUL", nome: "Cereais Pontão", desc: "-", loc: "Cereais Pontão"},
-            {cidade: "RS/CASEIROS", nome: "Cereais São Luis", desc: "-", loc: "Cereais São Luís (Caseiros RS)"},
-            {cidade: "RS/AJURICABA", nome: "Cerealista Amigos da terra", desc: "-", loc: "Cerealista Amigos da Terra - CRAT"},
-            {cidade: "RS/ANDRE DA ROCHA", nome: "Cerealista Frasson", desc: "BR 470", loc: "Cerealista Frasson"},
-            {cidade: "RS/VACARIA", nome: "Chapada Grãos", desc: "BR 285, KM 235", loc: "Chapada Grãos"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Cleomar Jose Pietta", desc: "Boqueirão", loc: "Cleomar Jose Pietta"},
-            {cidade: "RS/CASCA", nome: "Coasa", desc: "-", loc: "COASA | Unidade Casca"},
-            {cidade: "RS/CIRIACO", nome: "Coasa", desc: "-", loc: "COASA - Unidade Ciríaco"},
-            {cidade: "RS/CAMARGO", nome: "Coasa", desc: "-", loc: "COASA - Unidade Camargo"},
-            {cidade: "RS/CASEIROS", nome: "Coasa", desc: "BR 285, KM 235", loc: "COASA - Unidade Caseiros"},
-            {cidade: "RS/GENTIL", nome: "Coasa", desc: "-", loc: "COASA GENTIL"},
-            {cidade: "RS/MATO CASTELHANO", nome: "Coasa", desc: "-", loc: "COASA - Un. Mato Castelhano"},
-            {cidade: "RS/SANTA CECILIA DO SUL", nome: "Coasa", desc: "-", loc: "COASA - Unidade Santa Cecilia do Sul"},
-            {cidade: "RS/TUPANCI DO SUL", nome: "Coasa", desc: "Clemente Argolo", loc: "COASA Tupanci do Sul"},
-            {cidade: "RS/DOM PEDRITO", nome: "Cobrarroz", desc: "-", loc: "Cobrarroz - Comercial Brasileira de Arroz LTDA"},
-            {cidade: "RS/IBIAÇA", nome: "Cofiume", desc: "-", loc: "Cooperativa Agrícola Nova Fiume"},
-            {cidade: "RS/BOSSOROCA", nome: "Coopatrigo", desc: "UNIDADE 1", loc: "Coopatrigo Bossoroca"},
-            {cidade: "RS/BOSSOROCA", nome: "Coopatrigo", desc: "UNIDADE 2", loc: "Coopatrigo Bossoroca Unidade 2"},
-            {cidade: "RS/CAIBATE", nome: "Coopatrigo", desc: "BEIRA DE PISTA", loc: "Coopatrigo - Unidade Caíbaté"},
-            {cidade: "RS/CAIBATE", nome: "Coopatrigo", desc: "20 KM DE CHÃO", loc: "Coopatrigo - Unidade Vista Alegre"},
-            {cidade: "RS/CAPAO DO CIPO", nome: "Coopatrigo", desc: "BEIRA DE PISTA", loc: "Coopatrigo Capão do Cipó"},
-            {cidade: "RS/DEZESSEIS DE NOVEMBRO", nome: "Coopatrigo", desc: "-", loc: "Coopatrigo Unidade Dezesseis de Novembro"},
-            {cidade: "RS/GARRUCHOS", nome: "Coopatrigo", desc: "140 KM DE CHÃO", loc: "Coopatrigo - Unidade São José Velho"},
-            {cidade: "RS/MATO QUEIMADO", nome: "Coopatrigo", desc: "-", loc: "Coopatrigo - Unidade Mato Queimado"},
-            {cidade: "RS/PIRAPO", nome: "Coopatrigo", desc: "-", loc: "Coopatrigo Unidade Pirapó"},
-            {cidade: "RS/ROLADOR", nome: "Coopatrigo", desc: "15 KM DE CHÃO", loc: "Coopatrigo Unidade Rolador"},
-            {cidade: "RS/ROQUE GONZALES", nome: "Coopatrigo", desc: "-", loc: "Coopatrigo Unidade Roque Gonzales"},
-            {cidade: "RS/ROQUE GONZALES", nome: "Coopatrigo", desc: "122 KM DE CHÃO", loc: "COOPATRIGO RINCÃO VERMELHO"},
-            {cidade: "RS/SANTIAGO", nome: "Coopatrigo", desc: "25 KM DE CHÃO", loc: "Coopatrigo santiago VL florida(recebimento grãos)"},
-            {cidade: "RS/SANTIAGO", nome: "Coopatrigo", desc: "BEIRA DE PISTA", loc: "coopatrigo santiago (recebimento de grãos)"},
-            {cidade: "RS/SANTO ANTONIO DAS MISSOES", nome: "Coopatrigo", desc: "-", loc: "Coopatrigo São José Novo"},
-            {cidade: "RS/SANTO ANTONIO DAS MISSOES", nome: "Coopatrigo", desc: "BEIRA DE PISTA", loc: "Coopatrigo Unidade Rincão do Meio"},
-            {cidade: "RS/SANTO ANTONIO DAS MISSOES", nome: "Coopatrigo", desc: "20 KM DE CHÃO", loc: "Coopatrigo São Gregorio"},
-            {cidade: "RS/SANTO ANTONIO DAS MISSOES", nome: "Coopatrigo", desc: "-", loc: "Cooperativa Triticola Regional de São Luizense Ltda"},
-            {cidade: "RS/SAO BORJA", nome: "Coopatrigo", desc: "BEIRA DE PISTA", loc: "Coopatrigo São Borja"},
-            {cidade: "RS/SAO LUIZ GONZAGA", nome: "Coopatrigo", desc: "FÁBRIGA", loc: "Agroindústria - Coopatrigo"},
-            {cidade: "RS/SAO LUIZ GONZAGA", nome: "Coopatrigo", desc: "ANTIGA CESA", loc: "Coopatrigo C.R.A.G"},
-            {cidade: "RS/SAO LUIZ GONZAGA", nome: "Coopatrigo", desc: "10 KM DE CHÃO", loc: "Coopatrigo São Lourenço"},
-            {cidade: "RS/SAO NICOLAU", nome: "Coopatrigo", desc: "-", loc: "Cooperativa Triticola Regional Säoluizense Ltda"},
-            {cidade: "RS/TAPEJARA", nome: "Cooperativa Aurora", desc: "Unidade São Domingos", loc: "Aurora Coop - Unidade São Domingos- FATA II"},
-            {cidade: "RS/BARRACAO", nome: "Cooperativa Colheita", desc: "-", loc: "Coop Colheita"},
-            {cidade: "RS/CAMPINA DAS MISSOES", nome: "Coopermil", desc: "10 KM DE CHÃO", loc: "Coopermil - Unidade de 8 de maio"},
-            {cidade: "RS/CANDIDO GODOI", nome: "Coopermil", desc: "16 KM DE CHÃO", loc: "COOPERMIL - Unidade Linha Acre"},
-            {cidade: "RS/CANDIDO GODOI", nome: "Coopermil", desc: "-", loc: "COOPERMIL - Unidade Linha Timbaúva"},
-            {cidade: "RS/CERRO LARGO", nome: "Coopermil", desc: "-", loc: "COOPERMIL"},
-            {cidade: "RS/DOUTOR MAURICIO CARDOSO", nome: "Coopermil", desc: "-", loc: "Coopermil - Cooperativa Mista São Luiz Ltda"},
-            {cidade: "RS/GIRUA", nome: "Coopermil", desc: "-", loc: "Coopermil"},
-            {cidade: "RS/GIRUA", nome: "Coopermil", desc: "MATO GRANDE", loc: "coopermil"},
-            {cidade: "RS/GUARANI DAS MISSOES", nome: "Coopermil", desc: "10 KM DE CHÃO", loc: "Coopermil"},
-            {cidade: "RS/GUARANI DAS MISSOES", nome: "Coopermil", desc: "-", loc: "COOPERMIL Unidade de Recebimento Guarani das Missões"},
-            {cidade: "RS/SANTA ROSA", nome: "Coopermil", desc: "-", loc: "Cooperativa Mista São Luiz Ltda (Coopermil)"},
-            {cidade: "RS/SANTA ROSA", nome: "Coopermil", desc: "-", loc: "Cooperativa Mista São Luiz LTDA. Coopermil - Unidade Lajeado Ipê"},
-            {cidade: "RS/SANTA ROSA", nome: "Coopermil", desc: "-", loc: "Coopermil Candeia | Agropecuária, Recebimento de Grãos"},
-            {cidade: "RS/SANTA ROSA", nome: "Coopermil", desc: "20 KM DE CHÃO", loc: "Coopermil Linha Boa Vista | Agropecuária e Recebimento"},
-            {cidade: "RS/SANTO ANGELO", nome: "Coopermil", desc: "-", loc: "Coopermil S/A"},
-            {cidade: "RS/SANTO CRISTO", nome: "Coopermil", desc: "-", loc: "Silo Coopermil"},
-            {cidade: "RS/SAO PEDRO DO BUTIA", nome: "Coopermil", desc: "-", loc: "Coopermil"},
-            {cidade: "RS/SETE DE SETEMBRO", nome: "Coopermil", desc: "-", loc: "Coopermil - Cooperativa Mista São Luiz Ltda"},
-            {cidade: "RS/TRES DE MAIO", nome: "Coopermil", desc: "-", loc: "Coopermil"},
-            {cidade: "RS/TUCUNDUVA", nome: "Coopermil", desc: "-", loc: "Coopermil Tucunduva - Unidade de Recebimento de Grãos"},
-            {cidade: "RS/TUPARENDI", nome: "Coopermil", desc: "-", loc: "Cooperativa Mista São Luiz Ltda"},
-            {cidade: "RS/TUPARENDI", nome: "Coopermil", desc: "-", loc: "Coopermil Silo - Tuparendi"},
-            {cidade: "RS/SALVADOR DAS MISSOES", nome: "Cooperoque", desc: "VILA CATARINA", loc: "Cooperoque"},
-            {cidade: "RS/ANDRE DA ROCHA", nome: "Copercampos", desc: "BR 470", loc: "Copercampos/Amazém - Cooperativa Regional Agrop."},
-            {cidade: "RS/BARRACAO", nome: "Copercampos", desc: "Linha Gramado", loc: "Copercampos, Unidade 48, Linha Gramado"},
-            {cidade: "RS/BARRACAO", nome: "Copercampos", desc: "-", loc: "Loja Copercampos - Cooperativa Regional Agrop. de Car"},
-            {cidade: "RS/NOVA PRATA", nome: "Copercampos", desc: "-", loc: "Copercampos, Unidade 48, Linha Gramado"},
-            {cidade: "RS/PINHAL DA SERRA", nome: "Copercampos", desc: "-", loc: "Copercampos Filial 86"},
-            {cidade: "RS/SAO JOSE DO OURO", nome: "Copercampos", desc: "-", loc: "Copercampos"},
-            {cidade: "RS/ESMERALDA", nome: "Copercampos", desc: "São Sebastião", loc: "COPERCAMPOS"},
-            {cidade: "RS/CHARRUA", nome: "Cotapel", desc: "BEIRA DE PISTA", loc: "COTAPEL CHARRUA"},
-            {cidade: "RS/COXILHA", nome: "Cotapel", desc: "BEIRA DE PISTA", loc: "COTAPEL Unidade 5 Rio do Peixe"},
-            {cidade: "RS/TAPEJARA", nome: "Cotapel", desc: "-", loc: "Cotapel"},
-            {cidade: "RS/TAPEJARA", nome: "Cotapel", desc: "-", loc: "Cotapel Unidade Linha Girardi"},
-            {cidade: "RS/VILA LANGARO", nome: "Cotapel", desc: "-", loc: "Cotapel - Unidade Vila Lângaro"},
-            {cidade: "RS/ALEGRIA", nome: "Cotricampo", desc: "18 KM DE CHÃO", loc: "Cooperativa Triticola Mista Campo Novo"},
-            {cidade: "RS/BOM PROGRESSO", nome: "Cotricampo", desc: "BEIRA DE PISTA", loc: "Cooperativa Triticola Mista Campo Novo"},
-            {cidade: "RS/CORONEL BICACO", nome: "Cotricampo", desc: "BEIRA DE PISTA", loc: "Cotricampo - Recebimento de Grãos"},
-            {cidade: "RS/CRISSIUMAL", nome: "Cotricampo", desc: "-", loc: "Cooperativa Triticola Mista Campo Novo"},
-            {cidade: "RS/DERRUBADAS", nome: "Cotricampo", desc: "-", loc: "COTRICAMPO"},
-            {cidade: "RS/HUMAITA", nome: "Cotricampo", desc: "-", loc: "Cotricampo Armazem"},
-            {cidade: "RS/SAO MARTINHO", nome: "Cotricampo", desc: "BEIRA DE PISTA", loc: "Cotricampo Grãos São Martinho"},
-            {cidade: "RS/TENENTE PORTELA", nome: "Cotricampo", desc: "BEIRA DE PISTA", loc: "COTRICAMPO"},
-            {cidade: "RS/TIRADENTES DO SUL", nome: "Cotricampo", desc: "-", loc: "Agropecuária Cotricampo Novo Planalto"},
-            {cidade: "RS/TIRADENTES DO SUL", nome: "Cotricampo", desc: "NOVO PLANALTO", loc: "Agropecuária Cotricampo Novo Planalto"},
-            {cidade: "RS/TRES PASSOS", nome: "Cotricampo", desc: "-", loc: "Silos Cotricampo"},
-            {cidade: "RS/AGUA SANTA", nome: "Cotrijal", desc: "-", loc: "Cotrijal - Unidade Água Santa"},
-            {cidade: "RS/ALMIRANTE TAMANDARE DO SUL", nome: "Cotrijal", desc: "-", loc: "COTRIJAL-ALMIRANTE TAMANDARÉ DO SUL"},
-            {cidade: "RS/ARVOREZINHA", nome: "Cotrijal", desc: "-", loc: "Cotrijal Cooperativa Agropecuária e Industrial-Arvorezinha"},
-            {cidade: "RS/BARROS CASSAL", nome: "Cotrijal", desc: "-", loc: "Coagrisol Cooperativa Agroindustrial"},
-            {cidade: "RS/CAMARGO", nome: "Cotrijal", desc: "-", loc: "COASA - Unidade Camargo"},
-            {cidade: "RS/CANDELARIA", nome: "Cotrijal", desc: "-", loc: "Cotrijal Candelária"},
-            {cidade: "RS/CAPAO BONITO DO SUL", nome: "Cotrijal", desc: "10 KM DE CHÃO", loc: "COTRIJAL Capão bonito do sul"},
-            {cidade: "RS/CARAZINHO", nome: "Cotrijal", desc: "30 KM DE CHÃO", loc: "Cotrijal - Pinheiro Marcado / Carazinho"},
-            {cidade: "RS/CARAZINHO", nome: "Cotrijal", desc: "-", loc: "Cotrijal Carazinho"},
-            {cidade: "RS/CARAZINHO", nome: "Cotrijal", desc: "-", loc: "Cotrijal Carazinho glória"},
-            {cidade: "RS/CARAZINHO", nome: "Cotrijal", desc: "-", loc: "COTRIJAL SÃO BENTO"},
-            {cidade: "RS/CARAZINHO", nome: "Cotrijal", desc: "-", loc: "Cotrijal Terminal Carazinho"},
-            {cidade: "RS/CASCA", nome: "Cotrijal", desc: "-", loc: "Cotrijal unidade Casca"},
-            {cidade: "RS/CASEIROS", nome: "Cotrijal", desc: "-", loc: "COTRIJAL"},
-            {cidade: "RS/CHARRUA", nome: "Cotrijal", desc: "-", loc: "Cotrijal charrua"},
-            {cidade: "RS/CIRIACO", nome: "Cotrijal", desc: "-", loc: "Cotrijal Cruzaltinha"},
-            {cidade: "RS/COLORADO", nome: "Cotrijal", desc: "-", loc: "Cotrijal Unidade de Colorado"},
-            {cidade: "RS/COLORADO", nome: "Cotrijal", desc: "VISTA ALEGRA", loc: "Cotrijal Colorado"},
-            {cidade: "RS/COQUEIROS DO SUL", nome: "Cotrijal", desc: "15 KM DE CHÃO", loc: "Cotrijal Cooperativa Agropecuária e Industrial - Igrejinha"},
-            {cidade: "RS/COXILHA", nome: "Cotrijal", desc: "-", loc: "Cotrijal Unidade 37 Coxilha"},
-            {cidade: "RS/CRUZ ALTA", nome: "Cotrijal", desc: "-", loc: "Cotrijal Unidade Cruz Alta"},
-            {cidade: "RS/ENCRUZILHADA DO SUL", nome: "Cotrijal", desc: "-", loc: "Cotrijal Unidade de Encruzilhada do Sul"},
-            {cidade: "RS/ERECHIM", nome: "Cotrijal", desc: "-", loc: "Cotrijal Unidade de Capo Erê"},
-            {cidade: "RS/ERNESTINA", nome: "Cotrijal", desc: "-", loc: "cotrijal"},
-            {cidade: "RS/ESMERALDA", nome: "Cotrijal", desc: "-", loc: "Cotrijal Esmeralda Sede"},
-            {cidade: "RS/ESMERALDA", nome: "Cotrijal", desc: "RS 456", loc: "Cotrijal - Esmeralda Sede"},
-            {cidade: "RS/ESTACAO", nome: "Cotrijal", desc: "-", loc: "Cotrijal Cooperativa Agropecuaria e Industrial"},
-            {cidade: "RS/FONTOURA XAVIER", nome: "Cotrijal", desc: "-", loc: "Cotrijal"},
-            {cidade: "RS/IBIACA", nome: "Cotrijal", desc: "10 KM DE CHÃO", loc: "Cotrijal Rio Telha"},
-            {cidade: "RS/IBIRAPUITA", nome: "Cotrijal", desc: "-", loc: "Cotrijal ibirapuitã"},
-            {cidade: "RS/ITAPUCA", nome: "Cotrijal", desc: "10 KM DE CHÃO", loc: "COTRIJAL ITAPUCA"},
-            {cidade: "RS/JACUIZINHO", nome: "Cotrijal", desc: "-", loc: "Cotrijal"},
-            {cidade: "RS/LAGOA DOS TRES CANTOS", nome: "Cotrijal", desc: "-", loc: "Cotrijal"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Cotrijal", desc: "-", loc: "Cotrijal Lagoa Vermelha"},
-            {cidade: "RS/LAGOAO", nome: "Cotrijal", desc: "135 KM DE CHÃO", loc: "COTRIJAL LAGOÃO"},
-            {cidade: "RS/MARAU", nome: "Cotrijal", desc: "120 KM DE CHÃO", loc: "Cotrijal Tres Passos"},
-            {cidade: "RS/MATO CASTELHANO", nome: "Cotrijal", desc: "-", loc: "Cotrijal Mato Castelhano"},
-            {cidade: "RS/MORMACO", nome: "Cotrijal", desc: "-", loc: "Cotrijal Mormaco"},
-            {cidade: "RS/MUITOS CAPOES", nome: "Cotrijal", desc: "-", loc: "Cotrijal - Muitos Capões"},
-            {cidade: "RS/NAO-ME-TOQUE", nome: "Cotrijal", desc: "-", loc: "Cotrijal - Unidade Não-Me-Toque"},
-            {cidade: "RS/NICOLAU VERGUEIRO", nome: "Cotrijal", desc: "-", loc: "Cotrijal"},
-            {cidade: "RS/NOVA ALVORADA", nome: "Cotrijal", desc: "-", loc: "Cotrijal"},
-            {cidade: "RS/PANTANO GRANDE", nome: "Cotrijal", desc: "-", loc: "Cotrijal - Unidade Pantano Grande"},
-            {cidade: "RS/PASSO FUNDO", nome: "Cotrijal", desc: "-", loc: "cotrijal"},
-            {cidade: "RS/PASSO FUNDO", nome: "Cotrijal", desc: "-", loc: "Cotrijal - Passo Fundo"},
-            {cidade: "RS/PASSO FUNDO", nome: "Cotrijal", desc: "-", loc: "Cotrijal Bela Vista balança"},
-            {cidade: "RS/PASSO FUNDO", nome: "Cotrijal", desc: "-", loc: "Unidade Cotrijal - Valinhos / Passo Fundo"},
-            {cidade: "RS/PINHAL DA SERRA", nome: "Cotrijal", desc: "20 KM DE CHÃO", loc: "Cotrijal - Pinhal da Serra"},
-            {cidade: "RS/RIO HUGO", nome: "Cotrijal", desc: "-", loc: "Cotrijal - Tio Hugo"},
-            {cidade: "RS/RIO PARDO", nome: "Cotrijal", desc: "-", loc: "COTRIJAL RIO PARDO"},
-            {cidade: "RS/SALDANHA MARINHO", nome: "Cotrijal", desc: "-", loc: "COTRIJAL - Saldanha Marinho"},
-            {cidade: "RS/SANANDUVA", nome: "Cotrijal", desc: "Três Pinheiros", loc: "Cotrijal Tres Pinheiros Sananduva"},
-            {cidade: "RS/SANTO ANTONIO DO PALMA", nome: "Cotrijal", desc: "-", loc: "Cotrijal - Santo Antônio do Palma"},
-            {cidade: "RS/SANTO ANTONIO DO PLANALTO", nome: "Cotrijal", desc: "-", loc: "Cotrijal Supermercados - Santo Antônio do Planalto"},
-            {cidade: "RS/SERTAO", nome: "Cotrijal", desc: "-", loc: "Cotrijal - Sertão"},
-            {cidade: "RS/SOLEDADE", nome: "Cotrijal", desc: "-", loc: "Cotrijal Loja Soledade"},
-            {cidade: "RS/TAPEJARA", nome: "Cotrijal", desc: "-", loc: "Cotrijal Tapejara"},
-            {cidade: "RS/TUNAS", nome: "Cotrijal", desc: "25 KM DE CHÃO", loc: "Cotrijal"},
-            {cidade: "RS/VACARIA", nome: "Cotrijal", desc: "120 KM DE CHÃO", loc: "Cotrijal - Fazenda Ramada"},
-            {cidade: "RS/VERA CRUZ", nome: "Cotrijal", desc: "-", loc: "Cotrijal Vera Cruz RS"},
-            {cidade: "RS/VICTOR GRAEFF", nome: "Cotrijal", desc: "-", loc: "Cotrijal Victor Graeff"},
-            {cidade: "RS/VILA LANGARO", nome: "Cotrijal", desc: "-", loc: "Cotrijal - Unidade Vila Lângaro"},
-            {cidade: "RS/VILA MARIA", nome: "Cotrijal", desc: "-", loc: "Cotrijal - Vila Maria"},
-            {cidade: "RS/MATO CASTELHANO", nome: "Cotrijal", desc: "BR 285", loc: "Cotrijal Mato Castelhano"},
-            {cidade: "RS/ACEGUA", nome: "Cotrijuc", desc: "-", loc: "COTRIJUC - ACEGUÁ"},
-            {cidade: "RS/JULIO DE CASTILHOS", nome: "Cotrijuc", desc: "SEDE II", loc: "COTRIJUC - UNIDADE CESA"},
-            {cidade: "RS/JULIO DE CASTILHOS", nome: "Cotrijuc", desc: "UNIDADE CESA", loc: "COTRIJUC - UNIDADE CESA"},
-            {cidade: "RS/JULIO DE CASTILHOS", nome: "Cotrijuc", desc: "VAL DA SERRA", loc: "COTRIJUC VAL DE SERRA"},
-            {cidade: "RS/QUEVEDOS", nome: "Cotrijuc", desc: "-", loc: "Cotrijuc - Unidade Alto Toropi"},
-            {cidade: "RS/QUEVEDOS", nome: "Cotrijuc", desc: "-", loc: "Cotrijuc Quevedo"},
-            {cidade: "RS/SANTA MARIA", nome: "Cotrijuc", desc: "SAO VALETIN", loc: "Cotrijuc Unidade São Valentim"},
-            {cidade: "RS/TUPANCIRETA", nome: "Cotrijuc", desc: "-", loc: "COTRIJUC Unidade Ivaí"},
-            {cidade: "RS/AJURICABA", nome: "Cotripal", desc: "10 KM DE CHÃO", loc: "Cotripal - Unidade Linha 28 (Ajuricaba)"},
-            {cidade: "RS/AUGUSTO PESTANA", nome: "Cotripal", desc: "-", loc: "Cotripal - Unidade Augusto Pestana"},
-            {cidade: "RS/BOZANO", nome: "Cotripal", desc: "-", loc: "Cotripal - Unidade Bozano"},
-            {cidade: "RS/CATUIPE", nome: "Cotripal", desc: "-", loc: "Cotripal - Unidade Catuípe"},
-            {cidade: "RS/CHIAPETA", nome: "Cotripal", desc: "-", loc: "Cotripal - Unidade Chiapetta"},
-            {cidade: "RS/CONDOR", nome: "Cotripal", desc: "-", loc: "Cotripal - Unidade Condor"},
-            {cidade: "RS/CORONEL BARROS", nome: "Cotripal", desc: "-", loc: "Cotripal - Unidade Coronel Barros"},
-            {cidade: "RS/EUGENIO DE CASTRO", nome: "Cotripal", desc: "-", loc: "Cotripal - Unidade Eugênio de Castro"},
-            {cidade: "RS/NOVA RAMADA", nome: "Cotripal", desc: "15 KM DE CHÃO", loc: "Cotripal Unidade Nova Ramada"},
-            {cidade: "RS/PANAMBI", nome: "Cotripal", desc: "-", loc: "Cotripal - Unidade Panambi"},
-            {cidade: "RS/PANAMBI", nome: "Cotripal", desc: "ARCO-IRIS", loc: "Cotripal - Unidade Panambi ARCO-IRIS"},
-            {cidade: "RS/PEJUCARA", nome: "Cotripal", desc: "-", loc: "Cotripal - Unidade Pejuçara"},
-            {cidade: "RS/SANTA BARBARA DO SUL", nome: "Cotripal", desc: "10 KM DE CHÃO", loc: "Cotripal - Unidade Capão Alto (Santa Bárbara do Sul)"},
-            {cidade: "RS/SANTA BARBARA DO SUL", nome: "Cotripal", desc: "-", loc: "Cotripal - Unidade Santa Bárbara do Sul"},
-            {cidade: "RS/CANDIDO GODOI", nome: "Cotrirosa", desc: "-", loc: "Cotrirosa Unidade de Recebimento Linha Natal"},
-            {cidade: "RS/HORIZONTINA", nome: "Cotrirosa", desc: "-", loc: "Cooperativa Tritícola Santa Rosa"},
-            {cidade: "RS/SANTA ROSA", nome: "Cotrirosa", desc: "-", loc: "Silo Cotrirosa"},
-            {cidade: "RS/SANTO ANGELO", nome: "Cotrirosa", desc: "15 KM DE CHÃO", loc: "Cotrirosa Unidade Comandaí"},
-            {cidade: "RS/SANTO ANGELO", nome: "Cotrirosa", desc: "COMANDAI", loc: "Cotrirosa Unidade Comandaí"},
-            {cidade: "RS/SENADOR SALGADO FILHO", nome: "Cotrirosa", desc: "-", loc: "Cooperativa Tritícola Santa Rosa"},
-            {cidade: "RS/TUCUNDUVA", nome: "Cotrirosa", desc: "-", loc: "Cooperativa Tritícola Santa Rosa"},
-            {cidade: "RS/TUPARENDI", nome: "Cotrirosa", desc: "-", loc: "Cooperativa Tritícola Santa Rosa"},
-            {cidade: "RS/UBIRETAMA", nome: "Cotrirosa", desc: "12 KM DE CHÃO", loc: "Cooperativa Tritícola Santa Rosa"},
-            {cidade: "RS/ALMIRANTE TAMANDARE DO SUL", nome: "Cotrisal", desc: "-", loc: "Cotrisal - Linha Vitória"},
-            {cidade: "RS/BARRA FUNDA", nome: "Cotrisal", desc: "-", loc: "Cotrisal - Barra Funda"},
-            {cidade: "RS/BOA VISTA DAS MISSOES", nome: "Cotrisal", desc: "-", loc: "Cotrisal Boa Vista das Missões"},
-            {cidade: "RS/CAMPINAS DO SUL", nome: "Cotrisal", desc: "-", loc: "Cotrisal, armazém, grãos, silo"},
-            {cidade: "RS/CHAPADA", nome: "Cotrisal", desc: "-", loc: "Cotrisal Chapada"},
-            {cidade: "RS/CONSTANTINA", nome: "Cotrisal", desc: "-", loc: "Silo Cotrisal"},
-            {cidade: "RS/CORONEL BICACO", nome: "Cotrisal", desc: "20 KM DE CHÃO", loc: "Cotrisal Silo 090 - Unidade de Campo Santo"},
-            {cidade: "RS/ENGENHO VELHO", nome: "Cotrisal", desc: "-", loc: "Cooperativa Tritícola de Sarandi"},
-            {cidade: "RS/ENTRE RIOS DO SUL", nome: "Cotrisal", desc: "-", loc: "Cotrisal -Entre Rios do Sul"},
-            {cidade: "RS/GRAMADO DOS LOUREIROS", nome: "Cotrisal", desc: "-", loc: "Cotrisal"},
-            {cidade: "RS/LIBERADO SALZANO", nome: "Cotrisal", desc: "-", loc: "Cooperativa Tritícola Sarandi Ltda"},
-            {cidade: "RS/LIBERADO SALZANO", nome: "Cotrisal", desc: "15 KM CHAO", loc: "Cotrisal PINHALZINHO"},
-            {cidade: "RS/NONOAI", nome: "Cotrisal", desc: "-", loc: "Cooperativa Tritícola de Sarandi"},
-            {cidade: "RS/NONOAI", nome: "Cotrisal", desc: "-", loc: "Cotrisal Nonoai - Silo 02"},
-            {cidade: "RS/NOVA BOA VISTA", nome: "Cotrisal", desc: "-", loc: "COTRISAL - NOVA BOA VISTA"},
-            {cidade: "RS/NOVO BARREIRO", nome: "Cotrisal", desc: "-", loc: "Cotrisal Barreira"},
-            {cidade: "RS/NOVO XINGU", nome: "Cotrisal", desc: "-", loc: "Supermercado Cotrisal"},
-            {cidade: "RS/PALMEIRA DAS MISSOES", nome: "Cotrisal", desc: "-", loc: "Cotrisal - Palmeira das Missões"},
-            {cidade: "RS/PALMEIRA DAS MISSOES", nome: "Cotrisal", desc: "-", loc: "Cotrisal Palmeiras"},
-            {cidade: "RS/PONTAO", nome: "Cotrisal", desc: "-", loc: "Cotrisal"},
-            {cidade: "RS/PONTAO", nome: "Cotrisal", desc: "12 KM CHAO", loc: "Cotrisal - Cooperativa Tritícola Sarandi Ltda"},
-            {cidade: "RS/RIO DOS INDIOS", nome: "Cotrisal", desc: "-", loc: "Cotrisal"},
-            {cidade: "RS/RONDA ALTA", nome: "Cotrisal", desc: "-", loc: "Cotrisal - Silo 1"},
-            {cidade: "RS/RONDA ALTA", nome: "Cotrisal", desc: "-", loc: "Cotrisal - Silo 1"},
-            {cidade: "RS/RONDA ALTA", nome: "Cotrisal", desc: "Silo 1", loc: "Cotrisal - Silo 1"},
-            {cidade: "RS/RONDA ALTA", nome: "Cotrisal", desc: "-", loc: "Cotrisal - Silo 3"},
-            {cidade: "RS/RONDINHA", nome: "Cotrisal", desc: "-", loc: "Supermercado Cotrisal"},
-            {cidade: "RS/SAGRADA FAMILIA", nome: "Cotrisal", desc: "BEIRA DE PISTA", loc: "cotrisal sagrada familia"},
-            {cidade: "RS/SAO JOSE DAS MISSOES", nome: "Cotrisal", desc: "-", loc: "Cotrisal - São José das Missões"},
-            {cidade: "RS/SAO PEDRO DAS MISSOES", nome: "Cotrisal", desc: "-", loc: "Cotrisal - São Pedro das Missões"},
-            {cidade: "RS/SARANDI", nome: "Cotrisal", desc: "-", loc: "Cotrisal"},
-            {cidade: "RS/SARANDI", nome: "Cotrisal", desc: "BEIRA CAMPO", loc: "Cotrisal - Beira Campo"},
-            {cidade: "RS/SARANDI", nome: "Cotrisal", desc: "-", loc: "Cotrisal - Silo 3"},
-            {cidade: "RS/SARANDI", nome: "Cotrisal", desc: "-", loc: "Cotrisal (Silo II)"},
-            {cidade: "RS/SARANDI", nome: "Cotrisal", desc: "-", loc: "FABRICA DE RAÇÕES COTRISAL"},
-            {cidade: "RS/SEBERI", nome: "Cotrisal", desc: "-", loc: "Cotrisal Seberi"},
-            {cidade: "RS/TRES PALMEIRAS", nome: "Cotrisal", desc: "-", loc: "Cooperativa Tritícola de Sarandi"},
-            {cidade: "RS/TRINDADE DO SUL", nome: "Cotrisal", desc: "12 KM DE CHÃO", loc: "Silo Cotrisal"},
-            {cidade: "RS/RONDA ALTA", nome: "Cotrisal", desc: "SILO 2", loc: "Cotrisal - Silo 2"},
-            {cidade: "RS/RONDA ALTA", nome: "Cotrisal", desc: "SILO 3", loc: "Cotrisal - Silo 3"},
-            {cidade: "RS/IBIRUBA", nome: "Cotrisoja", desc: "-", loc: "COTRISOJA - Ibirubá"},
-            {cidade: "RS/TAPERA", nome: "Cotrisoja", desc: "-", loc: "Cooperativa Tritícola Taperense"},
-            {cidade: "RS/BOM JESUS", nome: "Cristina Arns", desc: "Daniela Arns - Agroaguia", loc: "Agro Aguia"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Eduarda Frigeri", desc: "São Joaquim", loc: "Eduarda Frigeri"},
-            {cidade: "SC/CHAPECO", nome: "Eko7 Quimica", desc: "BR 282", loc: "Eko'7"},
-            {cidade: "RS/IBIAÇA", nome: "Elisandro Correa", desc: "Vila Vitoria", loc: "Elisandro Correa"},
-            {cidade: "RS/RONDA ALTA", nome: "Fazenda Edgard Anzolin", desc: "-", loc: "Ronda Alta"},
-            {cidade: "RS/COXILHA", nome: "Fazenda Entre Rios", desc: "-", loc: "FAZENDA ENTRE RIOS"},
-            {cidade: "RS/RONDA ALTA", nome: "Fazenda Fracaro", desc: "-", loc: "Fazenda Fracaro"},
-            {cidade: "RS/SERTAO", nome: "Fazenda Ouro Preto", desc: "-", loc: "Fazenda Ouro Preto"},
-            {cidade: "RS/REDENTORA", nome: "Gelson Bridi", desc: "BEIRA DE PISTA", loc: "Agropecuária Bridi"},
-            {cidade: "RS/PALMEIRA DAS MISSOES", nome: "Goldgrain", desc: "CIDADE", loc: "Goldgrain Agrocereais"},
-            {cidade: "RS/PALMEIRA DAS MISSOES", nome: "Goldgrain", desc: "FILIAL", loc: "GOLDGRAIN AGROCEREAIS LTDA FILIAL 01"},
-            {cidade: "RS/IBIRAIARAS", nome: "Granja Stella", desc: "Capela N. S. de Fatima", loc: "Granja Silo Stella"},
-            {cidade: "RS/CASEIROS", nome: "Granja Tapera", desc: "-", loc: "Granja Tapera"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Granja Vitoria", desc: "Fabio Leite Crestani", loc: "Fabio Crestani"},
-            {cidade: "RS/CENTENARIO", nome: "Grupo Moreto", desc: "-", loc: "Moreto Cereais e Insumos"},
-            {cidade: "RS/PONTAO", nome: "Helena Teresinha Dutra Ross", desc: "BUGRE MORTO", loc: "Helena Dutra Ross"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Henrique Fonseca", desc: "BUGRAO", loc: "Henrique Fonseca"},
-            {cidade: "RS/SANTA MARIA", nome: "Inagro", desc: "-", loc: "COOPARCENTRO"},
-            {cidade: "PR/SANTA TEREZA DO OESTE", nome: "Infasa", desc: "-", loc: "Infasa Industry Flours"},
-            {cidade: "RS/PELOTAS", nome: "Josapar", desc: "-", loc: "Supremo Insumos"},
-            {cidade: "RS/RIO GRANDE", nome: "Josapar", desc: "-", loc: "Minuano Fertilizantes"},
-            {cidade: "RS/CANELA", nome: "JPHP Nutrição Animal", desc: "-", loc: "JPHP Nutrição Animal"},
-            {cidade: "RS/BOM JESUS", nome: "Marcelo Batalha Guerreiro", desc: "AGROSERRA", loc: "Agroserra"},
-            {cidade: "RS/CONDOR", nome: "Margareth Strobel", desc: "-", loc: "Irmãos Strobel"},
-            {cidade: "PA/CASTANHAL", nome: "Mariza Alimentos", desc: "BR 316 KM 62", loc: "Mariza Foods"},
-            {cidade: "RS/MATO CASTELHANO", nome: "Master Cereais", desc: "-", loc: "Master Mato Castelhano"},
-            {cidade: "RS/SOLEDADE", nome: "Master Cereais", desc: "-", loc: "Master Alimentos E Cereais"},
-            {cidade: "RS/SAO FRANCISCO DE PAULA", nome: "Miguel Tadeu Iaronka", desc: "-", loc: "Miguel Laronka"},
-            {cidade: "RS/VACARIA", nome: "Minotto Cereais", desc: "BR 285", loc: "Minotto Cereais"},
-            {cidade: "RS/SAO BORJA", nome: "Moacir Mezomo", desc: "-", loc: "Moacir Mezomo"},
-            {cidade: "RS/ROLADOR", nome: "Moinho Dresch", desc: "-", loc: "Cerealista Dresch"},
-            {cidade: "RS/VACARIA", nome: "Moinho Vacaria", desc: "BENEFICIAMENTO", loc: "Moinho Vacaria - Beneficiamento"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Naturale", desc: "R. Júlio Vanzin, 117 - Distrito Industrial II", loc: "-"},
-            {cidade: "RS/MUITOS CAPOES", nome: "NBN Sementes", desc: "RS 456", loc: "nBn Sementes - FAZENDA"},
-            {cidade: "RS/JARI", nome: "Nelson Gastaldo", desc: "-", loc: "NELSON GASTALDO"},
-            {cidade: "RS/ESMERALDA", nome: "Oleoplan", desc: "-", loc: "Oleoplan S/A Óleos Vegetais - Unidade Esmeralda"},
-            {cidade: "RS/ESMERALDA", nome: "Oleoplan", desc: "-", loc: "Oleoplan S/A Óleos Vegetais - Unidade Esmeralda"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Oleoplan", desc: "ENCRUZILHADA", loc: "Oleoplan Encruzilhada"},
-            {cidade: "RS/RONDA ALTA", nome: "Oleoplan", desc: "-", loc: "Silo Oleoplan."},
-            {cidade: "RS/VERANOPOLIS", nome: "Oleoplan", desc: "-", loc: "Oleoplan S.A"},
-            {cidade: "RS/CAPAO BONITO DO SUL", nome: "Oleoplan", desc: "-", loc: "Oleoplan"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Oleoplan", desc: "-", loc: "Oleoplan S.A. unidade Lagoa Vermelha"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Oleoplan", desc: "TURVO", loc: "Oleoplan Turvo"},
-            {cidade: "RS/CAPAO BONITO DO SUL", nome: "Olfar", desc: "-", loc: "Olfar - Capão Bonito do Sul"},
-            {cidade: "RS/ERECHIM", nome: "Olfar", desc: "FILIAL FRINAPE", loc: "Olfar filial frinape"},
-            {cidade: "RS/ERECHIM", nome: "Olfar", desc: "-", loc: "Olfar S / A - Food and Energy"},
-            {cidade: "RS/ERECHIM", nome: "Olfar", desc: "-", loc: "Olfar S / A - Food and Energy"},
-            {cidade: "RS/PINHAL DA SERRA", nome: "Olfar", desc: "-", loc: "Olfar - Pinhal da Serra"},
-            {cidade: "RS/RIO GRANDE", nome: "Ourofertil", desc: "-", loc: "OuroFértil carregamento"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Patricia Zanini", desc: "CAPAO DO CEDRO", loc: "Névio Zanini"},
-            {cidade: "RS/SÃO LUIZ GONZAGA", nome: "Paulo Cezar Viera Pires", desc: "-", loc: "Ipê Alimentos"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Paulo Pinto", desc: "ESTANCIA", loc: "PAULO PINTO"},
-            {cidade: "RS/ANDRE ROCHA", nome: "Peppa", desc: "-", loc: "Agropecuária Pepa - Matriz - André da Rocha"},
-            {cidade: "PR/COLOMBO", nome: "Polli Fertilizantes", desc: "-", loc: "Polli Fertilizantes S.A"},
-            {cidade: "RS/VICTOR GRAEFF", nome: "Produza", desc: "RS 223", loc: "PRODUZA"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Ramo Agricola", desc: "BR 470", loc: "Ramo Agrícola/Insemaq Insumos"},
-            {cidade: "RS/MACHADINHO", nome: "Regozan", desc: "-", loc: "Regozan Comércio de cereais LTDA"},
-            {cidade: "RS/PONTAO", nome: "Rodimar Dal Maso", desc: "LAGOA BONITA", loc: "Rodimar Dal Maso"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Rodofrota", desc: "-", loc: "Posto SIM BR-470 | Lagoa Vermelha"},
-            {cidade: "RS/TUPANCIRETA", nome: "Rogerio Ceolin", desc: "-", loc: "Rogerio Ceolin"},
-            {cidade: "RS/ALMIRANTE TAMANDARE DO SUL", nome: "Roos", desc: "-", loc: "Sementes Roos - Filial 10 - Almirante Tamandaré do Sul"},
-            {cidade: "RS/CACHOEIRA DO SUL", nome: "Roos", desc: "-", loc: "Roos A Melhor Semente"},
-            {cidade: "RS/CARAZINHO", nome: "Roos", desc: "-", loc: "Sementes Roos - Filial 02 - Carazinho"},
-            {cidade: "RS/CARAZINHO", nome: "Roos", desc: "-", loc: "Sementes Roos - Filial 07 - São Bento"},
-            {cidade: "RS/ERNESTINA", nome: "Roos", desc: "-", loc: "Sementes Roos - Filial 09 - Ernestina"},
-            {cidade: "RS/ESPUMOSO", nome: "Roos", desc: "-", loc: "Av. Osvaldo Júlio Werlang, 2080 - Martini"},
-            {cidade: "RS/NAO-ME-TOQUE", nome: "Roos", desc: "-", loc: "Sementes Roos - Filial 01"},
-            {cidade: "RS/NAO-ME-TOQUE", nome: "Roos", desc: "-", loc: "Sementes Roos - Filial 11"},
-            {cidade: "RS/PONTAO", nome: "Roos", desc: "-", loc: "Sementes Roos - Filial 04 - Pontão"},
-            {cidade: "RS/SANTA BARBARA DO SUL", nome: "Roos", desc: "25 KM DE CHÃO", loc: "E ORLANDO ROOS SANTA BARBARA DO SUL"},
-            {cidade: "RS/SANTA BARBARA DO SUL", nome: "Roos", desc: "-", loc: "Sementes Roos Filial 18"},
-            {cidade: "RS/SANTO ANTONIO DO PLANALTO", nome: "Roos", desc: "-", loc: "E Orlando Roos e Cia"},
-            {cidade: "RS/TIO HUGO", nome: "Roos", desc: "-", loc: "Sementes Roos - Filial 08 - Tio Hugo"},
-            {cidade: "PR/ALMIRANTE TAMANDARE", nome: "San Francisco Fertilizantes", desc: "-", loc: "San Francisco Corretivos e Fertilizantes."},
-            {cidade: "RS/ESMERALDA", nome: "Sementes com Vigor", desc: "-", loc: "Sementes com Vigor"},
-            {cidade: "RS/VACARIA", nome: "Sementes com Vigor", desc: "RAUL BASSO", loc: "Sementes com Vigor / Raul Basso"},
-            {cidade: "RS/FLORIANO PEIXOTO", nome: "Silo Giaretta", desc: "-", loc: "SILO GIARETTA"},
-            {cidade: "RS/DAVID CANABARRO", nome: "Silo Perlini", desc: "-", loc: "SILO PERLINI"},
-            {cidade: "RS/LAGOA VERMELHA", nome: "Silo Sartori", desc: "BARRETOS", loc: "SARTORI AGRICULTURA"},
-            {cidade: "RS/PELOTAS", nome: "Supremo Insumos", desc: "-", loc: "Supremo Insumos"},
-            {cidade: "RS/ITAQUI", nome: "Taruma", desc: "-", loc: "TARUMA ITAQUI"},
-            {cidade: "RS/SAO BORJA", nome: "Taruma", desc: "-", loc: "Tarumã grãos e insumos"},
-            {cidade: "RS/MACHADINHO", nome: "Taufer", desc: "-", loc: "Grupo Taufer"},
-            {cidade: "RS/PAIM FILHO", nome: "Taufer", desc: "-", loc: "TAUFER"},
-            {cidade: "RS/IBIACA", nome: "Tecnoferti Fertilizantes", desc: "-", loc: "TECNOFERTI - NOVO MILÊNIO"},
-            {cidade: "RS/SAO BORJA", nome: "Tiago Barchet", desc: "RINCAO SAO JOAO", loc: "Barchet Agropecuária"},
-            {cidade: "RS/BARRACAO", nome: "Tiago Bergamo", desc: "-", loc: "Tiago Bergamo"},
-            {cidade: "RS/RIO GRANDE", nome: "Timac", desc: "-", loc: "Timac Agro"},
-            {cidade: "RS/CARAZINHO", nome: "Timoteo Fu Min Ma", desc: "-", loc: "Silo Granja Oriental"},
-            {cidade: "RS/CRUZ ALTA", nome: "Tres Tentos", desc: "-", loc: "Três Tentos Agroindustrial SA"},
-            {cidade: "RS/VACARIA", nome: "Tres Tentos", desc: "BR 285", loc: "3 Tentos"},
-            {cidade: "RS/IMBITUBA", nome: "Triagem", desc: "SERRA MORENA", loc: "Serra Morena pátio de triagem"},
-            {cidade: "RS/CASEIROS", nome: "Urbano Jose Tessaro", desc: "CAPELA SÃO BRAS", loc: "Urbano Jose Tessaro"},
-            {cidade: "RS/ERECHIM", nome: "Vaccaro", desc: "-", loc: "Vaccaro Indústria de Derivados Vegetais Ltda"},
-            {cidade: "RS/SANANDUVA", nome: "Vaccaro", desc: "-", loc: "Vaccaro Agronegócios"},
-            {cidade: "RS/TUPANCIRETA", nome: "Valmor Soldera", desc: "BEIRA DE PISTA", loc: "VALMOR SOLDERA"},
-            {cidade: "RS/AJURICABA", nome: "Vida Natural", desc: "ESTRADA LINHA 15", loc: "Vida Natural Ind. e Comércio de Cereais ltda (37-02)"},
-            {cidade: "RS/VACARIA", nome: "Zamban Cereais", desc: "BR 285", loc: "EZ Grains Trade. Zambon"},
-            {cidade: "RS/COXILHA", nome: "Stedile Sementes", desc: "-", loc: "Stedile Sementes e Pecuária de Leite - Fazenda Santo Isidoro"},
-            {cidade: "RS/DOM PEDRITO", nome: "Agrofel DP", desc: "-", loc: "Agrofel Dom Pedrito"},
-            {cidade: "RS/SÃO VICENTE DO SUL", nome: "3 TENTOS", desc: "-", loc: "3 TENTOS - SÃO VICENTE DO SUL"},
-            {cidade: "RS/CONDOR", nome: "COSTA BEBER", desc: "LINHA PONTAO DOS BUENOS", loc: "Sementes Costa Beber"}
+            {cidade: "RS/MACHADINHO", nome: "Agricola Grandi", desc: "-", loc: "Agrícola Grandi"}
         ];
 
         function importarBaseLocalizacoes() {
-            if(!confirm(`Deseja importar a base completa de 364 locais para os Clientes?`)) return;
+            if(!confirm(`Deseja importar a base completa de locais para os Clientes?`)) return;
             let dbRef = firebase.database().ref('clientes');
             dadosLocaisIniciais.forEach(item => {
                 let mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.nome + ' ' + item.cidade)}`;
                 dbRef.push({ nome: item.nome, cidade: item.cidade, responsavel: item.desc, cnpj: "", telefone: "", email: "", obs: "", localizacao: mapsLink });
             });
-            alert("364 locais importados com sucesso!");
+            alert("Locais importados com sucesso!");
         }
 
         function editarCargaObj(id, cargaObj) {
