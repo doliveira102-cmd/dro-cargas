@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V49</title>
+    <title>DRO Cargas Sistema Completo V50</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -164,11 +164,11 @@
             </div>
             <div class="calc-bloco">
                 <label>ICMS/ISS (%)</label>
-                <input type="number" id="anttIcms" placeholder="0%" style="width: 100px;">
+                <input type="number" id="anttIcms" placeholder="0" style="width: 100px;">
             </div>
             <div class="calc-bloco">
                 <label>Sua Margem (%)</label>
-                <input type="number" id="anttMargem" placeholder="0%" style="width: 100px;">
+                <input type="number" id="anttMargem" placeholder="0" style="width: 100px;">
             </div>
             <div class="calc-bloco">
                 <label>&nbsp;</label>
@@ -210,7 +210,7 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR CARGA CORRIGIDO COM TODOS OS CAMPOS -->
+    <!-- MODAL EDITAR CARGA -->
     <div id="modalEditar" class="modal">
         <div class="modal-content">
             <h3>Editar Carga</h3>
@@ -223,6 +223,7 @@
             <span class="label-campo">Produto:</span><input type="text" id="editProduto">
             <span class="label-campo">Valor Empresa (R$):</span><input type="number" id="editVlrEmpresa" step="0.01">
             <span class="label-campo">Valor Motorista (R$):</span><input type="number" id="editVlrMot" step="0.01">
+            <span class="label-campo">Localização (Link/Endereço):</span><input type="text" id="editLocalizacao" placeholder="Insira o link ou local...">
             <span class="label-campo">Observações:</span><textarea id="editObs" style="height: 60px;"></textarea>
             <div style="display: flex; gap: 5px; margin-top: 10px;">
                 <button onclick="salvarEdicaoCarga()" style="background: #28a745; flex: 1;">Salvar</button>
@@ -323,38 +324,59 @@
             });
         }
 
-        // --- CÁLCULO ANTT COM ROTAS REAIS E TODAS AS CATEGORIAS ---
-        const rotasReaisKm = {
-            "SAO JOSE DO OURO|MUITOS CAPOES": 130,
-            "MUITOS CAPOES|SAO JOSE DO OURO": 130,
-            "PASSO FUNDO|PORTO ALEGRE": 290,
-            "PORTO ALEGRE|PASSO FUNDO": 290
+        // --- CÁLCULO ANTT COM ROTAS REAIS (OSRM) E TABELAS EXATAS DA PLANILHA ---
+        const TABELA_ANTT_2026 = {
+            "Granel Sólido": { 3: {CCD: 5.1355, CC: 552.24}, 4: {CCD: 5.8118, CC: 597.00}, 5: {CCD: 6.6983, CC: 664.83}, 6: {CCD: 7.3841, CC: 680.01}, 7: {CCD: 8.0516, CC: 820.34}, 9: {CCD: 9.2231, CC: 908.91} },
+            "Granel Líquido": { 3: {CCD: 5.2311, CC: 569.57}, 4: {CCD: 5.9661, CC: 621.52}, 5: {CCD: 6.8661, CC: 693.00}, 6: {CCD: 7.5572, CC: 709.72}, 7: {CCD: 8.1920, CC: 840.50}, 9: {CCD: 9.3822, CC: 934.76} },
+            "Frigorificada ou Aquecida": { 3: {CCD: 6.0159, CC: 623.27}, 4: {CCD: 6.8646, CC: 686.63}, 5: {CCD: 7.8666, CC: 757.98}, 6: {CCD: 8.6661, CC: 772.35}, 7: {CCD: 9.5884, CC: 982.76}, 9: {CCD: 10.8870, CC: 1067.06} },
+            "Conteinerizada": { 3: {CCD: 5.1082, CC: 544.75}, 4: {CCD: 5.7396, CC: 577.15}, 5: {CCD: 6.6345, CC: 647.29}, 6: {CCD: 7.3186, CC: 662.01}, 7: {CCD: 8.0492, CC: 819.69}, 9: {CCD: 9.2027, CC: 903.32} },
+            "Carga Geral": { 3: {CCD: 5.0977, CC: 541.86}, 4: {CCD: 5.7822, CC: 588.86}, 5: {CCD: 6.6718, CC: 657.56}, 6: {CCD: 7.3547, CC: 671.93}, 7: {CCD: 8.0927, CC: 831.66}, 9: {CCD: 9.2027, CC: 903.32} }
         };
 
-        function buscarDistanciaAutomatica() {
+        const VEICULOS_ANTT = [
+            { nome: "Truck", peso: 14, eixos: 3 },
+            { nome: "Bitruck", peso: 22, eixos: 4 },
+            { nome: "Carreta 2 Eixos", peso: 20, eixos: 4 },
+            { nome: "Carreta 3 Eixos", peso: 25, eixos: 5 },
+            { nome: "Carreta 6 Eixos", peso: 27, eixos: 6 },
+            { nome: "Carreta 7 Eixos", peso: 30, eixos: 7 },
+            { nome: "Carreta 9 Eixos", peso: 36, eixos: 9 },
+            { nome: "Bitrem / Rodotrem", peso: 40, eixos: 9 }
+        ];
+
+        async function buscarDistanciaAutomatica() {
             let origem = document.getElementById('anttOrigem').value.trim().toUpperCase();
             let destino = document.getElementById('anttDestino').value.trim().toUpperCase();
             if(!origem || !destino) return alert("Preencha a Origem e o Destino.");
-
-            let chaveRota = origem + "|" + destino;
-            if(rotasReaisKm[chaveRota]) {
-                let kmReal = rotasReaisKm[chaveRota];
-                document.getElementById('anttDist').value = kmReal;
-                alert(`Distância exata da rota real carregada: ${kmReal} km`);
-                return;
-            }
 
             let c1 = obterCoordenadas(origem);
             let c2 = obterCoordenadas(destino);
 
             if(c1 && c2) {
-                let km = calcularDistanciaKm(c1[0], c1[1], c2[0], c2[1]);
-                document.getElementById('anttDist').value = km.toFixed(0);
-                alert(`Distância estimada encontrada: ${km.toFixed(0)} km`);
+                document.getElementById('anttDist').value = "Calculando GPS...";
+                try {
+                    // Consulta o sistema OSRM para garantir KM de Estrada, não de linha reta.
+                    let url = `https://router.project-osrm.org/route/v1/driving/${c1[1]},${c1[0]};${c2[1]},${c2[0]}?overview=false`;
+                    let response = await fetch(url);
+                    let data = await response.json();
+                    
+                    if (data.routes && data.routes.length > 0) {
+                        let kmReal = data.routes[0].distance / 1000;
+                        document.getElementById('anttDist').value = kmReal.toFixed(0);
+                        alert(`Rota por estradas processada com sucesso: ${kmReal.toFixed(0)} km.`);
+                    } else {
+                        throw new Error("Sem rotas OSRM");
+                    }
+                } catch(e) {
+                    // Fallback para raio com multiplicador de rodovia
+                    let kmBruto = calcularDistanciaKm(c1[0], c1[1], c2[0], c2[1]);
+                    let kmRodo = kmBruto * 1.35;
+                    document.getElementById('anttDist').value = kmRodo.toFixed(0);
+                    alert(`Falha no GPS. Distância rodoviária aproximada sugerida: ${kmRodo.toFixed(0)} km`);
+                }
             } else {
-                let kmSimulado = 180; 
-                document.getElementById('anttDist').value = kmSimulado;
-                alert(`Distância aproximada padrão: ${kmSimulado} km`);
+                alert("Alguma das cidades não foi encontrada na base. Digite o KM manualmente.");
+                document.getElementById('anttDist').value = "";
             }
         }
 
@@ -363,41 +385,38 @@
             let pedEixo = parseFloat(document.getElementById('anttPedEixo').value) || 0;
             let icms = parseFloat(document.getElementById('anttIcms').value) || 0;
             let margem = parseFloat(document.getElementById('anttMargem').value) || 0;
+            let tipoCarga = document.getElementById('anttTipo').value;
 
             if(dist <= 0) return alert("Informe ou busque a distância em KM.");
 
             let tbody = document.getElementById('lista-antt');
             tbody.innerHTML = "";
 
-            // TODAS AS CATEGORIAS DE VEÍCULOS CONFORME PLANILHA
-            let veiculos = [
-                { nome: "Truck", peso: 14, eixos: 2 },
-                { nome: "Bitruck", peso: 22, eixos: 3 },
-                { nome: "Carreta 2 Eixos", peso: 20, eixos: 4 },
-                { nome: "Carreta 3 Eixos", peso: 25, eixos: 5 },
-                { nome: "Carreta 6 Eixos", peso: 27, eixos: 6 },
-                { nome: "Carreta 7 Eixos", peso: 30, eixos: 7 },
-                { nome: "Carreta 9 Eixos", peso: 36, eixos: 9 },
-                { nome: "Bitrem / Rodotrem", peso: 40, eixos: 9 }
-            ];
+            let taxas = TABELA_ANTT_2026[tipoCarga] || TABELA_ANTT_2026["Carga Geral"];
 
-            veiculos.forEach(v => {
-                let pisoMinimo = (dist * 3.25) + (v.eixos * pedEixo); 
-                let freteMot = pisoMinimo * (1 + (margem / 100));
-                let totalPed = pedEixo * v.eixos * (dist / 100);
-                let freteMotPed = freteMot + totalPed;
-                let freteEmpresa = freteMotPed * (1 + (icms / 100));
-                let freteTon = freteEmpresa / v.peso;
+            VEICULOS_ANTT.forEach(v => {
+                let ccd = taxas[v.eixos] ? taxas[v.eixos].CCD : 0;
+                let cc = taxas[v.eixos] ? taxas[v.eixos].CC : 0;
+
+                // CÁLCULOS IDÊNTICOS À PLANILHA:
+                let pisoMinimo = (dist * ccd) + cc;
+                let totalPed = v.eixos * pedEixo;
+                let freteMotSPed = pisoMinimo / v.peso;
+                let freteMotComPed = (pisoMinimo + totalPed) / v.peso;
+                
+                let denom = 100 - (icms + margem);
+                let freteEmpresaTotal = denom > 0 ? ((pisoMinimo + totalPed) / denom) * 100 : 0;
+                let freteEmpresaTon = freteEmpresaTotal / v.peso;
 
                 tbody.innerHTML += `<tr>
                     <td><strong>${v.nome}</strong></td>
                     <td>${v.peso} Ton</td>
                     <td>R$ ${pisoMinimo.toFixed(2)}</td>
-                    <td>R$ ${freteMot.toFixed(2)}</td>
+                    <td>R$ ${freteMotSPed.toFixed(2)}</td>
                     <td>R$ ${totalPed.toFixed(2)}</td>
-                    <td>R$ ${freteMotPed.toFixed(2)}</td>
-                    <td style="color: #2d8cff; font-weight: bold;">R$ ${freteEmpresa.toFixed(2)}</td>
-                    <td>R$ ${freteTon.toFixed(2)}/Ton</td>
+                    <td>R$ ${freteMotComPed.toFixed(2)}</td>
+                    <td style="color: #2d8cff; font-weight: bold;">R$ ${freteEmpresaTotal.toFixed(2)}</td>
+                    <td>R$ ${freteEmpresaTon.toFixed(2)}/Ton</td>
                 </tr>`;
             });
         }
@@ -472,7 +491,7 @@
                     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
                     Math.sin(dLon/2) * Math.sin(dLon/2);
             let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return (R * c) * 1.2;
+            return (R * c);
         }
 
         function buscarCargasPorRaio() {
@@ -588,6 +607,7 @@
             }
         });
 
+        // FUNÇÕES DE CLIENTES
         function abrirModalNovoCliente() {
             document.getElementById('cliFirebaseKey').value = "";
             document.getElementById('modalClienteTitulo').innerText = "Cadastrar Novo Cliente";
@@ -687,6 +707,7 @@
             document.getElementById('editProduto').value = cargaObj.produto || '';
             document.getElementById('editVlrEmpresa').value = cargaObj.valor || 0;
             document.getElementById('editVlrMot').value = (parseFloat(cargaObj.valor || 0) * 0.1).toFixed(2);
+            document.getElementById('editLocalizacao').value = cargaObj.localizacao || '';
             document.getElementById('editObs').value = cargaObj.obs || '';
             document.getElementById('modalEditar').style.display = 'flex';
         }
@@ -701,6 +722,7 @@
                 clienteDestino: document.getElementById('editCliDest').value,
                 produto: document.getElementById('editProduto').value,
                 valor: parseFloat(document.getElementById('editVlrEmpresa').value) || 0,
+                localizacao: document.getElementById('editLocalizacao').value,
                 obs: document.getElementById('editObs').value
             };
             firebase.database().ref('cargas/' + key).update(dadosAtualizados).then(() => {
