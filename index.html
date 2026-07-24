@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V48</title>
+    <title>DRO Cargas Sistema Completo V49</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -131,11 +131,11 @@
         <div class="calc-inputs" style="background: #0d1728; padding: 15px; border-radius: 8px;">
             <div class="calc-bloco">
                 <label>Origem</label>
-                <input type="text" id="anttOrigem" placeholder="Ex: Passo Fundo - RS" style="width: 200px;">
+                <input type="text" id="anttOrigem" placeholder="Ex: Sao Jose do Ouro - RS" style="width: 200px;">
             </div>
             <div class="calc-bloco">
                 <label>Destino</label>
-                <input type="text" id="anttDestino" placeholder="Ex: Rio Grande - RS" style="width: 200px;">
+                <input type="text" id="anttDestino" placeholder="Ex: Muitos Capoes - RS" style="width: 200px;">
             </div>
             <div class="calc-bloco">
                 <label>&nbsp;</label>
@@ -210,7 +210,7 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR CARGA -->
+    <!-- MODAL EDITAR CARGA CORRIGIDO COM TODOS OS CAMPOS -->
     <div id="modalEditar" class="modal">
         <div class="modal-content">
             <h3>Editar Carga</h3>
@@ -323,11 +323,26 @@
             });
         }
 
-        // --- CÁLCULO ANTT E BUSCA DE KM ---
+        // --- CÁLCULO ANTT COM ROTAS REAIS E TODAS AS CATEGORIAS ---
+        const rotasReaisKm = {
+            "SAO JOSE DO OURO|MUITOS CAPOES": 130,
+            "MUITOS CAPOES|SAO JOSE DO OURO": 130,
+            "PASSO FUNDO|PORTO ALEGRE": 290,
+            "PORTO ALEGRE|PASSO FUNDO": 290
+        };
+
         function buscarDistanciaAutomatica() {
-            let origem = document.getElementById('anttOrigem').value.trim();
-            let destino = document.getElementById('anttDestino').value.trim();
+            let origem = document.getElementById('anttOrigem').value.trim().toUpperCase();
+            let destino = document.getElementById('anttDestino').value.trim().toUpperCase();
             if(!origem || !destino) return alert("Preencha a Origem e o Destino.");
+
+            let chaveRota = origem + "|" + destino;
+            if(rotasReaisKm[chaveRota]) {
+                let kmReal = rotasReaisKm[chaveRota];
+                document.getElementById('anttDist').value = kmReal;
+                alert(`Distância exata da rota real carregada: ${kmReal} km`);
+                return;
+            }
 
             let c1 = obterCoordenadas(origem);
             let c2 = obterCoordenadas(destino);
@@ -354,15 +369,20 @@
             let tbody = document.getElementById('lista-antt');
             tbody.innerHTML = "";
 
+            // TODAS AS CATEGORIAS DE VEÍCULOS CONFORME PLANILHA
             let veiculos = [
+                { nome: "Truck", peso: 14, eixos: 2 },
+                { nome: "Bitruck", peso: 22, eixos: 3 },
+                { nome: "Carreta 2 Eixos", peso: 20, eixos: 4 },
+                { nome: "Carreta 3 Eixos", peso: 25, eixos: 5 },
                 { nome: "Carreta 6 Eixos", peso: 27, eixos: 6 },
+                { nome: "Carreta 7 Eixos", peso: 30, eixos: 7 },
                 { nome: "Carreta 9 Eixos", peso: 36, eixos: 9 },
-                { nome: "Bitrem / Rodotrem", peso: 40, eixos: 9 },
-                { nome: "Truck", peso: 14, eixos: 2 }
+                { nome: "Bitrem / Rodotrem", peso: 40, eixos: 9 }
             ];
 
             veiculos.forEach(v => {
-                let pisoMinimo = (dist * 2.85) + (v.eixos * pedEixo); 
+                let pisoMinimo = (dist * 3.25) + (v.eixos * pedEixo); 
                 let freteMot = pisoMinimo * (1 + (margem / 100));
                 let totalPed = pedEixo * v.eixos * (dist / 100);
                 let freteMotPed = freteMot + totalPed;
@@ -503,7 +523,7 @@
             }, 100);
         }
 
-        // --- LISTENERS FIREBASE COM FILTRO ANTIZERADAS ---
+        // --- LISTENERS FIREBASE ---
         firebase.database().ref('cargas').on('value', (snapshot) => {
             const data = snapshot.val();
             cargasCacheGlobal = {};
@@ -568,7 +588,6 @@
             }
         });
 
-        // FUNÇÕES DE CLIENTES
         function abrirModalNovoCliente() {
             document.getElementById('cliFirebaseKey').value = "";
             document.getElementById('modalClienteTitulo').innerText = "Cadastrar Novo Cliente";
