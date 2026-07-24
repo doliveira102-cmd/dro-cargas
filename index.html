@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V44 - Filtro Antizerbadas</title>
+    <title>DRO Cargas Sistema Completo V45</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -16,7 +16,6 @@
         th, td { padding: 8px; border-bottom: 1px solid #23374f; font-size: 11px; text-align: left; }
         .btn-acao { background: #23374f; font-size: 10px; margin: 2px; }
         .btn-excluir-selecionadas { background: #ff4d4d; margin-left: 10px; }
-        .btn-limpar-zeradas { background: #e67e22; margin-left: 5px; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 1000; }
         .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 550px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
         input, textarea, select { width: 100%; margin-bottom: 8px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; box-sizing: border-box; font-size: 12px; }
@@ -46,7 +45,6 @@
         <div style="display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
             <input type="text" placeholder="Buscar cargas..." id="buscaCargas" onkeyup="filtrarTabela('lista-cargas', 'buscaCargas')" style="margin-bottom:0; max-width: 300px;">
             <button class="btn-excluir-selecionadas" onclick="excluirSelecionadas()">🗑️ Excluir Selecionadas</button>
-            <button class="btn-limpar-zeradas" onclick="removerCargasZeradasAutomatico()">🧹 Limpar Cargas Zeradas do Banco</button>
         </div>
         <table>
             <thead>
@@ -305,25 +303,6 @@
             }
         }
 
-        // FUNÇÃO PARA VARRER E EXCLUIR AUTOMATICAMENTE CARGAS COM VALOR ZERO OU INVÁLIDO
-        function removerCargasZeradasAutomatico() {
-            let dbRef = firebase.database().ref('cargas');
-            dbRef.once('value', (snapshot) => {
-                let data = snapshot.val();
-                let countRemovidas = 0;
-                if(data) {
-                    for(let id in data) {
-                        let vlr = parseFloat(data[id].valor || 0);
-                        if(vlr <= 0) {
-                            dbRef.child(id).remove();
-                            countRemovidas++;
-                        }
-                    }
-                }
-                alert(`Limpeza concluída! ${countRemovidas} cargas com valor zero foram removidas do banco.`);
-            });
-        }
-
         // MÁSCARAS
         function mascaraCnpjCpf(el) {
             let v = el.value.replace(/\D/g, "");
@@ -414,7 +393,6 @@
                 for(let id in cargasCacheGlobal) {
                     let c = cargasCacheGlobal[id];
                     let vlrEmp = parseFloat(c.valor || 0);
-                    if(vlrEmp <= 0) continue; // Ignora cargas zeradas no raio também
 
                     let origemCarga = c.cidadeOrigem || "";
                     if(!origemCarga) continue;
@@ -444,26 +422,21 @@
             }, 100);
         }
 
-        // --- LISTENERS FIREBASE COM FILTRO ANTIZERADAS ---
+        // --- LISTENERS FIREBASE SEM FILTROS RESTRITIVOS (EXibe TUDO o que o robô enviar) ---
         firebase.database().ref('cargas').on('value', (snapshot) => {
             const data = snapshot.val();
-            cargasCacheGlobal = {};
+            cargasCacheGlobal = data || {};
             
-            // Filtra e guarda apenas cargas com valor maior que zero em memória
-            if(data) {
-                for(let id in data) {
-                    let vlr = parseFloat(data[id].valor || 0);
-                    if(vlr > 0) {
-                        cargasCacheGlobal[id] = data[id];
-                    }
-                }
-            }
-
             const tbody = document.getElementById('lista-cargas');
             if(tbody) {
                 tbody.innerHTML = "";
-                for (let id in cargasCacheGlobal) {
-                    let c = cargasCacheGlobal[id];
+                if (!data || Object.keys(data).length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; padding: 20px; color: #a0b2c6;">Nenhuma carga cadastrada no momento.</td></tr>`;
+                    return;
+                }
+
+                for (let id in data) {
+                    let c = data[id];
                     let icone = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
                     let vlrEmp = parseFloat(c.valor || 0);
                     let vlrMot = vlrEmp * 0.1;
@@ -591,7 +564,7 @@
         ];
 
         function importarBaseLocalizacoes() {
-            if(!confirm(`Deseja importar a base completa de locais para os Clientes?`)) return;
+            if(!confirm(`Deseja importar a base de locais para os Clientes?`)) return;
             let dbRef = firebase.database().ref('clientes');
             dadosLocaisIniciais.forEach(item => {
                 let mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.nome + ' ' + item.cidade)}`;
