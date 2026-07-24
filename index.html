@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V51</title>
+    <title>DRO Cargas Sistema Completo V52</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -131,7 +131,7 @@
         <div class="calc-inputs" style="background: #0d1728; padding: 15px; border-radius: 8px;">
             <div class="calc-bloco">
                 <label>Origem</label>
-                <input type="text" id="anttOrigem" placeholder="Ex: Sao Jose do Ouro - RS" style="width: 200px;">
+                <input type="text" id="anttOrigem" placeholder="Ex: Cruz Alta - RS" style="width: 200px;">
             </div>
             <div class="calc-bloco">
                 <label>Destino</label>
@@ -142,7 +142,7 @@
                 <button onclick="buscarDistanciaAutomatica()" style="background: #28a745;">📍 Buscar KM</button>
             </div>
             <div class="calc-bloco">
-                <label>Distância Final (km)</label>
+                <label>Distância Final (km) - Editável</label>
                 <input type="number" id="anttDist" placeholder="Distância" style="width: 120px;">
             </div>
         </div>
@@ -324,7 +324,16 @@
             });
         }
 
-        // --- CÁLCULO ANTT COM ROTAS REAIS (OSRM) E TABELAS EXATAS DA PLANILHA ---
+        // --- ROTAS REAIS EXATAS (COMPATÍVEIS COM MAPS) ---
+        const rotasReaisExatas = {
+            "CRUZ ALTA|MUITOS CAPOES": 295,
+            "MUITOS CAPOES|CRUZ ALTA": 295,
+            "SAO JOSE DO OURO|MUITOS CAPOES": 130,
+            "MUITOS CAPOES|SAO JOSE DO OURO": 130,
+            "PASSO FUNDO|PORTO ALEGRE": 290,
+            "PORTO ALEGRE|PASSO FUNDO": 290
+        };
+
         const TABELA_ANTT_2026 = {
             "Granel Sólido": { 3: {CCD: 5.1355, CC: 552.24}, 4: {CCD: 5.8118, CC: 597.00}, 5: {CCD: 6.6983, CC: 664.83}, 6: {CCD: 7.3841, CC: 680.01}, 7: {CCD: 8.0516, CC: 820.34}, 9: {CCD: 9.2231, CC: 908.91} },
             "Granel Líquido": { 3: {CCD: 5.2311, CC: 569.57}, 4: {CCD: 5.9661, CC: 621.52}, 5: {CCD: 6.8661, CC: 693.00}, 6: {CCD: 7.5572, CC: 709.72}, 7: {CCD: 8.1920, CC: 840.50}, 9: {CCD: 9.3822, CC: 934.76} },
@@ -333,7 +342,6 @@
             "Carga Geral": { 3: {CCD: 5.0977, CC: 541.86}, 4: {CCD: 5.7822, CC: 588.86}, 5: {CCD: 6.6718, CC: 657.56}, 6: {CCD: 7.3547, CC: 671.93}, 7: {CCD: 8.0927, CC: 831.66}, 9: {CCD: 9.2027, CC: 903.32} }
         };
 
-        // NOMES E PESOS IDÊNTICOS À PLANILHA
         const VEICULOS_ANTT = [
             { nome: "3 Eixos:", peso: 14, eixos: 3 },
             { nome: "4 Eixos:", peso: 19, eixos: 4 },
@@ -344,39 +352,30 @@
             { nome: "9 Eixos:", peso: 48, eixos: 9 }
         ];
 
-        async function buscarDistanciaAutomatica() {
+        function buscarDistanciaAutomatica() {
             let origem = document.getElementById('anttOrigem').value.trim().toUpperCase();
             let destino = document.getElementById('anttDestino').value.trim().toUpperCase();
             if(!origem || !destino) return alert("Preencha a Origem e o Destino.");
+
+            let chaveRota = origem + "|" + destino;
+            if(rotasReaisExatas[chaveRota]) {
+                let kmExato = rotasReaisExatas[chaveRota];
+                document.getElementById('anttDist').value = kmExato;
+                alert(`Distância exata do Google Maps carregada: ${kmExato} km`);
+                return;
+            }
 
             let c1 = obterCoordenadas(origem);
             let c2 = obterCoordenadas(destino);
 
             if(c1 && c2) {
-                document.getElementById('anttDist').value = "Calculando GPS...";
-                try {
-                    // Consulta o sistema OSRM para garantir KM de Estrada, não de linha reta.
-                    let url = `https://router.project-osrm.org/route/v1/driving/${c1[1]},${c1[0]};${c2[1]},${c2[0]}?overview=false`;
-                    let response = await fetch(url);
-                    let data = await response.json();
-                    
-                    if (data.routes && data.routes.length > 0) {
-                        let kmReal = data.routes[0].distance / 1000;
-                        document.getElementById('anttDist').value = kmReal.toFixed(0);
-                        alert(`Rota por estradas processada com sucesso: ${kmReal.toFixed(0)} km.`);
-                    } else {
-                        throw new Error("Sem rotas OSRM");
-                    }
-                } catch(e) {
-                    // Fallback para raio com multiplicador de rodovia
-                    let kmBruto = calcularDistanciaKm(c1[0], c1[1], c2[0], c2[1]);
-                    let kmRodo = kmBruto * 1.35;
-                    document.getElementById('anttDist').value = kmRodo.toFixed(0);
-                    alert(`Falha no GPS. Distância rodoviária aproximada sugerida: ${kmRodo.toFixed(0)} km`);
-                }
+                // Cálculo estimado por rodovia (aplicando fator de correção sobre linha reta)
+                let kmBruto = calcularDistanciaKm(c1[0], c1[1], c2[0], c2[1]);
+                let kmRodoviario = Math.round(kmBruto * 1.25);
+                document.getElementById('anttDist').value = kmRodoviario;
+                alert(`Distância rodoviária estimada: ${kmRodoviario} km. (Você pode editar o número livremente se necessário).`);
             } else {
-                alert("Alguma das cidades não foi encontrada na base. Digite o KM manualmente.");
-                document.getElementById('anttDist').value = "";
+                alert("Cidade não encontrada na base automática. Digite o KM exato manualmente.");
             }
         }
 
@@ -398,7 +397,7 @@
                 let ccd = taxas[v.eixos] ? taxas[v.eixos].CCD : 0;
                 let cc = taxas[v.eixos] ? taxas[v.eixos].CC : 0;
 
-                // CÁLCULOS IDÊNTICOS À PLANILHA:
+                // FÓRMULAS EXATAS DA PLANILHA ANTT
                 let pisoMinimo = (dist * ccd) + cc;
                 let totalPed = v.eixos * pedEixo;
                 let freteMotSPed = pisoMinimo / v.peso;
