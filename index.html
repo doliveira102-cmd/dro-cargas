@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V47</title>
+    <title>DRO Cargas Sistema Completo V48</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -348,7 +348,6 @@
             let pedEixo = parseFloat(document.getElementById('anttPedEixo').value) || 0;
             let icms = parseFloat(document.getElementById('anttIcms').value) || 0;
             let margem = parseFloat(document.getElementById('anttMargem').value) || 0;
-            let tipoCarga = document.getElementById('anttTipo').value;
 
             if(dist <= 0) return alert("Informe ou busque a distância em KM.");
 
@@ -356,16 +355,16 @@
             tbody.innerHTML = "";
 
             let veiculos = [
-                { nome: "Carreta 6 Eixos", peso: 27, cCCD: 4.5, cCCD_km: 3.5 },
-                { nome: "Carreta 9 Eixos", peso: 36, cCCD: 5.5, cCCD_km: 4.2 },
-                { nome: "Bitrem / Rodotrem", peso: 40, cCCD: 6.2, cCCD_km: 4.8 },
-                { nome: "Truck", peso: 14, cCCD: 3.0, cCCD_km: 2.5 }
+                { nome: "Carreta 6 Eixos", peso: 27, eixos: 6 },
+                { nome: "Carreta 9 Eixos", peso: 36, eixos: 9 },
+                { nome: "Bitrem / Rodotrem", peso: 40, eixos: 9 },
+                { nome: "Truck", peso: 14, eixos: 2 }
             ];
 
             veiculos.forEach(v => {
-                let pisoMinimo = (dist * 2.85) + (v.eixos ? v.eixos * pedEixo : 120); 
+                let pisoMinimo = (dist * 2.85) + (v.eixos * pedEixo); 
                 let freteMot = pisoMinimo * (1 + (margem / 100));
-                let totalPed = pedEixo * 4 * (dist / 100);
+                let totalPed = pedEixo * v.eixos * (dist / 100);
                 let freteMotPed = freteMot + totalPed;
                 let freteEmpresa = freteMotPed * (1 + (icms / 100));
                 let freteTon = freteEmpresa / v.peso;
