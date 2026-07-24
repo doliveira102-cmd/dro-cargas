@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V50</title>
+    <title>DRO Cargas Sistema Completo V51</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -333,15 +333,15 @@
             "Carga Geral": { 3: {CCD: 5.0977, CC: 541.86}, 4: {CCD: 5.7822, CC: 588.86}, 5: {CCD: 6.6718, CC: 657.56}, 6: {CCD: 7.3547, CC: 671.93}, 7: {CCD: 8.0927, CC: 831.66}, 9: {CCD: 9.2027, CC: 903.32} }
         };
 
+        // NOMES E PESOS IDÊNTICOS À PLANILHA
         const VEICULOS_ANTT = [
-            { nome: "Truck", peso: 14, eixos: 3 },
-            { nome: "Bitruck", peso: 22, eixos: 4 },
-            { nome: "Carreta 2 Eixos", peso: 20, eixos: 4 },
-            { nome: "Carreta 3 Eixos", peso: 25, eixos: 5 },
-            { nome: "Carreta 6 Eixos", peso: 27, eixos: 6 },
-            { nome: "Carreta 7 Eixos", peso: 30, eixos: 7 },
-            { nome: "Carreta 9 Eixos", peso: 36, eixos: 9 },
-            { nome: "Bitrem / Rodotrem", peso: 40, eixos: 9 }
+            { nome: "3 Eixos:", peso: 14, eixos: 3 },
+            { nome: "4 Eixos:", peso: 19, eixos: 4 },
+            { nome: "5 Eixos:", peso: 26, eixos: 5 },
+            { nome: "6 Eixos:", peso: 32, eixos: 6 },
+            { nome: "7 Eixos Bitrem:", peso: 37, eixos: 7 },
+            { nome: "7 Eixos 4° Eixo:", peso: 39, eixos: 7 },
+            { nome: "9 Eixos:", peso: 48, eixos: 9 }
         ];
 
         async function buscarDistanciaAutomatica() {
@@ -411,12 +411,12 @@
                 tbody.innerHTML += `<tr>
                     <td><strong>${v.nome}</strong></td>
                     <td>${v.peso} Ton</td>
-                    <td>R$ ${pisoMinimo.toFixed(2)}</td>
-                    <td>R$ ${freteMotSPed.toFixed(2)}</td>
-                    <td>R$ ${totalPed.toFixed(2)}</td>
-                    <td>R$ ${freteMotComPed.toFixed(2)}</td>
-                    <td style="color: #2d8cff; font-weight: bold;">R$ ${freteEmpresaTotal.toFixed(2)}</td>
-                    <td>R$ ${freteEmpresaTon.toFixed(2)}/Ton</td>
+                    <td>R$ ${pisoMinimo.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>R$ ${freteMotSPed.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>R$ ${totalPed.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>R$ ${freteMotComPed.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td style="color: #2d8cff; font-weight: bold;">R$ ${freteEmpresaTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>R$ ${freteEmpresaTon.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                 </tr>`;
             });
         }
@@ -607,7 +607,6 @@
             }
         });
 
-        // FUNÇÕES DE CLIENTES
         function abrirModalNovoCliente() {
             document.getElementById('cliFirebaseKey').value = "";
             document.getElementById('modalClienteTitulo').innerText = "Cadastrar Novo Cliente";
