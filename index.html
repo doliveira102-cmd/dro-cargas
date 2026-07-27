@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V52</title>
+    <title>DRO Cargas Sistema Completo V53</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -17,6 +17,7 @@
         .btn-acao { background: #23374f; font-size: 10px; margin: 2px; }
         .btn-excluir-selecionadas { background: #ff4d4d; margin-left: 10px; }
         .btn-limpar-zeradas { background: #e67e22; margin-left: 5px; }
+        .btn-nova-carga { background: #28a745; margin-left: 5px; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 1000; }
         .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 550px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
         input, textarea, select { width: 100%; margin-bottom: 8px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; box-sizing: border-box; font-size: 12px; }
@@ -47,6 +48,7 @@
             <input type="text" placeholder="Buscar cargas..." id="buscaCargas" onkeyup="filtrarTabela('lista-cargas', 'buscaCargas')" style="margin-bottom:0; max-width: 300px;">
             <button class="btn-excluir-selecionadas" onclick="excluirSelecionadas()">🗑️ Excluir Selecionadas</button>
             <button class="btn-limpar-zeradas" onclick="removerCargasZeradasAutomatico()">🧹 Limpar Cargas Zeradas</button>
+            <button class="btn-nova-carga" onclick="abrirModalNovaCarga()">➕ Cadastrar Carga</button>
         </div>
         <table>
             <thead>
@@ -210,10 +212,10 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR CARGA -->
+    <!-- MODAL EDITAR/NOVA CARGA -->
     <div id="modalEditar" class="modal">
         <div class="modal-content">
-            <h3>Editar Carga</h3>
+            <h3 id="modalEditarTitulo">Editar Carga</h3>
             <input type="hidden" id="editFirebaseKey">
             <span class="label-campo">OP / CN:</span><input type="text" id="editOp">
             <span class="label-campo">Cidade Origem:</span><input type="text" id="editCidOrig">
@@ -228,7 +230,7 @@
             <div style="display: flex; gap: 5px; margin-top: 10px;">
                 <button onclick="salvarEdicaoCarga()" style="background: #28a745; flex: 1;">Salvar</button>
                 <button onclick="document.getElementById('modalEditar').style.display='none'" style="background: #6c757d;">Fechar</button>
-                <button onclick="excluirCargaUnica()" style="background: #ff4d4d;">Excluir</button>
+                <button id="btnExcluirCarga" onclick="excluirCargaUnica()" style="background: #ff4d4d;">Excluir</button>
             </div>
         </div>
     </div>
@@ -352,7 +354,7 @@
             { nome: "9 Eixos:", peso: 48, eixos: 9 }
         ];
 
-        function buscarDistanciaAutomatica() {
+        async function buscarDistanciaAutomatica() {
             let origem = document.getElementById('anttOrigem').value.trim().toUpperCase();
             let destino = document.getElementById('anttDestino').value.trim().toUpperCase();
             if(!origem || !destino) return alert("Preencha a Origem e o Destino.");
@@ -397,7 +399,6 @@
                 let ccd = taxas[v.eixos] ? taxas[v.eixos].CCD : 0;
                 let cc = taxas[v.eixos] ? taxas[v.eixos].CC : 0;
 
-                // FÓRMULAS EXATAS DA PLANILHA ANTT
                 let pisoMinimo = (dist * ccd) + cc;
                 let totalPed = v.eixos * pedEixo;
                 let freteMotSPed = pisoMinimo / v.peso;
@@ -606,6 +607,89 @@
             }
         });
 
+        // --- FUNÇÕES DE CARGAS (NOVA / EDITAR) ---
+        function abrirModalNovaCarga() {
+            document.getElementById('editFirebaseKey').value = ""; // Vazio significa que é NOVA carga
+            document.getElementById('modalEditarTitulo').innerText = "Cadastrar Nova Carga";
+            document.getElementById('editOp').value = "";
+            document.getElementById('editCidOrig').value = "";
+            document.getElementById('editCidDest').value = "";
+            document.getElementById('editCliOrig').value = "";
+            document.getElementById('editCliDest').value = "";
+            document.getElementById('editProduto').value = "";
+            document.getElementById('editVlrEmpresa').value = "";
+            document.getElementById('editVlrMot').value = "";
+            document.getElementById('editLocalizacao').value = "";
+            document.getElementById('editObs').value = "";
+            
+            document.getElementById('btnExcluirCarga').style.display = 'none'; // Esconde botão excluir ao criar nova
+            document.getElementById('modalEditar').style.display = 'flex';
+        }
+
+        function editarCargaObj(id, cargaObj) {
+            document.getElementById('editFirebaseKey').value = id;
+            document.getElementById('modalEditarTitulo').innerText = "Editar Carga";
+            document.getElementById('editOp').value = cargaObj.cn || '';
+            document.getElementById('editCidOrig').value = cargaObj.cidadeOrigem || '';
+            document.getElementById('editCidDest').value = cargaObj.cidadeDestino || '';
+            document.getElementById('editCliOrig').value = cargaObj.clienteOrigem || '';
+            document.getElementById('editCliDest').value = cargaObj.clienteDestino || '';
+            document.getElementById('editProduto').value = cargaObj.produto || '';
+            document.getElementById('editVlrEmpresa').value = cargaObj.valor || 0;
+            document.getElementById('editVlrMot').value = (parseFloat(cargaObj.valor || 0) * 0.1).toFixed(2);
+            document.getElementById('editLocalizacao').value = cargaObj.localizacao || '';
+            document.getElementById('editObs').value = cargaObj.obs || '';
+            
+            document.getElementById('btnExcluirCarga').style.display = 'block'; // Mostra botão excluir ao editar
+            document.getElementById('modalEditar').style.display = 'flex';
+        }
+
+        function salvarEdicaoCarga() {
+            let key = document.getElementById('editFirebaseKey').value;
+            let vlr = parseFloat(document.getElementById('editVlrEmpresa').value) || 0;
+
+            if (vlr <= 0) {
+                return alert("Atenção: O valor da empresa não pode ser 0 ou negativo, caso contrário a carga ficará oculta da lista.");
+            }
+
+            let dadosAtualizados = {
+                cn: document.getElementById('editOp').value,
+                cidadeOrigem: document.getElementById('editCidOrig').value,
+                cidadeDestino: document.getElementById('editCidDest').value,
+                clienteOrigem: document.getElementById('editCliOrig').value,
+                clienteDestino: document.getElementById('editCliDest').value,
+                produto: document.getElementById('editProduto').value,
+                valor: vlr,
+                localizacao: document.getElementById('editLocalizacao').value,
+                obs: document.getElementById('editObs').value,
+                origem_cadastro: key ? (cargasCacheGlobal[key]?.origem_cadastro || 'manual') : 'manual'
+            };
+
+            if (key) {
+                // Modo Edição
+                firebase.database().ref('cargas/' + key).update(dadosAtualizados).then(() => {
+                    alert("Carga atualizada!"); document.getElementById('modalEditar').style.display = 'none';
+                });
+            } else {
+                // Modo Nova Carga
+                firebase.database().ref('cargas').push(dadosAtualizados).then(() => {
+                    alert("Nova carga cadastrada com sucesso!"); document.getElementById('modalEditar').style.display = 'none';
+                });
+            }
+        }
+
+        function excluirCargaUnica() {
+            let key = document.getElementById('editFirebaseKey').value;
+            if (!key) return; // Se for nova carga, não faz sentido excluir
+            
+            if (confirm("Excluir esta carga?")) {
+                firebase.database().ref('cargas/' + key).remove().then(() => {
+                    alert("Carga excluída!"); document.getElementById('modalEditar').style.display = 'none';
+                });
+            }
+        }
+
+        // --- FUNÇÕES DE CLIENTES ---
         function abrirModalNovoCliente() {
             document.getElementById('cliFirebaseKey').value = "";
             document.getElementById('modalClienteTitulo').innerText = "Cadastrar Novo Cliente";
@@ -693,48 +777,6 @@
                 dbRef.push({ nome: item.nome, cidade: item.cidade, responsavel: item.desc, cnpj: "", telefone: "", email: "", obs: "", localizacao: mapsLink });
             });
             alert("Locais importados com sucesso!");
-        }
-
-        function editarCargaObj(id, cargaObj) {
-            document.getElementById('editFirebaseKey').value = id;
-            document.getElementById('editOp').value = cargaObj.cn || '';
-            document.getElementById('editCidOrig').value = cargaObj.cidadeOrigem || '';
-            document.getElementById('editCidDest').value = cargaObj.cidadeDestino || '';
-            document.getElementById('editCliOrig').value = cargaObj.clienteOrigem || '';
-            document.getElementById('editCliDest').value = cargaObj.clienteDestino || '';
-            document.getElementById('editProduto').value = cargaObj.produto || '';
-            document.getElementById('editVlrEmpresa').value = cargaObj.valor || 0;
-            document.getElementById('editVlrMot').value = (parseFloat(cargaObj.valor || 0) * 0.1).toFixed(2);
-            document.getElementById('editLocalizacao').value = cargaObj.localizacao || '';
-            document.getElementById('editObs').value = cargaObj.obs || '';
-            document.getElementById('modalEditar').style.display = 'flex';
-        }
-
-        function salvarEdicaoCarga() {
-            let key = document.getElementById('editFirebaseKey').value;
-            let dadosAtualizados = {
-                cn: document.getElementById('editOp').value,
-                cidadeOrigem: document.getElementById('editCidOrig').value,
-                cidadeDestino: document.getElementById('editCidDest').value,
-                clienteOrigem: document.getElementById('editCliOrig').value,
-                clienteDestino: document.getElementById('editCliDest').value,
-                produto: document.getElementById('editProduto').value,
-                valor: parseFloat(document.getElementById('editVlrEmpresa').value) || 0,
-                localizacao: document.getElementById('editLocalizacao').value,
-                obs: document.getElementById('editObs').value
-            };
-            firebase.database().ref('cargas/' + key).update(dadosAtualizados).then(() => {
-                alert("Carga atualizada!"); document.getElementById('modalEditar').style.display = 'none';
-            });
-        }
-
-        function excluirCargaUnica() {
-            let key = document.getElementById('editFirebaseKey').value;
-            if (confirm("Excluir esta carga?")) {
-                firebase.database().ref('cargas/' + key).remove().then(() => {
-                    alert("Carga excluída!"); document.getElementById('modalEditar').style.display = 'none';
-                });
-            }
         }
 
         function formatarCidade(el) { let val = el.value.replace("-RS", ""); if(val.trim() !== "") el.value = val.trim() + "-RS"; }
