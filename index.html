@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V53</title>
+    <title>DRO Cargas Sistema Completo V54</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -371,7 +371,7 @@
             let c2 = obterCoordenadas(destino);
 
             if(c1 && c2) {
-                // Cálculo estimado por rodovia (aplicando fator de correção sobre linha reta)
+                // Cálculo estimado por rodovia
                 let kmBruto = calcularDistanciaKm(c1[0], c1[1], c2[0], c2[1]);
                 let kmRodoviario = Math.round(kmBruto * 1.25);
                 document.getElementById('anttDist').value = kmRodoviario;
@@ -421,7 +421,6 @@
             });
         }
 
-        // MÁSCARAS
         function mascaraCnpjCpf(el) {
             let v = el.value.replace(/\D/g, "");
             if (v.length <= 11) {
@@ -444,34 +443,20 @@
             el.value = v;
         }
 
-        // COORDENADAS PARA RAIO E ANTT
         const coordenadasCidades = {
-            "SANANDUVA": [-27.7375, -51.8153],
-            "PASSO FUNDO": [-28.2628, -52.4087],
-            "LAGOA VERMELHA": [-27.8797, -51.5275],
-            "CARAZINHO": [-28.2917, -52.7889],
-            "MARAU": [-28.4522, -52.2025],
-            "VACARIA": [-28.5086, -50.9344],
-            "ERECIM": [-27.6342, -52.2742],
-            "SANTA MARIA": [-29.6842, -53.8069],
-            "PORTO ALEGRE": [-30.0346, -51.2177],
-            "IJUI": [-28.3908, -53.9169],
-            "SANTO ANGELO": [-28.2997, -54.2658],
-            "SOLEDADE": [-28.8131, -52.5117],
-            "TAPEJARA": [-28.0694, -52.0169],
-            "RONDA ALTA": [-27.7817, -52.8358],
-            "SARANDI": [-27.9425, -52.9208],
-            "SEBERI": [-27.4731, -53.4008],
-            "PALMEIRA DAS MISSOES": [-27.8997, -53.3106],
-            "CRUZ ALTA": [-28.6497, -53.6069],
-            "IBIRUBA": [-28.6319, -53.0789],
-            "TAPERA": [-28.5919, -52.8578],
-            "ESPUMOSO": [-28.7297, -52.8406],
-            "CASCA": [-28.4069, -51.9219],
-            "BOM JESUS": [-28.6758, -50.4242],
-            "MUITOS CAPOES": [-28.4172, -51.1350],
-            "ESMERALDA": [-28.0583, -51.1833],
-            "SAO JOSE DO OURO": [-27.8189, -51.5836]
+            "SANANDUVA": [-27.7375, -51.8153], "PASSO FUNDO": [-28.2628, -52.4087],
+            "LAGOA VERMELHA": [-27.8797, -51.5275], "CARAZINHO": [-28.2917, -52.7889],
+            "MARAU": [-28.4522, -52.2025], "VACARIA": [-28.5086, -50.9344],
+            "ERECIM": [-27.6342, -52.2742], "SANTA MARIA": [-29.6842, -53.8069],
+            "PORTO ALEGRE": [-30.0346, -51.2177], "IJUI": [-28.3908, -53.9169],
+            "SANTO ANGELO": [-28.2997, -54.2658], "SOLEDADE": [-28.8131, -52.5117],
+            "TAPEJARA": [-28.0694, -52.0169], "RONDA ALTA": [-27.7817, -52.8358],
+            "SARANDI": [-27.9425, -52.9208], "SEBERI": [-27.4731, -53.4008],
+            "PALMEIRA DAS MISSOES": [-27.8997, -53.3106], "CRUZ ALTA": [-28.6497, -53.6069],
+            "IBIRUBA": [-28.6319, -53.0789], "TAPERA": [-28.5919, -52.8578],
+            "ESPUMOSO": [-28.7297, -52.8406], "CASCA": [-28.4069, -51.9219],
+            "BOM JESUS": [-28.6758, -50.4242], "MUITOS CAPOES": [-28.4172, -51.1350],
+            "ESMERALDA": [-28.0583, -51.1833], "SAO JOSE DO OURO": [-27.8189, -51.5836]
         };
 
         function obterCoordenadas(cidadeStr) {
@@ -487,9 +472,7 @@
             let R = 6371;
             let dLat = (lat2 - lat1) * Math.PI / 180;
             let dLon = (lon2 - lon1) * Math.PI / 180;
-            let a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                    Math.sin(dLon/2) * Math.sin(dLon/2);
+            let a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
             let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
             return (R * c);
         }
@@ -530,12 +513,11 @@
                                 <td>${c.clienteOrigem || ''}</td>
                                 <td>${c.produto || ''}</td>
                                 <td>R$ ${vlrEmp.toFixed(2)}</td>
-                                <td><button class="btn-acao" onclick="editarCargaObj('${id}', ${JSON.stringify(c).replace(/"/g, '&quot;')})">Ver Carga</button></td>
+                                <td><button class="btn-acao" onclick="abrirModalEditarCarga('${id}')">Ver Carga</button></td>
                             </tr>`;
                         }
                     }
                 }
-
                 if(encontrados === 0) {
                     tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px;">Nenhuma carga ativa encontrada dentro do raio de ${raioMax} km de ${base}.</td></tr>`;
                 }
@@ -545,7 +527,7 @@
         // --- LISTENERS FIREBASE ---
         firebase.database().ref('cargas').on('value', (snapshot) => {
             const data = snapshot.val();
-            cargasCacheGlobal = {};
+            cargasCacheGlobal = data || {}; // SALVANDO NA MEMÓRIA SEGURA
             
             const tbody = document.getElementById('lista-cargas');
             if(tbody) {
@@ -559,12 +541,12 @@
                     let c = data[id];
                     let vlrEmp = parseFloat(c.valor || 0);
 
-                    if(vlrEmp <= 0) continue; // Bloqueia zeradas
+                    if(vlrEmp <= 0) continue; 
 
-                    cargasCacheGlobal[id] = c;
                     let icone = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
                     let vlrMot = vlrEmp * 0.1;
 
+                    // O BOTÃO AGORA SÓ MANDA O ID, EVITANDO QUALQUER BUG HTML
                     tbody.innerHTML += `<tr>
                         <td><input type="checkbox" class="check-carga" data-id="${id}"></td>
                         <td>${icone}</td>
@@ -578,7 +560,7 @@
                         <td>R$ ${vlrMot.toFixed(2)}</td>
                         <td>
                             <button class="btn-acao" onclick="document.getElementById('modalOrdem').style.display='flex'">Ordem</button>
-                            <button class="btn-acao" onclick='editarCargaObj("${id}", ${JSON.stringify(c)})'>Editar</button>
+                            <button class="btn-acao" onclick="abrirModalEditarCarga('${id}')">Editar</button>
                         </td>
                     </tr>`;
                 }
@@ -607,9 +589,9 @@
             }
         });
 
-        // --- FUNÇÕES DE CARGAS (NOVA / EDITAR) ---
+        // --- FUNÇÕES DE CARGAS SEGURAS PELO ID ---
         function abrirModalNovaCarga() {
-            document.getElementById('editFirebaseKey').value = ""; // Vazio significa que é NOVA carga
+            document.getElementById('editFirebaseKey').value = ""; 
             document.getElementById('modalEditarTitulo').innerText = "Cadastrar Nova Carga";
             document.getElementById('editOp').value = "";
             document.getElementById('editCidOrig').value = "";
@@ -622,11 +604,15 @@
             document.getElementById('editLocalizacao').value = "";
             document.getElementById('editObs').value = "";
             
-            document.getElementById('btnExcluirCarga').style.display = 'none'; // Esconde botão excluir ao criar nova
+            document.getElementById('btnExcluirCarga').style.display = 'none'; 
             document.getElementById('modalEditar').style.display = 'flex';
         }
 
-        function editarCargaObj(id, cargaObj) {
+        // AGORA ELA PUXA DIRETO DO CACHE, NÃO PASSA TEXTO PELO BOTÃO HTML
+        function abrirModalEditarCarga(id) {
+            let cargaObj = cargasCacheGlobal[id];
+            if (!cargaObj) return alert("Erro ao localizar dados da carga!");
+
             document.getElementById('editFirebaseKey').value = id;
             document.getElementById('modalEditarTitulo').innerText = "Editar Carga";
             document.getElementById('editOp').value = cargaObj.cn || '';
@@ -640,7 +626,7 @@
             document.getElementById('editLocalizacao').value = cargaObj.localizacao || '';
             document.getElementById('editObs').value = cargaObj.obs || '';
             
-            document.getElementById('btnExcluirCarga').style.display = 'block'; // Mostra botão excluir ao editar
+            document.getElementById('btnExcluirCarga').style.display = 'block'; 
             document.getElementById('modalEditar').style.display = 'flex';
         }
 
@@ -649,7 +635,7 @@
             let vlr = parseFloat(document.getElementById('editVlrEmpresa').value) || 0;
 
             if (vlr <= 0) {
-                return alert("Atenção: O valor da empresa não pode ser 0 ou negativo, caso contrário a carga ficará oculta da lista.");
+                return alert("Atenção: O valor da empresa não pode ser 0 ou negativo.");
             }
 
             let dadosAtualizados = {
@@ -666,12 +652,10 @@
             };
 
             if (key) {
-                // Modo Edição
                 firebase.database().ref('cargas/' + key).update(dadosAtualizados).then(() => {
                     alert("Carga atualizada!"); document.getElementById('modalEditar').style.display = 'none';
                 });
             } else {
-                // Modo Nova Carga
                 firebase.database().ref('cargas').push(dadosAtualizados).then(() => {
                     alert("Nova carga cadastrada com sucesso!"); document.getElementById('modalEditar').style.display = 'none';
                 });
@@ -680,7 +664,7 @@
 
         function excluirCargaUnica() {
             let key = document.getElementById('editFirebaseKey').value;
-            if (!key) return; // Se for nova carga, não faz sentido excluir
+            if (!key) return; 
             
             if (confirm("Excluir esta carga?")) {
                 firebase.database().ref('cargas/' + key).remove().then(() => {
@@ -763,10 +747,7 @@
 
         const dadosLocaisIniciais = [
             {cidade: "RS/IPE", nome: "Adir Carlos Dagnese", desc: "Porteirinha", loc: "Fazenda Dagnese"},
-            {cidade: "SC/IMBITUBA", nome: "Adubos Coxilha", desc: "-", loc: "Adubos Coxilha"},
-            {cidade: "RS/BOM JESUS", nome: "Agricola Dois Capões", desc: "-", loc: "Fruticula Cesar (Mario da Rosa)"},
-            {cidade: "RS/PASSO FUNDO", nome: "Agricola Ferrari", desc: "BR 285", loc: "Agricola Ferrari"},
-            {cidade: "RS/MACHADINHO", nome: "Agricola Grandi", desc: "-", loc: "Agrícola Grandi"}
+            {cidade: "SC/IMBITUBA", nome: "Adubos Coxilha", desc: "-", loc: "Adubos Coxilha"}
         ];
 
         function importarBaseLocalizacoes() {
