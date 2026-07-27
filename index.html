@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V54</title>
+    <title>DRO Cargas Sistema Completo V55</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -33,12 +33,12 @@
 <body>
 
     <div class="nav-bar">
-        <button onclick="trocarTab('cargas')">Cargas</button>
-        <button onclick="trocarTab('motoristas')">Motoristas</button>
-        <button onclick="trocarTab('agenda')">Agenda</button>
-        <button onclick="trocarTab('clientes')">Clientes</button>
-        <button onclick="trocarTab('raio')" style="background: #17a2b8;">📍 Embarques por Raio</button>
-        <button onclick="trocarTab('calculadora')" style="background: #23374f; border: 1px solid #2d8cff;">📊 Piso ANTT</button>
+        <button type="button" onclick="trocarTab('cargas')">Cargas</button>
+        <button type="button" onclick="trocarTab('motoristas')">Motoristas</button>
+        <button type="button" onclick="trocarTab('agenda')">Agenda</button>
+        <button type="button" onclick="trocarTab('clientes')">Clientes</button>
+        <button type="button" onclick="trocarTab('raio')" style="background: #17a2b8;">📍 Embarques por Raio</button>
+        <button type="button" onclick="trocarTab('calculadora')" style="background: #23374f; border: 1px solid #2d8cff;">📊 Piso ANTT</button>
     </div>
 
     <!-- ABA CARGAS -->
@@ -46,9 +46,9 @@
         <h2>Cargas</h2>
         <div style="display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
             <input type="text" placeholder="Buscar cargas..." id="buscaCargas" onkeyup="filtrarTabela('lista-cargas', 'buscaCargas')" style="margin-bottom:0; max-width: 300px;">
-            <button class="btn-excluir-selecionadas" onclick="excluirSelecionadas()">🗑️ Excluir Selecionadas</button>
-            <button class="btn-limpar-zeradas" onclick="removerCargasZeradasAutomatico()">🧹 Limpar Cargas Zeradas</button>
-            <button class="btn-nova-carga" onclick="abrirModalNovaCarga()">➕ Cadastrar Carga</button>
+            <button type="button" class="btn-excluir-selecionadas" onclick="excluirSelecionadas()">🗑️ Excluir Selecionadas</button>
+            <button type="button" class="btn-limpar-zeradas" onclick="removerCargasZeradasAutomatico()">🧹 Limpar Cargas Zeradas</button>
+            <button type="button" class="btn-nova-carga" onclick="abrirModalNovaCarga()">➕ Cadastrar Carga</button>
         </div>
         <table>
             <thead>
@@ -66,7 +66,7 @@
     <div id="motoristas" class="tab-content">
         <h2>Motoristas</h2>
         <input type="text" placeholder="Pesquisar por placa ou nome..." id="buscaMot" onkeyup="filtrarTabela('lista-motoristas', 'buscaMot')">
-        <button onclick="document.getElementById('modalMot').style.display='flex'">+ Cadastrar Motorista</button>
+        <button type="button" onclick="document.getElementById('modalMot').style.display='flex'">+ Cadastrar Motorista</button>
         <table>
             <thead><tr><th>Cavalo</th><th>Motorista</th><th>WhatsApp</th><th>Ações</th></tr></thead>
             <tbody id="lista-motoristas"></tbody>
@@ -84,8 +84,8 @@
         <h2>Clientes e Localizações</h2>
         <div style="display: flex; gap: 10px; margin-bottom: 10px;">
             <input type="text" placeholder="Pesquisa inteligente de clientes (nome, cidade...)" id="buscaClientes" onkeyup="filtrarTabela('lista-clientes', 'buscaClientes')" style="margin-bottom:0;">
-            <button onclick="abrirModalNovoCliente()">+ Cadastrar Cliente</button>
-            <button onclick="importarBaseLocalizacoes()" style="background: #28a745; white-space: nowrap;">📥 Importar 364 Locais</button>
+            <button type="button" onclick="abrirModalNovoCliente()">+ Cadastrar Cliente</button>
+            <button type="button" onclick="importarBaseLocalizacoes()" style="background: #28a745; white-space: nowrap;">📥 Importar 364 Locais</button>
         </div>
         <table>
             <thead>
@@ -111,7 +111,7 @@
             </div>
             <div class="calc-bloco">
                 <label>&nbsp;</label>
-                <button onclick="buscarCargasPorRaio()" style="background: #17a2b8;">🔍 Encontrar Cargas Próximas</button>
+                <button type="button" onclick="buscarCargasPorRaio()" style="background: #17a2b8;">🔍 Encontrar Cargas Próximas</button>
             </div>
         </div>
         <table>
@@ -141,7 +141,7 @@
             </div>
             <div class="calc-bloco">
                 <label>&nbsp;</label>
-                <button onclick="buscarDistanciaAutomatica()" style="background: #28a745;">📍 Buscar KM</button>
+                <button type="button" onclick="buscarDistanciaAutomatica()" style="background: #28a745;">📍 Buscar KM</button>
             </div>
             <div class="calc-bloco">
                 <label>Distância Final (km) - Editável</label>
@@ -174,7 +174,7 @@
             </div>
             <div class="calc-bloco">
                 <label>&nbsp;</label>
-                <button onclick="calcularANTT()">Calcular Frete</button>
+                <button type="button" onclick="calcularANTT()">Calcular Frete</button>
             </div>
         </div>
         
@@ -201,13 +201,16 @@
             <span class="label-campo">Responsável:</span><input type="text" id="cliResponsavel" placeholder="Nome do responsável">
             <span class="label-campo">CNPJ ou CPF:</span><input type="text" id="cliCnpjCpf" placeholder="00.000.000/0000-00" oninput="mascaraCnpjCpf(this)">
             <span class="label-campo">Telefone (Fone):</span><input type="text" id="cliTelefone" placeholder="(00) 00000-0000" oninput="mascaraFone(this)">
-            <span class="label-campo">E-mail:</span><input type="email" id="cliEmail" placeholder="email@empresa.com">
+            
+            <!-- AQUI: TYPE ALTERADO PARA TEXT PARA ACEITAR MÚLTIPLOS E-MAILS SEM TRAVAR O NAVEGADOR -->
+            <span class="label-campo">E-mail (Livre):</span><input type="text" id="cliEmail" placeholder="email1@; email2@...">
+            
             <span class="label-campo">Localização (Link Google Maps):</span><input type="text" id="cliLocalizacao" placeholder="https://maps.google.com/...">
             <span class="label-campo">Observações:</span><textarea id="cliObs" placeholder="Observações gerais..." style="height: 60px;"></textarea>
             <div style="display: flex; gap: 5px; margin-top: 10px;">
-                <button onclick="salvarClienteFirebase()" style="background: #28a745; flex: 1;">Salvar Cliente</button>
-                <button onclick="document.getElementById('modalCliente').style.display='none'" style="background: #6c757d;">Fechar</button>
-                <button id="btnExcluirCliente" onclick="excluirClienteFirebase()" style="background: #ff4d4d; display: none;">Excluir</button>
+                <button type="button" onclick="salvarClienteFirebase()" style="background: #28a745; flex: 1;">Salvar Cliente</button>
+                <button type="button" onclick="document.getElementById('modalCliente').style.display='none'" style="background: #6c757d;">Fechar</button>
+                <button type="button" id="btnExcluirCliente" onclick="excluirClienteFirebase()" style="background: #ff4d4d; display: none;">Excluir</button>
             </div>
         </div>
     </div>
@@ -228,9 +231,9 @@
             <span class="label-campo">Localização (Link/Endereço):</span><input type="text" id="editLocalizacao" placeholder="Insira o link ou local...">
             <span class="label-campo">Observações:</span><textarea id="editObs" style="height: 60px;"></textarea>
             <div style="display: flex; gap: 5px; margin-top: 10px;">
-                <button onclick="salvarEdicaoCarga()" style="background: #28a745; flex: 1;">Salvar</button>
-                <button onclick="document.getElementById('modalEditar').style.display='none'" style="background: #6c757d;">Fechar</button>
-                <button id="btnExcluirCarga" onclick="excluirCargaUnica()" style="background: #ff4d4d;">Excluir</button>
+                <button type="button" onclick="salvarEdicaoCarga()" style="background: #28a745; flex: 1;">Salvar</button>
+                <button type="button" onclick="document.getElementById('modalEditar').style.display='none'" style="background: #6c757d;">Fechar</button>
+                <button type="button" id="btnExcluirCarga" onclick="excluirCargaUnica()" style="background: #ff4d4d;">Excluir</button>
             </div>
         </div>
     </div>
@@ -255,8 +258,8 @@
             <input type="text" id="cpfM" placeholder="CPF Motorista">
             <input type="text" id="tel" placeholder="Telefone">
             <input type="text" id="obs" placeholder="Observação">
-            <button onclick="alert('Motorista Salvo')">Salvar</button>
-            <button onclick="document.getElementById('modalMot').style.display='none'">Fechar</button>
+            <button type="button" onclick="alert('Motorista Salvo')">Salvar</button>
+            <button type="button" onclick="document.getElementById('modalMot').style.display='none'">Fechar</button>
         </div>
     </div>
 
@@ -266,8 +269,8 @@
             <h3>Gerar Ordem (G10)</h3>
             <input type="text" placeholder="Pesquisar motorista/placa...">
             <input type="text" id="pesoCarga" placeholder="Digite o Peso">
-            <button onclick="alert('PDF Gerado')">Gerar PDF</button>
-            <button onclick="document.getElementById('modalOrdem').style.display='none'">Fechar</button>
+            <button type="button" onclick="alert('PDF Gerado')">Gerar PDF</button>
+            <button type="button" onclick="document.getElementById('modalOrdem').style.display='none'">Fechar</button>
         </div>
     </div>
 
@@ -527,7 +530,7 @@
         // --- LISTENERS FIREBASE ---
         firebase.database().ref('cargas').on('value', (snapshot) => {
             const data = snapshot.val();
-            cargasCacheGlobal = data || {}; // SALVANDO NA MEMÓRIA SEGURA
+            cargasCacheGlobal = data || {}; 
             
             const tbody = document.getElementById('lista-cargas');
             if(tbody) {
@@ -546,7 +549,6 @@
                     let icone = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
                     let vlrMot = vlrEmp * 0.1;
 
-                    // O BOTÃO AGORA SÓ MANDA O ID, EVITANDO QUALQUER BUG HTML
                     tbody.innerHTML += `<tr>
                         <td><input type="checkbox" class="check-carga" data-id="${id}"></td>
                         <td>${icone}</td>
@@ -608,7 +610,6 @@
             document.getElementById('modalEditar').style.display = 'flex';
         }
 
-        // AGORA ELA PUXA DIRETO DO CACHE, NÃO PASSA TEXTO PELO BOTÃO HTML
         function abrirModalEditarCarga(id) {
             let cargaObj = cargasCacheGlobal[id];
             if (!cargaObj) return alert("Erro ao localizar dados da carga!");
@@ -631,49 +632,59 @@
         }
 
         function salvarEdicaoCarga() {
-            let key = document.getElementById('editFirebaseKey').value;
-            let vlr = parseFloat(document.getElementById('editVlrEmpresa').value) || 0;
+            try {
+                let key = document.getElementById('editFirebaseKey').value;
+                let vlr = parseFloat(document.getElementById('editVlrEmpresa').value) || 0;
 
-            if (vlr <= 0) {
-                return alert("Atenção: O valor da empresa não pode ser 0 ou negativo.");
-            }
+                if (vlr <= 0) {
+                    return alert("Atenção: O valor da empresa não pode ser 0 ou negativo.");
+                }
 
-            let dadosAtualizados = {
-                cn: document.getElementById('editOp').value,
-                cidadeOrigem: document.getElementById('editCidOrig').value,
-                cidadeDestino: document.getElementById('editCidDest').value,
-                clienteOrigem: document.getElementById('editCliOrig').value,
-                clienteDestino: document.getElementById('editCliDest').value,
-                produto: document.getElementById('editProduto').value,
-                valor: vlr,
-                localizacao: document.getElementById('editLocalizacao').value,
-                obs: document.getElementById('editObs').value,
-                origem_cadastro: key ? (cargasCacheGlobal[key]?.origem_cadastro || 'manual') : 'manual'
-            };
+                let dadosAtualizados = {
+                    cn: document.getElementById('editOp').value || '',
+                    cidadeOrigem: document.getElementById('editCidOrig').value || '',
+                    cidadeDestino: document.getElementById('editCidDest').value || '',
+                    clienteOrigem: document.getElementById('editCliOrig').value || '',
+                    clienteDestino: document.getElementById('editCliDest').value || '',
+                    produto: document.getElementById('editProduto').value || '',
+                    valor: vlr,
+                    localizacao: document.getElementById('editLocalizacao').value || '',
+                    obs: document.getElementById('editObs').value || '',
+                    origem_cadastro: key ? (cargasCacheGlobal[key]?.origem_cadastro || 'manual') : 'manual'
+                };
 
-            if (key) {
-                firebase.database().ref('cargas/' + key).update(dadosAtualizados).then(() => {
-                    alert("Carga atualizada!"); document.getElementById('modalEditar').style.display = 'none';
-                });
-            } else {
-                firebase.database().ref('cargas').push(dadosAtualizados).then(() => {
-                    alert("Nova carga cadastrada com sucesso!"); document.getElementById('modalEditar').style.display = 'none';
-                });
+                let dbRef = firebase.database().ref('cargas');
+
+                if (key) {
+                    dbRef.child(key).update(dadosAtualizados).then(() => {
+                        alert("Carga atualizada!"); document.getElementById('modalEditar').style.display = 'none';
+                    }).catch(e => alert("Erro (Firebase): " + e.message));
+                } else {
+                    dbRef.push(dadosAtualizados).then(() => {
+                        alert("Nova carga cadastrada com sucesso!"); document.getElementById('modalEditar').style.display = 'none';
+                    }).catch(e => alert("Erro (Firebase): " + e.message));
+                }
+            } catch(err) {
+                alert("Erro interno no navegador: " + err.message);
             }
         }
 
         function excluirCargaUnica() {
-            let key = document.getElementById('editFirebaseKey').value;
-            if (!key) return; 
-            
-            if (confirm("Excluir esta carga?")) {
-                firebase.database().ref('cargas/' + key).remove().then(() => {
-                    alert("Carga excluída!"); document.getElementById('modalEditar').style.display = 'none';
-                });
+            try {
+                let key = document.getElementById('editFirebaseKey').value;
+                if (!key) return; 
+                
+                if (confirm("Excluir esta carga?")) {
+                    firebase.database().ref('cargas/' + key).remove().then(() => {
+                        alert("Carga excluída!"); document.getElementById('modalEditar').style.display = 'none';
+                    }).catch(e => alert("Erro ao excluir: " + e.message));
+                }
+            } catch (err) {
+                alert("Erro interno: " + err.message);
             }
         }
 
-        // --- FUNÇÕES DE CLIENTES ---
+        // --- FUNÇÕES DE CLIENTES BLINDADAS ---
         function abrirModalNovoCliente() {
             document.getElementById('cliFirebaseKey').value = "";
             document.getElementById('modalClienteTitulo').innerText = "Cadastrar Novo Cliente";
@@ -707,41 +718,56 @@
         }
 
         function salvarClienteFirebase() {
-            let key = document.getElementById('cliFirebaseKey').value;
-            let nome = document.getElementById('cliNome').value;
-            let cidade = document.getElementById('cliCidade').value;
-            if(!nome) return alert("Preencha ao menos o nome do cliente.");
+            try {
+                let key = document.getElementById('cliFirebaseKey').value;
+                let nome = document.getElementById('cliNome').value;
+                let cidade = document.getElementById('cliCidade').value;
+                
+                if(!nome) {
+                    alert("Preencha ao menos o nome do cliente.");
+                    return;
+                }
 
-            let mapsLink = document.getElementById('cliLocalizacao').value || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(nome + ' ' + cidade)}`;
-            
-            let dadosCli = {
-                nome: nome, cidade: cidade,
-                responsavel: document.getElementById('cliResponsavel').value,
-                cnpj: document.getElementById('cliCnpjCpf').value,
-                telefone: document.getElementById('cliTelefone').value,
-                email: document.getElementById('cliEmail').value,
-                localizacao: mapsLink,
-                obs: document.getElementById('cliObs').value
-            };
+                let locRaw = document.getElementById('cliLocalizacao').value;
+                let mapsLink = locRaw ? locRaw : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(nome + ' ' + cidade)}`;
+                
+                let dadosCli = {
+                    nome: nome, 
+                    cidade: cidade,
+                    responsavel: document.getElementById('cliResponsavel').value || '',
+                    cnpj: document.getElementById('cliCnpjCpf').value || '',
+                    telefone: document.getElementById('cliTelefone').value || '',
+                    email: document.getElementById('cliEmail').value || '',
+                    localizacao: mapsLink,
+                    obs: document.getElementById('cliObs').value || ''
+                };
 
-            let dbRef = firebase.database().ref('clientes');
-            if(key) {
-                dbRef.child(key).update(dadosCli).then(() => {
-                    alert("Cliente atualizado!"); document.getElementById('modalCliente').style.display = 'none';
-                });
-            } else {
-                dbRef.push(dadosCli).then(() => {
-                    alert("Cliente cadastrado!"); document.getElementById('modalCliente').style.display = 'none';
-                });
+                let dbRef = firebase.database().ref('clientes');
+                
+                if(key) {
+                    dbRef.child(key).update(dadosCli).then(() => {
+                        alert("Cliente atualizado com sucesso!"); document.getElementById('modalCliente').style.display = 'none';
+                    }).catch(e => alert("Erro ao salvar (Firebase): " + e.message));
+                } else {
+                    dbRef.push(dadosCli).then(() => {
+                        alert("Cliente cadastrado com sucesso!"); document.getElementById('modalCliente').style.display = 'none';
+                    }).catch(e => alert("Erro ao salvar (Firebase): " + e.message));
+                }
+            } catch(err) {
+                alert("Erro no código do navegador: " + err.message);
             }
         }
 
         function excluirClienteFirebase() {
-            let key = document.getElementById('cliFirebaseKey').value;
-            if(confirm("Deseja excluir este cliente?")) {
-                firebase.database().ref('clientes/' + key).remove().then(() => {
-                    alert("Cliente excluído!"); document.getElementById('modalCliente').style.display = 'none';
-                });
+            try {
+                let key = document.getElementById('cliFirebaseKey').value;
+                if(confirm("Deseja excluir este cliente?")) {
+                    firebase.database().ref('clientes/' + key).remove().then(() => {
+                        alert("Cliente excluído!"); document.getElementById('modalCliente').style.display = 'none';
+                    }).catch(e => alert("Erro ao excluir: " + e.message));
+                }
+            } catch (err) {
+                alert("Erro interno: " + err.message);
             }
         }
 
