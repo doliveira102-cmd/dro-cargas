@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V75</title>
+    <title>DRO Cargas Sistema Completo V76</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -280,7 +280,7 @@
             <span class="label-campo">Valor Empresa (R$):</span><input type="number" id="editVlrEmpresa" step="0.01" oninput="calcularVlrMotAuto(this.value)">
             <span class="label-campo">Valor Motorista (R$):</span><input type="number" id="editVlrMot" step="0.01">
             <span class="label-campo">Localização (Link/Endereço):</span><input type="text" id="editLocalizacao">
-            <span class="label-campo">Observações:</span><textarea id="editObs" style="height: 60px;"></textarea>
+            <span class="label-campo">Observações Internas:</span><textarea id="editObs" style="height: 60px;"></textarea>
             <div style="display: flex; gap: 5px; margin-top: 10px;">
                 <button type="button" onclick="salvarEdicaoCarga()" style="background: #28a745; flex: 1;">Salvar</button>
                 <button type="button" onclick="document.getElementById('modalEditar').style.display='none'" style="background: #6c757d;">Fechar</button>
@@ -289,7 +289,7 @@
         </div>
     </div>
 
-    <!-- MODAL MOTORISTA V75 -->
+    <!-- MODAL MOTORISTA V76 -->
     <div id="modalMot" class="modal">
         <div class="modal-content" style="max-height: 95vh;">
             <h3 id="modalMotTitulo" style="margin-top:0;">Cadastrar Motorista</h3>
@@ -404,7 +404,7 @@
         </div>
     </div>
 
-    <!-- MODAL ORDEM -->
+    <!-- MODAL ORDEM V76 (COM CONTROLE MANUAL DE OBS E FRETE) -->
     <div id="modalOrdem" class="modal">
         <div class="modal-content">
             <h3>Emitir Ordem (G10)</h3>
@@ -413,8 +413,15 @@
             <select id="ordemSelectMot">
                 <option value="">-- Carregando Motoristas --</option>
             </select>
+            
             <span class="label-campo">Peso (Ton):</span>
-            <input type="text" id="ordemPesoCarga" placeholder="Ex: 32">
+            <input type="text" id="ordemPesoCarga" placeholder="Ex: 37">
+
+            <span class="label-campo">Frete Motorista (R$):</span>
+            <input type="text" id="ordemFreteMotManual" placeholder="Ex: 58,50">
+
+            <span class="label-campo">Observação da Ordem (Opcional):</span>
+            <textarea id="ordemObsManual" placeholder="Ex: MANDAR ORDEM DIRETO NA COTISAL POREM SEMPRE VERIFICAR O SALDO" style="height: 70px;"></textarea>
             
             <div style="display: flex; gap: 5px; margin-top: 10px;">
                 <button type="button" onclick="emitirESalvarOrdem()" style="background: #28a745; flex: 1;">Salvar Ordem e Gerar PDF</button>
@@ -423,7 +430,7 @@
         </div>
     </div>
 
-    <!-- ================= TEMPLATE DO PDF (V75 - LAYOUT PROFISSIONAL E IDÊNTICO AO MODELO) ================= -->
+    <!-- ================= TEMPLATE DO PDF (V76) ================= -->
     <div id="pdf-template" style="display: none; background-color: #ffffff; color: #000000; font-family: Arial, sans-serif; width: 100%; max-width: 720px; margin: 0 auto; box-sizing: border-box; border: 2px solid #000000; padding: 15px;">
         
         <!-- CABEÇALHO G10 -->
@@ -903,6 +910,15 @@
             document.getElementById('ordemCargaId').value = cargaId;
             document.getElementById('ordemSelectMot').value = "";
             document.getElementById('ordemPesoCarga').value = "";
+            
+            // Sugere valores iniciais da carga, mas deixa 100% livre para editar ou apagar
+            let c = cargasCacheGlobal[cargaId] || {};
+            let vlrEmp = parseFloat(c.valor || 0);
+            let vlrMotSug = c.valorMot !== undefined ? parseFloat(c.valorMot) : (vlrEmp * 0.9);
+            
+            document.getElementById('ordemFreteMotManual').value = vlrMotSug > 0 ? vlrMotSug.toFixed(2) : "";
+            document.getElementById('ordemObsManual').value = c.obs || "";
+
             document.getElementById('modalOrdem').style.display = 'flex';
         }
 
@@ -910,9 +926,21 @@
             let cargaId = document.getElementById('ordemCargaId').value;
             let motId = document.getElementById('ordemSelectMot').value;
             let peso = document.getElementById('ordemPesoCarga').value;
+            let freteMot = document.getElementById('ordemFreteMotManual').value;
+            let obsManual = document.getElementById('ordemObsManual').value;
+
             if(!motId) return alert("Selecione um motorista para emitir a ordem.");
 
-            let novaOrdem = { cargaId: cargaId, motoristaId: motId, peso: peso, dataCriacao: new Date().toISOString(), status: 'pendente' };
+            let novaOrdem = { 
+                cargaId: cargaId, 
+                motoristaId: motId, 
+                peso: peso, 
+                freteMotManual: freteMot,
+                obsManual: obsManual,
+                dataCriacao: new Date().toISOString(), 
+                status: 'pendente' 
+            };
+
             let novaOrdemRef = firebase.database().ref('ordens').push();
             novaOrdemRef.set(novaOrdem).then(() => {
                 alert("Ordem salva no painel com sucesso!"); document.getElementById('modalOrdem').style.display = 'none';
@@ -948,14 +976,15 @@
             document.getElementById('pdf-rg').innerText = m.rg || '';
             document.getElementById('pdf-cpfm').innerText = m.cpfM || '';
             document.getElementById('pdf-tel').innerText = m.zap || '';
-            document.getElementById('pdf-obs').innerText = c.obs || '';
+            
+            // Usa exatamente o que foi digitado manualmente na ordem
+            document.getElementById('pdf-obs').innerText = o.obsManual || '';
 
             document.getElementById('pdf-peso-detalhe').innerText = o.peso || 'N/A';
             document.getElementById('pdf-produto-detalhe').innerText = c.produto || '';
             
-            let vlrEmp = parseFloat(c.valor || 0);
-            let vlrMot = c.valorMot !== undefined ? parseFloat(c.valorMot) : (vlrEmp * 0.9);
-            document.getElementById('pdf-vlr-mot-detalhe').innerText = vlrMot.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            // Usa o frete manual digitado na ordem
+            document.getElementById('pdf-vlr-mot-detalhe').innerText = o.freteMotManual || '0,00';
             
             let element = document.getElementById('pdf-template');
             element.style.display = 'block';
