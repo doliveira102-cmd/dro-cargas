@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V65</title>
+    <title>DRO Cargas Sistema Completo V66</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -284,7 +284,7 @@
         </div>
     </div>
 
-    <!-- MODAL MOTORISTA V65 (COM DIAGNÓSTICO DE IA E ANEXOS GARANTIDOS) -->
+    <!-- MODAL MOTORISTA V66 (TEXTO EDITÁVEL PARA EXTRAÇÃO GARANTIDA) -->
     <div id="modalMot" class="modal">
         <div class="modal-content" style="max-height: 95vh;">
             <h3 id="modalMotTitulo" style="margin-top:0;">Cadastrar Motorista</h3>
@@ -307,8 +307,11 @@
                     ⏳ Iniciando leitura...
                 </div>
 
-                <!-- Caixa de Diagnóstico do que a IA leu (Para você ver o texto cru caso falhe) -->
-                <textarea id="debugOcrTexto" placeholder="O texto extraído da imagem aparecerá aqui para conferência..." style="margin-top: 8px; height: 50px; font-size: 10px; color: #a0b2c6; display: none;"></textarea>
+                <span class="label-campo" style="margin-top: 8px;">Texto extraído (Você pode colar ou ajustar qualquer texto aqui e clicar em "Extrair Dados"):</span>
+                <div style="display: flex; gap: 5px;">
+                    <textarea id="debugOcrTexto" placeholder="O texto da IA aparecerá aqui. Se preferir, cole o texto do documento aqui..." style="margin-bottom: 0; height: 60px; font-size: 11px; color: #f4f7fe;"></textarea>
+                    <button type="button" onclick="extrairDadosManualmente()" style="background: #28a745; width: 130px; font-size: 11px;" title="Extrai os dados com base no texto da caixa ao lado">⚡ Extrair Dados</button>
+                </div>
                 
                 <!-- Lista de Anexos -->
                 <div id="listaAnexos" style="margin-top: 10px; min-height: 25px;"></div>
@@ -656,19 +659,17 @@
             }
         }
 
-        // --- LÓGICA DE OCR V65 COM DIAGNÓSTICO VISUAL ---
+        // --- LÓGICA DE OCR V66 ---
         async function processarDocumentoOCR() {
             const fileInput = document.getElementById('motUpload');
-            if(!fileInput.files.length) return alert("Selecione um arquivo de imagem (CNH, CRLV) primeiro!");
+            if(!fileInput.files.length) return alert("Selecione um arquivo de imagem primeiro!");
             const file = fileInput.files[0];
             
             const statusEl = document.getElementById('statusOcr');
             const debugEl = document.getElementById('debugOcrTexto');
             
             statusEl.style.display = 'block';
-            statusEl.innerText = "⏳ Convertendo e processando imagem...";
-            debugEl.style.display = 'block';
-            debugEl.value = "Lendo arquivo...";
+            statusEl.innerText = "⏳ Compactando e lendo imagem...";
             document.getElementById('btnProcessarDoc').disabled = true;
 
             try {
@@ -677,9 +678,7 @@
                 arquivosAnexadosTemp[fileId] = { nome: file.name, base64: base64 };
                 renderizarListaAnexos();
 
-                statusEl.innerText = "⏳ Executando Inteligência Artificial (Tesseract)...";
-                
-                // Tenta carregar o Tesseract
+                statusEl.innerText = "⏳ Executando Inteligência Artificial...";
                 const result = await Tesseract.recognize(file, 'por', { 
                     logger: m => {
                         if(m.status === 'recognizing text') {
@@ -689,21 +688,27 @@
                 });
 
                 const textoPlano = result.data.text;
-                debugEl.value = textoPlano; // Mostra o que a IA leu exatamente na caixinha
+                debugEl.value = textoPlano; // Joga na caixa para conferência/edição
 
                 extrairDadosParaFormulario(textoPlano);
                 
                 statusEl.style.color = "#2ecc71";
                 statusEl.style.borderColor = "#2ecc71";
-                statusEl.innerText = "✅ Leitura concluída! Verifique o texto acima e os campos preenchidos.";
+                statusEl.innerText = "✅ Leitura concluída! Confira os campos abaixo.";
             } catch(e) {
-                alert("Erro ao ler documento via IA: " + e.message + "\n\nDica: Preencha os dados manualmente abaixo, o arquivo continuará anexado.");
+                alert("Erro ao ler imagem: " + e.message);
                 statusEl.style.display = 'none';
-                debugEl.value = "Erro: " + e.message;
             } finally {
                 document.getElementById('btnProcessarDoc').disabled = false;
                 fileInput.value = ""; 
             }
+        }
+
+        function extrairDadosManualmente() {
+            const texto = document.getElementById('debugOcrTexto').value;
+            if(!texto) return alert("A caixa de texto está vazia.");
+            extrairDadosParaFormulario(texto);
+            alert("Dados extraídos do texto com sucesso!");
         }
 
         function comprimirImagem(file) {
@@ -733,14 +738,10 @@
             const textoLimpo = texto.toUpperCase().replace(/\r/g, '');
             const linhas = textoLimpo.split('\n').map(l => l.trim()).filter(l => l.length > 0);
 
-            let nome = "", cpf = "", rg = "", cnh = "";
+            let cpf = "", cnh = "", rg = "";
 
             for (let i = 0; i < linhas.length; i++) {
                 let l = linhas[i];
-                if ((l.includes("NOME") || l.includes("HABI")) && i + 1 < linhas.length) {
-                    let prox = linhas[i+1].replace(/[^A-ZÀ-Ú ]/g, "").trim();
-                    if (prox.length > 6 && !prox.includes("MINISTERIO")) nome = prox;
-                }
                 let mCpf = l.match(/\b\d{3}[\.\s]?\d{3}[\.\s]?\d{3}[-\s]?\d{2}\b/);
                 if (mCpf && !cpf) cpf = mCpf[0].replace(/[^\d]/g, "");
 
@@ -754,6 +755,7 @@
                 }
             }
 
+            // Fallback global
             if (!cpf) {
                 let allCpf = textoLimpo.match(/\b\d{3}[\.\s]?\d{3}[\.\s]?\d{3}[-\s]?\d{2}\b/);
                 if (allCpf) cpf = allCpf[0].replace(/[^\d]/g, "");
@@ -767,16 +769,24 @@
                 if (allRg) rg = allRg.find(n => n !== cpf && n !== cnh) || "";
             }
 
-            if (nome && !document.getElementById('motNome').value) document.getElementById('motNome').value = nome;
             if (cpf && !document.getElementById('motCpfM').value) document.getElementById('motCpfM').value = cpf;
             if (cnh && !document.getElementById('motCnh').value) document.getElementById('motCnh').value = cnh;
             if (rg && !document.getElementById('motRg').value) document.getElementById('motRg').value = rg;
+
+            // Tenta pegar o nome do motorista se houver texto limpo
+            for (let l of linhas) {
+                if (l.length > 8 && !l.includes("REPUBLICA") && !l.includes("MINISTERIO") && !l.includes("SECRETARIA") && !l.includes("CARTEIRA") && !l.includes("CPF") && !/\d/.test(l)) {
+                    if (!document.getElementById('motNome').value) {
+                        document.getElementById('motNome').value = l;
+                        break;
+                    }
+                }
+            }
 
             const placas = textoLimpo.match(/\b[A-Z]{3}[-\s]?\d[A-Z0-9]\d{2}\b/g);
             if (placas) {
                 if (placas.length > 0 && !document.getElementById('motCavalo').value) document.getElementById('motCavalo').value = placas[0].replace(/[-\s]/g, "");
                 if (placas.length > 1 && !document.getElementById('motSreb1').value) document.getElementById('motSreb1').value = placas[1].replace(/[-\s]/g, "");
-                if (placas.length > 2 && !document.getElementById('motSreb2').value) document.getElementById('motSreb2').value = placas[2].replace(/[-\s]/g, "");
             }
         }
 
@@ -822,7 +832,6 @@
             document.getElementById('motEnder').value = m.ender || "";
             document.getElementById('motMun').value = m.mun || "";
             
-            document.getElementById('debugOcrTexto').style.display = 'none';
             document.getElementById('debugOcrTexto').value = "";
             document.getElementById('statusOcr').style.display = 'none';
 
