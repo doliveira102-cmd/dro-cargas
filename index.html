@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V56</title>
+    <title>DRO Cargas Sistema Completo V57</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -167,7 +167,6 @@
     <div id="calculadora" class="tab-content">
         <h2>Calculadora de Piso Mínimo ANTT</h2>
         <div class="calc-inputs" style="background: #0d1728; padding: 15px; border-radius: 8px;">
-            <!-- Estrutura da calculadora mantida conforme V55 -->
             <div class="calc-bloco">
                 <label>Origem</label>
                 <input type="text" id="anttOrigem" placeholder="Ex: Cruz Alta - RS" style="width: 200px;">
@@ -262,8 +261,11 @@
             <span class="label-campo">Cliente Origem:</span><input type="text" id="editCliOrig">
             <span class="label-campo">Cliente Destino:</span><input type="text" id="editCliDest">
             <span class="label-campo">Produto:</span><input type="text" id="editProduto">
-            <span class="label-campo">Valor Empresa (R$):</span><input type="number" id="editVlrEmpresa" step="0.01">
+            
+            <!-- AQUI: Adicionado a função de preencher os 10% a menos automaticamente ao digitar -->
+            <span class="label-campo">Valor Empresa (R$):</span><input type="number" id="editVlrEmpresa" step="0.01" oninput="calcularVlrMotAuto(this.value)">
             <span class="label-campo">Valor Motorista (R$):</span><input type="number" id="editVlrMot" step="0.01">
+            
             <span class="label-campo">Localização (Link/Endereço):</span><input type="text" id="editLocalizacao">
             <span class="label-campo">Observações:</span><textarea id="editObs" style="height: 60px;"></textarea>
             <div style="display: flex; gap: 5px; margin-top: 10px;">
@@ -274,7 +276,7 @@
         </div>
     </div>
 
-    <!-- MODAL MOTORISTA (AGORA FUNCIONAL) -->
+    <!-- MODAL MOTORISTA -->
     <div id="modalMot" class="modal">
         <div class="modal-content">
             <h3 id="modalMotTitulo">Cadastrar Motorista</h3>
@@ -307,7 +309,7 @@
         </div>
     </div>
 
-    <!-- MODAL ORDEM (AGORA SALVA NO BANCO E GERA PDF) -->
+    <!-- MODAL ORDEM -->
     <div id="modalOrdem" class="modal">
         <div class="modal-content">
             <h3>Emitir Ordem (G10)</h3>
@@ -339,7 +341,7 @@
             <tr><td style="padding: 8px; border: 1px solid #ccc; background: #f9f9f9;"><strong>Destino:</strong></td><td style="padding: 8px; border: 1px solid #ccc;" id="pdf-destino"></td></tr>
             <tr><td style="padding: 8px; border: 1px solid #ccc; background: #f9f9f9;"><strong>Produto:</strong></td><td style="padding: 8px; border: 1px solid #ccc;" id="pdf-produto"></td></tr>
             <tr><td style="padding: 8px; border: 1px solid #ccc; background: #f9f9f9;"><strong>Peso Solicitado:</strong></td><td style="padding: 8px; border: 1px solid #ccc;" id="pdf-peso"></td></tr>
-            <tr><td style="padding: 8px; border: 1px solid #ccc; background: #f9f9f9;"><strong>Valor Empresa:</strong></td><td style="padding: 8px; border: 1px solid #ccc;" id="pdf-vlremp"></td></tr>
+            <tr><td style="padding: 8px; border: 1px solid #ccc; background: #f9f9f9;"><strong>Valor Motorista:</strong></td><td style="padding: 8px; border: 1px solid #ccc; font-weight: bold;" id="pdf-vlrmot"></td></tr>
         </table>
         <div style="margin-top: 50px; text-align: center;">
             <p>____________________________________________________</p>
@@ -394,8 +396,14 @@
                     let c = data[id];
                     let vlrEmp = parseFloat(c.valor || 0);
                     if(vlrEmp <= 0) continue; 
+                    
                     let icone = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
-                    let vlrMot = vlrEmp * 0.1;
+                    
+                    // Lógica correta de desconto (-10%)
+                    let calcDefaultDesc = vlrEmp * 0.9;
+                    
+                    // Se existir o valor salvo, ele usa. Se não, tira os 10% do valor da empresa.
+                    let vlrMot = c.valorMot !== undefined ? parseFloat(c.valorMot) : calcDefaultDesc;
 
                     tbody.innerHTML += `<tr>
                         <td><input type="checkbox" class="check-carga" data-id="${id}"></td>
@@ -417,22 +425,17 @@
             }
         });
 
-        // 2. MOTORISTAS (NOVO LISTENER FUNCIONAL)
+        // 2. MOTORISTAS 
         firebase.database().ref('motoristas').on('value', (snapshot) => {
             const data = snapshot.val();
             motoristasCacheGlobal = data || {};
-            
-            // Atualiza tabela de motoristas
             const tbody = document.getElementById('lista-motoristas');
             if(tbody) tbody.innerHTML = "";
-            
-            // Atualiza select no modal de ordens
             const selectMot = document.getElementById('ordemSelectMot');
             if(selectMot) selectMot.innerHTML = `<option value="">-- Selecione o Motorista --</option>`;
 
             for (let id in motoristasCacheGlobal) {
                 let m = motoristasCacheGlobal[id];
-                
                 if(tbody) {
                     tbody.innerHTML += `<tr>
                         <td>${m.cavalo || '-'}</td>
@@ -442,7 +445,6 @@
                         <td><button class="btn-acao" onclick="abrirModalMotorista('${id}')">Editar</button></td>
                     </tr>`;
                 }
-
                 if(selectMot) {
                     let displayName = m.mot ? m.mot : 'Motorista Desconhecido';
                     if(m.cavalo) displayName += ` (${m.cavalo})`;
@@ -451,7 +453,7 @@
             }
         });
 
-        // 3. ORDENS (NOVO LISTENER FUNCIONAL)
+        // 3. ORDENS 
         firebase.database().ref('ordens').on('value', (snapshot) => {
             ordensCacheGlobal = snapshot.val() || {};
             renderizarOrdens();
@@ -469,11 +471,9 @@
                 return { id: key, ...ordensCacheGlobal[key] };
             });
 
-            // Ordena da mais nova pra mais velha
             ordensArray.sort((a, b) => new Date(b.dataCriacao) - new Date(a.dataCriacao));
 
             for(let o of ordensArray) {
-                // Filtro de data
                 let dataObj = new Date(o.dataCriacao);
                 if (dtIni && dataObj < new Date(dtIni + 'T00:00:00')) continue;
                 if (dtFim && dataObj > new Date(dtFim + 'T23:59:59')) continue;
@@ -483,9 +483,7 @@
                 let origemDestino = `${carga.cidadeOrigem || 'Desconhecida'} -> ${carga.cidadeDestino || 'Desconhecida'}`;
                 
                 let motNome = "Desconhecido";
-                if (motoristasCacheGlobal[o.motoristaId]) {
-                    motNome = motoristasCacheGlobal[o.motoristaId].mot || '';
-                }
+                if (motoristasCacheGlobal[o.motoristaId]) motNome = motoristasCacheGlobal[o.motoristaId].mot || '';
 
                 let badge = o.status === 'finalizada' 
                     ? `<span class="status-badge status-finalizada">Finalizada</span>` 
@@ -515,7 +513,6 @@
         function abrirModalMotorista(id = null) {
             document.getElementById('motFirebaseKey').value = id || "";
             document.getElementById('modalMotTitulo').innerText = id ? "Editar Motorista" : "Cadastrar Motorista";
-            
             let m = id ? (motoristasCacheGlobal[id] || {}) : {};
             document.getElementById('motCavalo').value = m.cavalo || "";
             document.getElementById('motTipo').value = m.tipo || "";
@@ -528,7 +525,6 @@
             document.getElementById('motCpfP').value = m.cpfP || "";
             document.getElementById('motCnh').value = m.cnh || "";
             document.getElementById('motCpfM').value = m.cpfM || "";
-
             document.getElementById('btnExcluirMot').style.display = id ? "block" : "none";
             document.getElementById('modalMot').style.display = 'flex';
         }
@@ -539,38 +535,20 @@
             if(!nome) return alert("O nome do motorista é obrigatório.");
 
             let motData = {
-                mot: nome,
-                cavalo: document.getElementById('motCavalo').value,
-                tipo: document.getElementById('motTipo').value,
-                zap: document.getElementById('motZap').value,
-                sreb1: document.getElementById('motSreb1').value,
-                sreb2: document.getElementById('motSreb2').value,
-                sreb3: document.getElementById('motSreb3').value,
-                prop: document.getElementById('motProp').value,
-                cpfP: document.getElementById('motCpfP').value,
-                cnh: document.getElementById('motCnh').value,
-                cpfM: document.getElementById('motCpfM').value
+                mot: nome, cavalo: document.getElementById('motCavalo').value, tipo: document.getElementById('motTipo').value,
+                zap: document.getElementById('motZap').value, sreb1: document.getElementById('motSreb1').value, sreb2: document.getElementById('motSreb2').value,
+                sreb3: document.getElementById('motSreb3').value, prop: document.getElementById('motProp').value, cpfP: document.getElementById('motCpfP').value,
+                cnh: document.getElementById('motCnh').value, cpfM: document.getElementById('motCpfM').value
             };
 
             let dbRef = firebase.database().ref('motoristas');
-            if(key) {
-                dbRef.child(key).update(motData).then(() => {
-                    alert("Motorista atualizado!"); document.getElementById('modalMot').style.display = 'none';
-                });
-            } else {
-                dbRef.push(motData).then(() => {
-                    alert("Motorista salvo!"); document.getElementById('modalMot').style.display = 'none';
-                });
-            }
+            if(key) { dbRef.child(key).update(motData).then(() => { alert("Atualizado!"); document.getElementById('modalMot').style.display = 'none'; }); }
+            else { dbRef.push(motData).then(() => { alert("Salvo!"); document.getElementById('modalMot').style.display = 'none'; }); }
         }
 
         function excluirMotorista() {
             let key = document.getElementById('motFirebaseKey').value;
-            if(confirm("Deseja excluir este motorista?")) {
-                firebase.database().ref('motoristas/' + key).remove().then(() => {
-                    alert("Excluído!"); document.getElementById('modalMot').style.display = 'none';
-                });
-            }
+            if(confirm("Deseja excluir?")) { firebase.database().ref('motoristas/' + key).remove().then(() => { document.getElementById('modalMot').style.display = 'none'; }); }
         }
 
 
@@ -586,49 +564,24 @@
             let cargaId = document.getElementById('ordemCargaId').value;
             let motId = document.getElementById('ordemSelectMot').value;
             let peso = document.getElementById('ordemPesoCarga').value;
-
             if(!motId) return alert("Selecione um motorista para emitir a ordem.");
 
-            let novaOrdem = {
-                cargaId: cargaId,
-                motoristaId: motId,
-                peso: peso,
-                dataCriacao: new Date().toISOString(),
-                status: 'pendente'
-            };
-
+            let novaOrdem = { cargaId: cargaId, motoristaId: motId, peso: peso, dataCriacao: new Date().toISOString(), status: 'pendente' };
             let novaOrdemRef = firebase.database().ref('ordens').push();
             novaOrdemRef.set(novaOrdem).then(() => {
-                alert("Ordem salva com sucesso no painel de controle!");
-                document.getElementById('modalOrdem').style.display = 'none';
-                // Já abre o PDF na mesma hora
-                gerarPDFOrdem(novaOrdemRef.key);
-                trocarTab('ordens'); // Muda pra aba de ordens pra ele ver
+                alert("Ordem salva!"); document.getElementById('modalOrdem').style.display = 'none';
+                gerarPDFOrdem(novaOrdemRef.key); trocarTab('ordens');
             });
         }
 
-        function finalizarOrdem(ordemId) {
-            if(confirm("Deseja marcar esta ordem como Finalizada?")) {
-                firebase.database().ref('ordens/' + ordemId).update({ status: 'finalizada' });
-            }
-        }
-
-        function excluirOrdem(ordemId) {
-            if(confirm("Atenção: Excluir esta ordem do histórico?")) {
-                firebase.database().ref('ordens/' + ordemId).remove();
-            }
-        }
+        function finalizarOrdem(ordemId) { if(confirm("Deseja marcar esta ordem como Finalizada?")) { firebase.database().ref('ordens/' + ordemId).update({ status: 'finalizada' }); } }
+        function excluirOrdem(ordemId) { if(confirm("Atenção: Excluir esta ordem do histórico?")) { firebase.database().ref('ordens/' + ordemId).remove(); } }
 
         function gerarPDFOrdem(ordemId) {
-            let o = ordensCacheGlobal[ordemId];
-            if(!o) return alert("Ordem não encontrada.");
-            
-            let c = cargasCacheGlobal[o.cargaId] || {};
-            let m = motoristasCacheGlobal[o.motoristaId] || {};
-
+            let o = ordensCacheGlobal[ordemId]; if(!o) return alert("Ordem não encontrada.");
+            let c = cargasCacheGlobal[o.cargaId] || {}; let m = motoristasCacheGlobal[o.motoristaId] || {};
             let dataFormatada = new Date(o.dataCriacao).toLocaleString('pt-BR');
 
-            // Preenche o template oculto
             document.getElementById('pdf-data').innerText = "Emitida em: " + dataFormatada;
             document.getElementById('pdf-mot').innerText = m.mot || '';
             document.getElementById('pdf-placa').innerText = m.cavalo || '';
@@ -637,96 +590,104 @@
             document.getElementById('pdf-produto').innerText = c.produto || '';
             document.getElementById('pdf-peso').innerText = (o.peso || 'N/A') + " Ton";
             
-            let vlr = parseFloat(c.valor || 0);
-            document.getElementById('pdf-vlremp').innerText = "R$ " + vlr.toFixed(2);
+            // PDF agora mostra Valor do Motorista formatado corretamente
+            let vlrEmp = parseFloat(c.valor || 0);
+            let vlrMot = c.valorMot !== undefined ? parseFloat(c.valorMot) : (vlrEmp * 0.9);
+            document.getElementById('pdf-vlrmot').innerText = "R$ " + vlrMot.toFixed(2);
 
-            // Torna visível momentaneamente para a biblioteca capturar
             let element = document.getElementById('pdf-template');
             element.style.display = 'block';
 
-            let opt = {
-                margin:       10,
-                filename:     `Ordem_${m.mot || 'Mot'}_${dataFormatada.replace(/[\/ :]/g,'-')}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            // Gera o PDF
-            html2pdf().set(opt).from(element).save().then(() => {
-                // Oculta de novo
-                element.style.display = 'none';
-            });
+            let opt = { margin: 10, filename: `Ordem_${m.mot || 'Mot'}_${dataFormatada.replace(/[\/ :]/g,'-')}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+            html2pdf().set(opt).from(element).save().then(() => { element.style.display = 'none'; });
         }
 
-        // --- AS OUTRAS FUNÇÕES (CARGAS, CLIENTES, ANTT, ETC) MANTIDAS IGUAIS DA V55 ---
-        function excluirSelecionadas() {
-            let checkboxes = document.querySelectorAll('.check-carga:checked');
-            if (checkboxes.length === 0) return alert("Selecione ao menos uma carga.");
-            if (confirm(`Excluir ${checkboxes.length} cargas selecionadas?`)) {
-                let dbRef = firebase.database().ref('cargas');
-                checkboxes.forEach(cb => dbRef.child(cb.getAttribute('data-id')).remove());
-            }
+
+        // --- LÓGICA DE CORREÇÃO DO VALOR (10% A MENOS E EDIÇÃO) ---
+        function calcularVlrMotAuto(val) {
+            let num = parseFloat(val) || 0;
+            // 10% a menos (Desconto)
+            document.getElementById('editVlrMot').value = (num * 0.9).toFixed(2);
         }
-        function removerCargasZeradasAutomatico() {
-            let dbRef = firebase.database().ref('cargas');
-            dbRef.once('value', (snapshot) => {
-                let data = snapshot.val();
-                if(data) {
-                    for(let id in data) {
-                        if(parseFloat(data[id].valor || 0) <= 0) dbRef.child(id).remove();
-                    }
-                }
-                alert("Limpeza concluída!");
-            });
-        }
+
         function abrirModalNovaCarga() {
             document.getElementById('editFirebaseKey').value = ""; 
             document.getElementById('modalEditarTitulo').innerText = "Cadastrar Nova Carga";
-            document.getElementById('editOp').value = ""; document.getElementById('editCidOrig').value = ""; document.getElementById('editCidDest').value = ""; document.getElementById('editCliOrig').value = ""; document.getElementById('editCliDest').value = ""; document.getElementById('editProduto').value = ""; document.getElementById('editVlrEmpresa').value = ""; document.getElementById('editVlrMot').value = ""; document.getElementById('editLocalizacao').value = ""; document.getElementById('editObs').value = "";
+            document.getElementById('editOp').value = ""; document.getElementById('editCidOrig').value = ""; document.getElementById('editCidDest').value = ""; 
+            document.getElementById('editCliOrig').value = ""; document.getElementById('editCliDest').value = ""; document.getElementById('editProduto').value = ""; 
+            document.getElementById('editVlrEmpresa').value = ""; document.getElementById('editVlrMot').value = ""; 
+            document.getElementById('editLocalizacao').value = ""; document.getElementById('editObs').value = "";
             document.getElementById('btnExcluirCarga').style.display = 'none'; 
             document.getElementById('modalEditar').style.display = 'flex';
         }
+
         function abrirModalEditarCarga(id) {
             let c = cargasCacheGlobal[id]; if (!c) return;
             document.getElementById('editFirebaseKey').value = id;
             document.getElementById('modalEditarTitulo').innerText = "Editar Carga";
-            document.getElementById('editOp').value = c.cn || ''; document.getElementById('editCidOrig').value = c.cidadeOrigem || ''; document.getElementById('editCidDest').value = c.cidadeDestino || ''; document.getElementById('editCliOrig').value = c.clienteOrigem || ''; document.getElementById('editCliDest').value = c.clienteDestino || ''; document.getElementById('editProduto').value = c.produto || ''; document.getElementById('editVlrEmpresa').value = c.valor || 0; document.getElementById('editVlrMot').value = (parseFloat(c.valor || 0) * 0.1).toFixed(2); document.getElementById('editLocalizacao').value = c.localizacao || ''; document.getElementById('editObs').value = c.obs || '';
+            document.getElementById('editOp').value = c.cn || ''; document.getElementById('editCidOrig').value = c.cidadeOrigem || ''; document.getElementById('editCidDest').value = c.cidadeDestino || ''; 
+            document.getElementById('editCliOrig').value = c.clienteOrigem || ''; document.getElementById('editCliDest').value = c.clienteDestino || ''; document.getElementById('editProduto').value = c.produto || ''; 
+            
+            // Puxa o Valor Empresa
+            let vEmp = parseFloat(c.valor || 0);
+            document.getElementById('editVlrEmpresa').value = vEmp; 
+            
+            // Puxa o Valor Motorista Salvo (ou calcula 10% a menos se não existir)
+            let vMot = c.valorMot !== undefined ? parseFloat(c.valorMot) : (vEmp * 0.9);
+            document.getElementById('editVlrMot').value = vMot.toFixed(2);
+            
+            document.getElementById('editLocalizacao').value = c.localizacao || ''; document.getElementById('editObs').value = c.obs || '';
             document.getElementById('btnExcluirCarga').style.display = 'block'; 
             document.getElementById('modalEditar').style.display = 'flex';
         }
+
         function salvarEdicaoCarga() {
             let key = document.getElementById('editFirebaseKey').value;
             let vlr = parseFloat(document.getElementById('editVlrEmpresa').value) || 0;
+            // Pega o valor que está digitado no campo do motorista
+            let vlrMotInput = parseFloat(document.getElementById('editVlrMot').value) || (vlr * 0.9);
+
             if (vlr <= 0) return alert("O valor não pode ser <= 0.");
+            
             let dadosAtualizados = {
-                cn: document.getElementById('editOp').value || '', cidadeOrigem: document.getElementById('editCidOrig').value || '', cidadeDestino: document.getElementById('editCidDest').value || '', clienteOrigem: document.getElementById('editCliOrig').value || '', clienteDestino: document.getElementById('editCliDest').value || '', produto: document.getElementById('editProduto').value || '', valor: vlr, localizacao: document.getElementById('editLocalizacao').value || '', obs: document.getElementById('editObs').value || '', origem_cadastro: key ? (cargasCacheGlobal[key]?.origem_cadastro || 'manual') : 'manual'
+                cn: document.getElementById('editOp').value || '', cidadeOrigem: document.getElementById('editCidOrig').value || '', 
+                cidadeDestino: document.getElementById('editCidDest').value || '', clienteOrigem: document.getElementById('editCliOrig').value || '', 
+                clienteDestino: document.getElementById('editCliDest').value || '', produto: document.getElementById('editProduto').value || '', 
+                valor: vlr, 
+                valorMot: vlrMotInput, // AGORA O SISTEMA SALVA O VALOR MOTORISTA NO BANCO
+                localizacao: document.getElementById('editLocalizacao').value || '', obs: document.getElementById('editObs').value || '', 
+                origem_cadastro: key ? (cargasCacheGlobal[key]?.origem_cadastro || 'manual') : 'manual'
             };
+
             if (key) { firebase.database().ref('cargas/' + key).update(dadosAtualizados).then(() => { document.getElementById('modalEditar').style.display = 'none'; }); } 
             else { firebase.database().ref('cargas').push(dadosAtualizados).then(() => { document.getElementById('modalEditar').style.display = 'none'; }); }
         }
+
+
         function excluirCargaUnica() {
             let key = document.getElementById('editFirebaseKey').value;
             if (!key) return; 
             if (confirm("Excluir esta carga?")) { firebase.database().ref('cargas/' + key).remove().then(() => { document.getElementById('modalEditar').style.display = 'none'; }); }
         }
 
-        // Clientes DB Listener e CRUD (mantidos)
+        // --- AS OUTRAS FUNÇÕES (CLIENTES, ANTT, RAIO) MANTIDAS IGUAIS DA V56 ---
+        function excluirSelecionadas() {
+            let checkboxes = document.querySelectorAll('.check-carga:checked');
+            if (checkboxes.length === 0) return alert("Selecione ao menos uma carga.");
+            if (confirm(`Excluir ${checkboxes.length} cargas selecionadas?`)) { let dbRef = firebase.database().ref('cargas'); checkboxes.forEach(cb => dbRef.child(cb.getAttribute('data-id')).remove()); }
+        }
+        function removerCargasZeradasAutomatico() {
+            let dbRef = firebase.database().ref('cargas');
+            dbRef.once('value', (snapshot) => { let data = snapshot.val(); if(data) { for(let id in data) { if(parseFloat(data[id].valor || 0) <= 0) dbRef.child(id).remove(); } } alert("Limpeza concluída!"); });
+        }
         firebase.database().ref('clientes').on('value', (snapshot) => {
             const data = snapshot.val(); clientesCacheGlobal = data || {}; const tbody = document.getElementById('lista-clientes');
-            if(tbody) {
-                tbody.innerHTML = "";
-                for (let id in data) { let cli = data[id]; let mapsBtn = cli.localizacao ? `<a href="${cli.localizacao}" target="_blank" style="color: #2d8cff;">Abrir Maps</a>` : '-';
-                    tbody.innerHTML += `<tr><td><strong>${cli.nome||''}</strong></td><td>${cli.cidade||''}</td><td>${cli.responsavel||'-'}</td><td>${cli.cnpj||'-'}</td><td>${cli.telefone||'-'}</td><td>${mapsBtn}</td><td><button class="btn-acao" onclick="abrirModalEditarCliente('${id}')">Editar</button></td></tr>`;
-                }
-            }
+            if(tbody) { tbody.innerHTML = ""; for (let id in data) { let cli = data[id]; let mapsBtn = cli.localizacao ? `<a href="${cli.localizacao}" target="_blank" style="color: #2d8cff;">Abrir Maps</a>` : '-'; tbody.innerHTML += `<tr><td><strong>${cli.nome||''}</strong></td><td>${cli.cidade||''}</td><td>${cli.responsavel||'-'}</td><td>${cli.cnpj||'-'}</td><td>${cli.telefone||'-'}</td><td>${mapsBtn}</td><td><button class="btn-acao" onclick="abrirModalEditarCliente('${id}')">Editar</button></td></tr>`; } }
         });
         function abrirModalNovoCliente() { document.getElementById('cliFirebaseKey').value = ""; document.getElementById('modalClienteTitulo').innerText = "Cadastrar Novo Cliente"; document.getElementById('cliNome').value = ""; document.getElementById('cliCidade').value = ""; document.getElementById('cliResponsavel').value = ""; document.getElementById('cliCnpjCpf').value = ""; document.getElementById('cliTelefone').value = ""; document.getElementById('cliEmail').value = ""; document.getElementById('cliLocalizacao').value = ""; document.getElementById('cliObs').value = ""; document.getElementById('btnExcluirCliente').style.display = "none"; document.getElementById('modalCliente').style.display = 'flex'; }
         function abrirModalEditarCliente(id) { let cli = clientesCacheGlobal[id]; if(!cli) return; document.getElementById('cliFirebaseKey').value = id; document.getElementById('modalClienteTitulo').innerText = "Editar Cliente"; document.getElementById('cliNome').value = cli.nome || ""; document.getElementById('cliCidade').value = cli.cidade || ""; document.getElementById('cliResponsavel').value = cli.responsavel || ""; document.getElementById('cliCnpjCpf').value = cli.cnpj || ""; document.getElementById('cliTelefone').value = cli.telefone || ""; document.getElementById('cliEmail').value = cli.email || ""; document.getElementById('cliLocalizacao').value = cli.localizacao || ""; document.getElementById('cliObs').value = cli.obs || ""; document.getElementById('btnExcluirCliente').style.display = "block"; document.getElementById('modalCliente').style.display = 'flex'; }
         function salvarClienteFirebase() { let key = document.getElementById('cliFirebaseKey').value; let nome = document.getElementById('cliNome').value; let cidade = document.getElementById('cliCidade').value; if(!nome) return alert("Preencha o nome."); let locRaw = document.getElementById('cliLocalizacao').value; let mapsLink = locRaw ? locRaw : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(nome + ' ' + cidade)}`; let dadosCli = { nome: nome, cidade: cidade, responsavel: document.getElementById('cliResponsavel').value || '', cnpj: document.getElementById('cliCnpjCpf').value || '', telefone: document.getElementById('cliTelefone').value || '', email: document.getElementById('cliEmail').value || '', localizacao: mapsLink, obs: document.getElementById('cliObs').value || '' }; let dbRef = firebase.database().ref('clientes'); if(key) { dbRef.child(key).update(dadosCli).then(() => { document.getElementById('modalCliente').style.display = 'none'; }); } else { dbRef.push(dadosCli).then(() => { document.getElementById('modalCliente').style.display = 'none'; }); } }
         function excluirClienteFirebase() { let key = document.getElementById('cliFirebaseKey').value; if(confirm("Excluir cliente?")) { firebase.database().ref('clientes/' + key).remove().then(() => { document.getElementById('modalCliente').style.display = 'none'; }); } }
-        
-        // Utilitários de String
         function mascaraCnpjCpf(el) { let v = el.value.replace(/\D/g, ""); if (v.length <= 11) { v = v.replace(/(\d{3})(\d)/, "$1.$2"); v = v.replace(/(\d{3})(\d)/, "$1.$2"); v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2"); } else { v = v.replace(/^(\d{2})(\d)/, "$1.$2"); v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3"); v = v.replace(/\.(\d{3})(\d)/, ".$1/$2"); v = v.replace(/(\d{4})(\d{1,2})$/, "$1-$2"); } el.value = v; }
         function mascaraFone(el) { let v = el.value.replace(/\D/g, ""); v = v.replace(/^(\d{2})(\d)/g, "($1) $2"); v = v.replace(/(\d)(\d{4})$/, "$1-$2"); el.value = v; }
         function formatarCidade(el) { let val = el.value.replace("-RS", ""); if(val.trim() !== "") el.value = val.trim() + "-RS"; }
