@@ -2,17 +2,19 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V71</title>
+    <title>DRO Cargas Sistema Completo V72</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <!-- Biblioteca para gerar PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <!-- PDF.js para leitura automática de PDFs oficiais -->
+    <!-- PDF.js para renderizar o documento -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     </script>
+    <!-- jsQR para leitura automática do QR Code do Detran -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     <style>
         body { background: #040b14; color: #f4f7fe; font-family: sans-serif; margin: 0; padding: 20px; }
         .nav-bar { margin-bottom: 20px; }
@@ -287,26 +289,29 @@
         </div>
     </div>
 
-    <!-- MODAL MOTORISTA V71 (LEITOR BLINDADO CNH E CRLV) -->
+    <!-- MODAL MOTORISTA V72 (LEITOR DE QR CODE DO DETRAN) -->
     <div id="modalMot" class="modal">
         <div class="modal-content" style="max-height: 95vh;">
             <h3 id="modalMotTitulo" style="margin-top:0;">Cadastrar Motorista</h3>
             <input type="hidden" id="motFirebaseKey">
             
-            <!-- BLOCO 0: LEITOR AUTOMÁTICO DE PDF -->
+            <!-- BLOCO 0: LEITOR DE QR CODE DETRAN -->
             <div class="grupo-dados" style="background: #111a27; border-color: #8e44ad;">
-                <h4 style="color: #c39bd3; border-bottom-color: #8e44ad;">🤖 Leitura Automática de PDF (DETRAN / CNH)</h4>
+                <h4 style="color: #c39bd3; border-bottom-color: #8e44ad;">🤖 Leitor de QR Code do Detran / PDF</h4>
                 <div style="display: flex; gap: 10px; align-items: center;">
                     <div style="flex: 2;">
                         <span class="label-campo">Selecione o PDF oficial (CNH ou CRLV):</span>
-                        <input type="file" id="motUploadPdf" accept="application/pdf" style="margin-bottom: 0; background: #23374f;" onchange="lerPdfAutomatico(this)">
+                        <input type="file" id="motUploadPdf" accept="application/pdf" style="margin-bottom: 0; background: #23374f;" onchange="lerPdfEQRCode(this)">
                     </div>
                 </div>
                 
                 <div id="statusOcr" style="font-size: 12px; color: #2ecc71; margin-top: 8px; display: none; font-weight: bold;">
-                    ✅ Documento lido e preenchido com sucesso!
+                    ✅ QR Code lido e dados preenchidos com sucesso!
                 </div>
                 
+                <!-- Canvas oculto para processar a imagem do QR Code -->
+                <canvas id="pdfCanvas" style="display:none;"></canvas>
+
                 <!-- Lista de Anexos -->
                 <div id="listaAnexos" style="margin-top: 10px; min-height: 25px;"></div>
             </div>
@@ -652,14 +657,14 @@
             }
         }
 
-        // --- LEITURA 100% AUTOMÁTICA DE PDF DO DETRAN (V71 BLINDADO) ---
-        async function lerPdfAutomatico(input) {
+        // --- LEITURA DO QR CODE E TEXTO DO PDF (V72) ---
+        async function lerPdfEQRCode(input) {
             if (!input.files.length) return;
             const file = input.files[0];
             
             const statusEl = document.getElementById('statusOcr');
             statusEl.style.display = 'block';
-            statusEl.innerText = "⏳ Lendo e extraindo dados do PDF...";
+            statusEl.innerText = "⏳ Lendo QR Code e dados do PDF...";
 
             try {
                 const reader = new FileReader();
@@ -667,43 +672,64 @@
                     const typedarray = new Uint8Array(this.result);
                     const pdf = await pdfjsLib.getDocument(typedarray).promise;
                     
-                    let linhasTexto = [];
-                    for (let i = 1; i <= pdf.numPages; i++) {
-                        const page = await pdf.getPage(i);
-                        const textContent = await page.getTextContent();
-                        let items = textContent.items.map(item => ({
-                            str: item.str,
-                            x: item.transform[4],
-                            y: item.transform[5]
-                        }));
-                        items.sort((a, b) => b.y - a.y || a.x - b.x);
-                        let linhaAtual = "";
-                        let ultimoY = null;
-                        for (let item of items) {
-                            if (ultimoY === null || Math.abs(item.y - ultimoY) > 5) {
-                                if (linhaAtual) linhasTexto.push(linhaAtual.trim());
-                                linhaAtual = item.str;
-                                ultimoY = item.y;
-                            } else {
-                                linhaAtual += " " + item.str;
-                            }
+                    // 1. TENTA LER O QR CODE DA PRIMEIRA PÁGINA VIA CANVAS
+                    const page = await pdf.getPage(1);
+                    const viewport = page.getViewport({ scale: 2.0 }); // Escala alta para leitura perfeita do QR Code
+                    const canvas = document.getElementById('pdfCanvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    await page.render({ canvasContext: context, viewport: viewport }).promise;
+                    
+                    let qrLido = false;
+                    try {
+                        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                        const code = jsQR(imageData.data, imageData.width, imageData.height);
+                        if (code && code.data) {
+                            console.log("QR Code detectado:", code.data);
+                            qrLido = processarDadosQRCode(code.data);
                         }
-                        if (linhaAtual) linhasTexto.push(linhaAtual.trim());
+                    } catch(err) {
+                        console.log("Erro no jsQR:", err);
                     }
 
-                    const textoCompleto = linhasTexto.join("\n").toUpperCase();
+                    // 2. SE O QR CODE NÃO RETORNOU DADOS DIRETOS, FAZ A LEITURA DO TEXTO DO PDF
+                    if (!qrLido) {
+                        let linhasTexto = [];
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const p = await pdf.getPage(i);
+                            const textContent = await p.getTextContent();
+                            let items = textContent.items.map(item => ({
+                                str: item.str,
+                                x: item.transform[4],
+                                y: item.transform[5]
+                            }));
+                            items.sort((a, b) => b.y - a.y || a.x - b.x);
+                            let linhaAtual = "";
+                            let ultimoY = null;
+                            for (let item of items) {
+                                if (ultimoY === null || Math.abs(item.y - ultimoY) > 5) {
+                                    if (linhaAtual) linhasTexto.push(linhaAtual.trim());
+                                    linhaAtual = item.str;
+                                    ultimoY = item.y;
+                                } else {
+                                    linhaAtual += " " + item.str;
+                                }
+                            }
+                            if (linhaAtual) linhasTexto.push(linhaAtual.trim());
+                        }
+                        processarTextoPdfFallback(linhasTexto.join("\n").toUpperCase(), linhasTexto);
+                    }
 
-                    // Anexa o arquivo automaticamente
+                    // Anexa o arquivo automaticamente no sistema
                     const base64 = await converterFileParaBase64(file);
                     const fileId = "doc_" + Date.now();
                     arquivosAnexadosTemp[fileId] = { nome: file.name, base64: base64 };
                     renderizarListaAnexos();
 
-                    // Preenche os inputs com o algoritmo blindado V71
-                    processarTextoDetranV71(textoCompleto, linhasTexto);
-
                     statusEl.style.color = "#2ecc71";
-                    statusEl.innerText = "✅ Documento lido e preenchido com sucesso!";
+                    statusEl.innerText = "✅ Documento lido com sucesso!";
                     setTimeout(() => statusEl.style.display = 'none', 4000);
                 };
                 reader.readAsArrayBuffer(file);
@@ -723,40 +749,44 @@
             });
         }
 
-        function processarTextoDetranV71(txt, linhas) {
+        function processarDadosQRCode(dataStr) {
+            // Se o QR Code contiver dados estruturados ou URL do Detran/Vio
+            let txt = dataStr.toUpperCase();
+            
+            // Se for CNH ou CRLV, tenta extrair CPFs e Placas diretamente do conteúdo do QR Code
+            let matchCpf = txt.match(/\b\d{11}\b/) || txt.match(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/);
+            let matchPlaca = txt.match(/\b[A-Z]{3}\d[A-Z0-9]\d{2}\b/);
+            
+            if (matchPlaca) {
+                let placa = matchPlaca[0];
+                if (txt.includes("TRATOR") || txt.includes("CAMINHAO") || !txt.includes("SEMI")) {
+                    document.getElementById('motCavalo').value = placa;
+                } else {
+                    let s1 = document.getElementById('motSreb1');
+                    let s2 = document.getElementById('motSreb2');
+                    let s3 = document.getElementById('motSreb3');
+                    if (!s1.value) s1.value = placa;
+                    else if (!s2.value) s2.value = placa;
+                    else if (!s3.value) s3.value = placa;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        function processarTextoPdfFallback(txt, linhas) {
             let linhasFiltradas = linhas.map(l => l.trim()).filter(l => l.length > 0);
 
-            // 1. CNH DIGITAL DO SENATRAN
             if (txt.includes("HABILITAÇÃO") || txt.includes("SENATRAN") || txt.includes("DRIVER LICENSE")) {
-                
-                // Extrair CPF (formato 000.000.000-00 ou 11 dígitos limpos)
-                let cpfMatch = txt.match(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/);
-                if (!cpfMatch) {
-                    let nums11 = txt.match(/\b\d{11}\b/g);
-                    if (nums11) {
-                        let cpfVal = nums11.find(n => n !== "00390780120" && !n.startsWith("005")) || nums11[0];
-                        cpfMatch = [cpfVal];
-                    }
-                }
+                let cpfMatch = txt.match(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/) || txt.match(/\b\d{11}\b/g);
                 if (cpfMatch) {
-                    document.getElementById('motCpfM').value = cpfMatch[0].replace(/[^\d]/g, "");
+                    let cpfVal = Array.isArray(cpfMatch) ? cpfMatch.find(n => n.length === 11 && n !== "00390780120") : cpfMatch[0];
+                    if (cpfVal) document.getElementById('motCpfM').value = cpfVal.replace(/[^\d]/g, "");
                 }
 
-                // Extrair CNH / Registro
-                let cnhMatch = txt.match(/REGISTRO[:\s]*(\d{9,11})/i) || txt.match(/H\.?\s*(\d{11})/i);
-                if (cnhMatch) {
-                    document.getElementById('motCnh').value = cnhMatch[1];
-                } else {
-                    let allNums = txt.match(/\b\d{11}\b/g);
-                    let cpfAtual = document.getElementById('motCpfM').value;
-                    if (allNums) {
-                        let cnhNum = allNums.find(n => n !== cpfAtual);
-                        if (cnhNum) document.getElementById('motCnh').value = cnhNum;
-                    }
-                }
+                let cnhMatch = txt.match(/REGISTRO[:\s]*(\d{9,11})/i);
+                if (cnhMatch) document.getElementById('motCnh').value = cnhMatch[1];
 
-                // Extrair Nome exato do motorista (Evitando lixo de cabeçalho)
-                let nomeEncontrado = "";
                 for (let i = 0; i < linhasFiltradas.length; i++) {
                     let l = linhasFiltradas[i];
                     let lUp = l.toUpperCase();
@@ -767,17 +797,11 @@
                         continue;
                     }
                     if (l.length >= 6 && l === lUp && l.includes(" ")) {
-                        nomeEncontrado = l;
+                        document.getElementById('motNome').value = l;
                         break;
                     }
                 }
-                if (nomeEncontrado) {
-                    document.getElementById('motNome').value = nomeEncontrado;
-                }
-
-            } 
-            // 2. CRLV DIGITAL (VEÍCULOS / CAVALO / CARRETA)
-            else if (txt.includes("CERTIFICADO DE REGISTRO") || txt.includes("RENAVAM")) {
+            } else if (txt.includes("CERTIFICADO DE REGISTRO") || txt.includes("RENAVAM")) {
                 let matchPlaca = txt.match(/\b[A-Z]{3}\d[A-Z0-9]\d{2}\b/);
                 let placa = matchPlaca ? matchPlaca[0] : "";
 
@@ -787,8 +811,7 @@
                         document.getElementById('motProp').value = linhasFiltradas[i + 1].trim();
                     }
                     if (l.includes("CPF/CNPJ") && i + 1 < linhasFiltradas.length) {
-                        let docProp = linhasFiltradas[i + 1].replace(/[^\d]/g, "");
-                        document.getElementById('motCpfP').value = docProp;
+                        document.getElementById('motCpfP').value = linhasFiltradas[i + 1].replace(/[^\d]/g, "");
                     }
                     if (l.includes("LOCAL") && i + 1 < linhasFiltradas.length) {
                         document.getElementById('motMun').value = linhasFiltradas[i + 1].trim();
