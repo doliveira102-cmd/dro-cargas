@@ -2,12 +2,14 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V60</title>
+    <title>DRO Cargas Sistema Completo V61</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <!-- Biblioteca para gerar PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Biblioteca de Inteligência Artificial para Leitura de Texto (OCR) -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         body { background: #040b14; color: #f4f7fe; font-family: sans-serif; margin: 0; padding: 20px; }
         .nav-bar { margin-bottom: 20px; }
@@ -16,7 +18,6 @@
         button { background: #2d8cff; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 4px; font-weight: bold; }
         button:hover { background: #1a6fd8; }
         
-        /* Proteção para não vazar a cor escura para o PDF */
         .tab-content table { width: 100%; border-collapse: collapse; background: #0d1728; margin-top: 10px; }
         .tab-content th, .tab-content td { padding: 8px; border-bottom: 1px solid #23374f; font-size: 11px; text-align: left; color: #f4f7fe; }
         
@@ -25,7 +26,6 @@
         .btn-limpar-zeradas { background: #e67e22; margin-left: 5px; }
         .btn-nova-carga { background: #28a745; margin-left: 5px; }
         
-        /* Modal Style Refinado */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 1000; }
         .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 650px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
         
@@ -42,11 +42,15 @@
         .status-pendente { background: #e67e22; color: white; }
         .status-finalizada { background: #28a745; color: white; }
 
-        /* Estilo para agrupar dados do Motorista */
         .grupo-dados { background: #040b14; padding: 15px; border-radius: 6px; border: 1px solid #23374f; margin-bottom: 15px; }
         .grupo-dados h4 { margin-top: 0; margin-bottom: 10px; color: #2d8cff; font-size: 13px; border-bottom: 1px solid #23374f; padding-bottom: 5px; }
         .flex-row { display: flex; gap: 10px; }
         .flex-col { flex: 1; }
+        
+        /* Estilos do Anexo */
+        .anexo-item { display: inline-block; background: #23374f; padding: 5px 10px; border-radius: 4px; font-size: 11px; margin-right: 5px; margin-bottom: 5px; }
+        .anexo-item a { color: #2d8cff; text-decoration: none; font-weight: bold; }
+        .btn-remover-anexo { color: #ff4d4d; cursor: pointer; margin-left: 8px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -197,7 +201,6 @@
                 <input type="number" id="anttDist" placeholder="Distância" style="width: 120px;">
             </div>
         </div>
-
         <div class="calc-inputs">
             <div class="calc-bloco">
                 <label>Tipo de Carga</label>
@@ -226,7 +229,6 @@
                 <button type="button" onclick="calcularANTT()">Calcular Frete</button>
             </div>
         </div>
-        
         <table>
             <thead>
                 <tr>
@@ -241,7 +243,6 @@
     </div>
 
     <!-- ================= MODAIS ================= -->
-
     <div id="modalCliente" class="modal">
         <div class="modal-content">
             <h3 id="modalClienteTitulo">Cadastrar / Editar Cliente</h3>
@@ -284,12 +285,32 @@
         </div>
     </div>
 
-    <!-- MODAL MOTORISTA V60 (LAYOUT PROFISSIONAL G10) -->
+    <!-- MODAL MOTORISTA V61 (COM IA DE OCR E UPLOAD) -->
     <div id="modalMot" class="modal">
-        <div class="modal-content">
-            <h3 id="modalMotTitulo">Cadastrar Motorista</h3>
+        <div class="modal-content" style="max-height: 95vh;">
+            <h3 id="modalMotTitulo" style="margin-top:0;">Cadastrar Motorista</h3>
             <input type="hidden" id="motFirebaseKey">
             
+            <!-- BLOCO 0: LEITURA INTELIGENTE E ANEXOS -->
+            <div class="grupo-dados" style="background: #111a27; border-color: #8e44ad;">
+                <h4 style="color: #c39bd3; border-bottom-color: #8e44ad;">🤖 Leitura Automática & Documentos Anexos</h4>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <div style="flex: 2;">
+                        <span class="label-campo">Envie a foto da CNH ou CRLV (Será salva no cadastro e lida pela IA):</span>
+                        <input type="file" id="motUpload" accept="image/*" style="margin-bottom: 0;">
+                    </div>
+                    <div style="flex: 1; text-align: right; margin-top: 15px;">
+                        <button type="button" onclick="processarDocumentoOCR()" id="btnProcessarDoc" style="background: #8e44ad; width: 100%;">Ler com Inteligência</button>
+                    </div>
+                </div>
+                <div id="statusOcr" style="font-size: 11px; color: #f1c40f; margin-top: 5px; display: none; font-weight: bold;">Analisando imagem... aguarde (isso pode levar alguns segundos).</div>
+                
+                <!-- Lista de Anexos -->
+                <div id="listaAnexos" style="margin-top: 10px; min-height: 25px;">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+
             <!-- BLOCO 1: MOTORISTA -->
             <div class="grupo-dados">
                 <h4>🧑‍✈️ Dados do Motorista</h4>
@@ -381,6 +402,7 @@
         </div>
     </div>
 
+    <!-- MODAL ORDEM -->
     <div id="modalOrdem" class="modal">
         <div class="modal-content">
             <h3>Emitir Ordem (G10)</h3>
@@ -399,7 +421,7 @@
         </div>
     </div>
 
-    <!-- ================= TEMPLATE DO PDF EXATO (FUNDO BRANCO OBRIGATÓRIO) ================= -->
+    <!-- ================= TEMPLATE DO PDF (FUNDO BRANCO OBRIGATÓRIO) ================= -->
     <div id="pdf-template" style="display: none; padding: 30px; background-color: #ffffff; color: #000000; font-family: Arial, sans-serif; width: 800px; box-sizing: border-box;">
         
         <!-- CABEÇALHO G10 -->
@@ -502,6 +524,9 @@
         let clientesCacheGlobal = {};
         let motoristasCacheGlobal = {};
         let ordensCacheGlobal = {};
+        
+        // Objeto em memória para guardar os arquivos convertidos antes de salvar
+        let arquivosAnexadosTemp = {};
 
         function trocarTab(tab) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
@@ -599,11 +624,9 @@
             const tbody = document.getElementById('lista-ordens-emitidas');
             if(!tbody) return;
             tbody.innerHTML = "";
-            
             let dtIni = document.getElementById('filtroOrdDataIni').value;
             let dtFim = document.getElementById('filtroOrdDataFim').value;
             let ordensArray = Object.keys(ordensCacheGlobal).map(key => { return { id: key, ...ordensCacheGlobal[key] }; });
-
             ordensArray.sort((a, b) => new Date(b.dataCriacao) - new Date(a.dataCriacao));
 
             for(let o of ordensArray) {
@@ -635,7 +658,125 @@
         }
 
 
-        // --- FUNÇÕES CRUD MOTORISTAS (LAYOUT V60) ---
+        // --- LÓGICA DE OCR E UPLOAD INTELIGENTE (NOVO V61) ---
+        
+        async function processarDocumentoOCR() {
+            const fileInput = document.getElementById('motUpload');
+            if(!fileInput.files.length) return alert("Selecione um arquivo de imagem (CNH, CRLV) primeiro.");
+            const file = fileInput.files[0];
+            
+            // Ativar feedback na tela
+            document.getElementById('statusOcr').style.display = 'block';
+            document.getElementById('statusOcr').innerText = "Analisando documento... A inteligência artificial está lendo os dados.";
+            document.getElementById('btnProcessarDoc').disabled = true;
+
+            try {
+                // 1. Redimensiona e Comprime a imagem para não sobrecarregar o Firebase (Máx 800px)
+                const base64 = await comprimirImagem(file);
+                const fileId = "doc_" + Date.now();
+                arquivosAnexadosTemp[fileId] = { nome: file.name, base64: base64 };
+                renderizarListaAnexos();
+
+                // 2. Executa a leitura ótica (Tesseract OCR)
+                const result = await Tesseract.recognize(file, 'por', { logger: m => console.log(m) });
+                const textoPlano = result.data.text.toUpperCase();
+                
+                // 3. Extrai as informações e preenche os inputs
+                extrairDadosParaFormulario(textoPlano);
+                
+                document.getElementById('statusOcr').innerText = "✅ Leitura concluída! Por favor, confira os campos preenchidos e ajuste se necessário.";
+                setTimeout(() => document.getElementById('statusOcr').style.display = 'none', 5000);
+            } catch(e) {
+                alert("Erro ao ler documento: " + e.message);
+                document.getElementById('statusOcr').style.display = 'none';
+            } finally {
+                document.getElementById('btnProcessarDoc').disabled = false;
+                fileInput.value = ""; // limpa o input
+            }
+        }
+
+        function comprimirImagem(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        // Limite de 800px de largura para manter leve no banco
+                        const MAX_WIDTH = 800;
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        // Retorna JPEG com 60% de qualidade
+                        resolve(canvas.toDataURL('image/jpeg', 0.6));
+                    }
+                }
+            });
+        }
+
+        function extrairDadosParaFormulario(texto) {
+            // Expressões regulares para buscar padrões brasileiros comuns
+            const cpfCnpjRegex = /\b\d{3}[\.]?\d{3}[\.]?\d{3}[-]?\d{2}\b|\b\d{2}[\.]?\d{3}[\.]?\d{3}[\/]?\d{4}[-]?\d{2}\b/g;
+            const placaRegex = /\b[A-Z]{3}[-]?\d[A-Z0-9]\d{2}\b/g;
+            const cnhRegex = /\b\d{11}\b/g; 
+
+            // Extração de CPF/CNPJ
+            const matchCpf = texto.match(cpfCnpjRegex);
+            if(matchCpf && matchCpf.length > 0) {
+                // Se não tiver nada no CPF do motorista, preenche com o primeiro CPF encontrado
+                if(!document.getElementById('motCpfM').value) {
+                    document.getElementById('motCpfM').value = matchCpf[0].replace(/[^\d]/g, "");
+                }
+            }
+
+            // Extração de Placas (Mercosul e Antiga)
+            const matchPlacas = texto.match(placaRegex);
+            if(matchPlacas && matchPlacas.length > 0) {
+                if(!document.getElementById('motCavalo').value) document.getElementById('motCavalo').value = matchPlacas[0].replace("-", "");
+                if(matchPlacas.length > 1 && !document.getElementById('motSreb1').value) document.getElementById('motSreb1').value = matchPlacas[1].replace("-", "");
+            }
+
+            // Extração de CNH (Procura por sequências de 11 números)
+            const matchCnh = texto.match(cnhRegex);
+            if(matchCnh && matchCnh.length > 0) {
+                // Filtra para pegar um que não seja o mesmo CPF recém descoberto sem formatação
+                let cnhValida = matchCnh.find(num => {
+                    let cpfAtual = document.getElementById('motCpfM').value;
+                    return num !== cpfAtual;
+                });
+                if(cnhValida && !document.getElementById('motCnh').value) {
+                    document.getElementById('motCnh').value = cnhValida;
+                }
+            }
+        }
+
+        function renderizarListaAnexos() {
+            const div = document.getElementById('listaAnexos');
+            div.innerHTML = "";
+            for(let key in arquivosAnexadosTemp) {
+                let doc = arquivosAnexadosTemp[key];
+                div.innerHTML += `
+                    <div class="anexo-item">
+                        <a href="${doc.base64}" download="${doc.nome}">📄 ${doc.nome} (Baixar/Ver)</a>
+                        <span class="btn-remover-anexo" onclick="removerAnexoTemp('${key}')">X</span>
+                    </div>
+                `;
+            }
+        }
+
+        function removerAnexoTemp(key) {
+            delete arquivosAnexadosTemp[key];
+            renderizarListaAnexos();
+        }
+
+
+        // --- FUNÇÕES CRUD MOTORISTAS ---
         function abrirModalMotorista(id = null) {
             document.getElementById('motFirebaseKey').value = id || "";
             document.getElementById('modalMotTitulo').innerText = id ? "Editar Motorista" : "Cadastrar Novo Motorista";
@@ -658,6 +799,10 @@
             document.getElementById('motEnder').value = m.ender || "";
             document.getElementById('motMun').value = m.mun || "";
             
+            // Carrega os anexos se existirem no banco
+            arquivosAnexadosTemp = m.documentos || {};
+            renderizarListaAnexos();
+
             document.getElementById('btnExcluirMot').style.display = id ? "block" : "none";
             document.getElementById('modalMot').style.display = 'flex';
         }
@@ -673,7 +818,8 @@
                 sreb2: document.getElementById('motSreb2').value, sreb3: document.getElementById('motSreb3').value, 
                 prop: document.getElementById('motProp').value, cpfP: document.getElementById('motCpfP').value,
                 ender: document.getElementById('motEnder').value, mun: document.getElementById('motMun').value,
-                cnh: document.getElementById('motCnh').value, rg: document.getElementById('motRg').value, cpfM: document.getElementById('motCpfM').value
+                cnh: document.getElementById('motCnh').value, rg: document.getElementById('motRg').value, cpfM: document.getElementById('motCpfM').value,
+                documentos: arquivosAnexadosTemp // Salva os arquivos (comprimidos) no firebase
             };
 
             let dbRef = firebase.database().ref('motoristas');
@@ -683,7 +829,7 @@
 
         function excluirMotorista() {
             let key = document.getElementById('motFirebaseKey').value;
-            if(confirm("Deseja excluir permanentemente este motorista?")) { firebase.database().ref('motoristas/' + key).remove().then(() => { document.getElementById('modalMot').style.display = 'none'; }); }
+            if(confirm("Deseja excluir permanentemente este motorista e todos os seus anexos?")) { firebase.database().ref('motoristas/' + key).remove().then(() => { document.getElementById('modalMot').style.display = 'none'; }); }
         }
 
 
