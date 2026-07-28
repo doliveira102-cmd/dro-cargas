@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V74</title>
+    <title>DRO Cargas Sistema Completo V75</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -289,7 +289,7 @@
         </div>
     </div>
 
-    <!-- MODAL MOTORISTA V74 -->
+    <!-- MODAL MOTORISTA V75 -->
     <div id="modalMot" class="modal">
         <div class="modal-content" style="max-height: 95vh;">
             <h3 id="modalMotTitulo" style="margin-top:0;">Cadastrar Motorista</h3>
@@ -423,18 +423,18 @@
         </div>
     </div>
 
-    <!-- ================= TEMPLATE DO PDF (PADRÃO PROFISSIONAL 100% SIMÉTRICO) ================= -->
-    <div id="pdf-template" style="display: none; background-color: #ffffff; color: #000000; font-family: Arial, sans-serif; width: 740px; margin: 0 auto; box-sizing: border-box; border: 2px solid #000000; padding: 25px;">
+    <!-- ================= TEMPLATE DO PDF (V75 - LAYOUT PROFISSIONAL E IDÊNTICO AO MODELO) ================= -->
+    <div id="pdf-template" style="display: none; background-color: #ffffff; color: #000000; font-family: Arial, sans-serif; width: 100%; max-width: 720px; margin: 0 auto; box-sizing: border-box; border: 2px solid #000000; padding: 15px;">
         
         <!-- CABEÇALHO G10 -->
-        <table style="width: 100%; border-collapse: collapse; border: none; margin-bottom: 20px; background-color: #ffffff;">
+        <table style="width: 100%; border-collapse: collapse; border: none; margin-bottom: 15px; background-color: #ffffff;">
             <tr>
                 <td style="width: 40%; text-align: left; padding: 0; border: none; vertical-align: top;">
-                    <div style="font-size: 70px; font-weight: 900; font-style: italic; color: #5a2a2a; letter-spacing: -4px; line-height: 0.8; margin-top: 5px;">
-                        G10<span style="font-size: 13px; background-color: #5a2a2a; color: #ffffff; padding: 4px 8px; font-style: normal; font-weight: bold; vertical-align: middle; position: relative; top: -16px; margin-left: -5px; letter-spacing: 0px;">TRANSPORTES</span>
+                    <div style="font-size: 65px; font-weight: 900; font-style: italic; color: #5a2a2a; letter-spacing: -4px; line-height: 0.8; margin-top: 5px;">
+                        G10<span style="font-size: 12px; background-color: #5a2a2a; color: #ffffff; padding: 3px 6px; font-style: normal; font-weight: bold; vertical-align: middle; position: relative; top: -15px; margin-left: -5px; letter-spacing: 0px;">TRANSPORTES</span>
                     </div>
                 </td>
-                <td style="width: 60%; font-size: 12px; font-weight: bold; text-align: left; padding: 0; border: none; line-height: 1.4; color: #000000;">
+                <td style="width: 60%; font-size: 11px; font-weight: bold; text-align: left; padding: 0; border: none; line-height: 1.3; color: #000000;">
                     G10 - TRANSPORTES LTDA<br>
                     BR 392 KM 10 SALA 17, 1<br>
                     BARRA, RIO GRANDE - RS<br>
@@ -446,71 +446,71 @@
         </table>
 
         <!-- TÍTULO -->
-        <div style="text-align: center; margin: 20px 0;">
-            <span style="font-size: 16px; font-weight: bold; text-decoration: underline;">AUTORIZAÇÃO DE CARREGAMENTO</span>
+        <div style="text-align: center; margin: 15px 0; border-top: 1px solid #000000; border-bottom: 1px solid #000000; padding: 6px;">
+            <span style="font-size: 15px; font-weight: bold;">AUTORIZAÇÃO DE CARREGAMENTO</span>
         </div>
 
-        <!-- ORIGEM E DESTINO (Simétrico e alinhado) -->
-        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 12px; border: 1px solid #000000; background-color: #ffffff; box-sizing: border-box;">
+        <!-- ORIGEM E DESTINO -->
+        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 10px; border: 1px solid #000000; background-color: #ffffff;">
             <tr>
-                <td style="border: 1px solid #000000; padding: 8px; width: 50%; color: #000000;"><strong>REMETENTE:</strong> <span id="pdf-remetente"></span></td>
-                <td style="border: 1px solid #000000; padding: 8px; width: 50%; color: #000000;"><strong>LOCAL:</strong> <span id="pdf-loc-remetente"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; width: 50%; color: #000000;"><strong>REMETENTE:</strong> <span id="pdf-remetente"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; width: 50%; color: #000000;"><strong>LOCAL:</strong> <span id="pdf-loc-remetente"></span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid #000000; padding: 8px; color: #000000;"><strong>DESTINATÁRIO:</strong> <span id="pdf-destinatario"></span></td>
-                <td style="border: 1px solid #000000; padding: 8px; color: #000000;"><strong>LOCAL:</strong> <span id="pdf-loc-destinatario"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; color: #000000;"><strong>DESTINATÁRIO:</strong> <span id="pdf-destinatario"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; color: #000000;"><strong>LOCAL:</strong> <span id="pdf-loc-destinatario"></span></td>
             </tr>
         </table>
 
         <!-- FAIXA PRETA -->
-        <div style="background-color: #000000; color: #ffffff; text-align: center; font-weight: bold; padding: 6px; font-size: 12px; margin-bottom: 12px; border: 1px solid #000000; box-sizing: border-box;">
+        <div style="background-color: #000000; color: #ffffff; text-align: center; font-weight: bold; padding: 6px; font-size: 11px; margin-bottom: 10px; border: 1px solid #000000;">
             AUTORIZAMOS O CARREGAMENTO DO SEGUINTE VEÍCULO
         </div>
 
-        <!-- DADOS DO VEÍCULO E MOTORISTA (Simétrico e alinhado) -->
-        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 15px; border: 1px solid #000000; background-color: #ffffff; box-sizing: border-box;">
+        <!-- DADOS DO VEÍCULO E MOTORISTA -->
+        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 10px; border: 1px solid #000000; background-color: #ffffff;">
             <tr>
-                <td style="border: 1px solid #000000; padding: 8px; width: 40%; color: #000000;"><strong>CAVALO:</strong> <span id="pdf-cavalo"></span></td>
-                <td style="border: 1px solid #000000; padding: 8px; width: 60%; color: #000000;" colspan="2"><strong>S.REB.:</strong> <span id="pdf-sreb"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; width: 40%; color: #000000;"><strong>CAVALO:</strong> <span id="pdf-cavalo"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; width: 60%; color: #000000;" colspan="2"><strong>S.REB.:</strong> <span id="pdf-sreb"></span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid #000000; padding: 8px; color: #000000;" colspan="2"><strong>PROPRIETÁRIO:</strong> <span id="pdf-prop"></span></td>
-                <td style="border: 1px solid #000000; padding: 8px; color: #000000;"><strong>CPF/CNPJ:</strong> <span id="pdf-cpfp"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; color: #000000;" colspan="2"><strong>PROPRIETÁRIO:</strong> <span id="pdf-prop"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; color: #000000;"><strong>CPF/CNPJ:</strong> <span id="pdf-cpfp"></span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid #000000; padding: 8px; color: #000000;" colspan="2"><strong>ENDEREÇO:</strong> <span id="pdf-ender"></span></td>
-                <td style="border: 1px solid #000000; padding: 8px; color: #000000;"><strong>MUNICÍPIO:</strong> <span id="pdf-mun"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; color: #000000;" colspan="2"><strong>ENDEREÇO:</strong> <span id="pdf-ender"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; color: #000000;"><strong>MUNICÍPIO:</strong> <span id="pdf-mun"></span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid #000000; padding: 8px; color: #000000;" colspan="3"><strong>MOTORISTA:</strong> <span id="pdf-motorista"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; color: #000000;" colspan="3"><strong>MOTORISTA:</strong> <span id="pdf-motorista"></span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid #000000; padding: 8px; color: #000000; width: 33%;"><strong>CART. HAB. Nº:</strong> <span id="pdf-cnh"></span></td>
-                <td style="border: 1px solid #000000; padding: 8px; color: #000000; width: 33%;"><strong>RG:</strong> <span id="pdf-rg"></span></td>
-                <td style="border: 1px solid #000000; padding: 8px; color: #000000; width: 34%;"><strong>CPF:</strong> <span id="pdf-cpfm"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; color: #000000; width: 33%;"><strong>CART. HAB. Nº:</strong> <span id="pdf-cnh"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; color: #000000; width: 33%;"><strong>RG:</strong> <span id="pdf-rg"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; color: #000000; width: 34%;"><strong>CPF:</strong> <span id="pdf-cpfm"></span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid #000000; padding: 8px; color: #000000;" colspan="3"><strong>TELEFONE:</strong> <span id="pdf-tel"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; color: #000000;" colspan="3"><strong>TELEFONE:</strong> <span id="pdf-tel"></span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid #000000; padding: 8px; color: #000000;" colspan="3"><strong>OBSERVAÇÃO:</strong> <span id="pdf-obs"></span></td>
+                <td style="border: 1px solid #000000; padding: 6px; color: #000000;" colspan="3"><strong>OBSERVAÇÃO:</strong> <span id="pdf-obs"></span></td>
             </tr>
         </table>
 
-        <!-- DADOS DO CARREGAMENTO (Simétrico e alinhado) -->
-        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 25px; border: 1px solid #000000; background-color: #ffffff; text-align: center; box-sizing: border-box;">
+        <!-- DADOS DO CARREGAMENTO -->
+        <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #000000; background-color: #ffffff; text-align: center;">
             <tr>
-                <td style="border: 1px solid #000000; padding: 8px; font-weight: bold; color: #000000;" colspan="3">DADOS DO CARREGAMENTO</td>
+                <td style="border: 1px solid #000000; padding: 6px; font-weight: bold; color: #000000;" colspan="3">DADOS DO CARREGAMENTO</td>
             </tr>
             <tr>
-                <td style="border: 1px solid #000000; padding: 8px; font-weight: bold; width: 33%; color: #000000;">PEDIDO</td>
-                <td style="border: 1px solid #000000; padding: 8px; font-weight: bold; width: 34%; color: #000000;">PRODUTO</td>
-                <td style="border: 1px solid #000000; padding: 8px; font-weight: bold; width: 33%; color: #000000;">FRETE MOTORISTA</td>
+                <td style="border: 1px solid #000000; padding: 6px; font-weight: bold; width: 33%; color: #000000;">PEDIDO</td>
+                <td style="border: 1px solid #000000; padding: 6px; font-weight: bold; width: 34%; color: #000000;">PRODUTO</td>
+                <td style="border: 1px solid #000000; padding: 6px; font-weight: bold; width: 33%; color: #000000;">FRETE MOTORISTA</td>
             </tr>
             <tr>
-                <td style="border: 1px solid #000000; padding: 16px; color: #000000;"><span id="pdf-peso-detalhe"></span> TONS</td>
-                <td style="border: 1px solid #000000; padding: 16px; color: #000000;"><span id="pdf-produto-detalhe"></span></td>
-                <td style="border: 1px solid #000000; padding: 16px; color: #000000;">R$ <span id="pdf-vlr-mot-detalhe"></span></td>
+                <td style="border: 1px solid #000000; padding: 12px; color: #000000;"><span id="pdf-peso-detalhe"></span> TONS</td>
+                <td style="border: 1px solid #000000; padding: 12px; color: #000000;"><span id="pdf-produto-detalhe"></span></td>
+                <td style="border: 1px solid #000000; padding: 12px; color: #000000;">R$ <span id="pdf-vlr-mot-detalhe"></span></td>
             </tr>
         </table>
 
@@ -961,7 +961,7 @@
             element.style.display = 'block';
 
             let opt = { 
-                margin: 10, 
+                margin: [5, 5, 5, 5], 
                 filename: `Ordem_${m.mot || 'Mot'}_${dataFormatada.replace(/[\/ :]/g,'-')}.pdf`, 
                 image: { type: 'jpeg', quality: 1 }, 
                 html2canvas: { scale: 2, useCORS: true, letterRendering: true }, 
