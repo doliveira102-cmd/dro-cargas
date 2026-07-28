@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V61</title>
+    <title>DRO Cargas Sistema Completo V62</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -285,7 +285,7 @@
         </div>
     </div>
 
-    <!-- MODAL MOTORISTA V61 (COM IA DE OCR E UPLOAD) -->
+    <!-- MODAL MOTORISTA V62 (LEITURA AUTOMÁTICA AO SELECIONAR ARQUIVO + NOME) -->
     <div id="modalMot" class="modal">
         <div class="modal-content" style="max-height: 95vh;">
             <h3 id="modalMotTitulo" style="margin-top:0;">Cadastrar Motorista</h3>
@@ -295,15 +295,16 @@
             <div class="grupo-dados" style="background: #111a27; border-color: #8e44ad;">
                 <h4 style="color: #c39bd3; border-bottom-color: #8e44ad;">🤖 Leitura Automática & Documentos Anexos</h4>
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <div style="flex: 2;">
-                        <span class="label-campo">Envie a foto da CNH ou CRLV (Será salva no cadastro e lida pela IA):</span>
-                        <input type="file" id="motUpload" accept="image/*" style="margin-bottom: 0;">
-                    </div>
-                    <div style="flex: 1; text-align: right; margin-top: 15px;">
-                        <button type="button" onclick="processarDocumentoOCR()" id="btnProcessarDoc" style="background: #8e44ad; width: 100%;">Ler com Inteligência</button>
+                    <div style="flex: 1;">
+                        <span class="label-campo">Selecione a CNH ou CRLV (A leitura inicia sozinha):</span>
+                        <!-- Adicionado o onchange para processar sozinho -->
+                        <input type="file" id="motUpload" accept="image/*" style="margin-bottom: 0; background: #23374f;" onchange="processarDocumentoOCR()">
                     </div>
                 </div>
-                <div id="statusOcr" style="font-size: 11px; color: #f1c40f; margin-top: 5px; display: none; font-weight: bold;">Analisando imagem... aguarde (isso pode levar alguns segundos).</div>
+                <!-- Status visual da IA -->
+                <div id="statusOcr" style="font-size: 13px; color: #f1c40f; margin-top: 10px; display: none; font-weight: bold; background: #000; padding: 10px; border-radius: 4px; border: 1px dashed #f1c40f;">
+                    ⏳ Analisando imagem... Aguarde (Isso pode levar alguns segundos dependendo do celular/PC).
+                </div>
                 
                 <!-- Lista de Anexos -->
                 <div id="listaAnexos" style="margin-top: 10px; min-height: 25px;">
@@ -658,17 +659,20 @@
         }
 
 
-        // --- LÓGICA DE OCR E UPLOAD INTELIGENTE (NOVO V61) ---
+        // --- LÓGICA DE OCR AUTOMÁTICA E UPLOAD INTELIGENTE (ATUALIZADO V62) ---
         
         async function processarDocumentoOCR() {
             const fileInput = document.getElementById('motUpload');
-            if(!fileInput.files.length) return alert("Selecione um arquivo de imagem (CNH, CRLV) primeiro.");
+            if(!fileInput.files.length) return;
             const file = fileInput.files[0];
             
             // Ativar feedback na tela
             document.getElementById('statusOcr').style.display = 'block';
-            document.getElementById('statusOcr').innerText = "Analisando documento... A inteligência artificial está lendo os dados.";
-            document.getElementById('btnProcessarDoc').disabled = true;
+            document.getElementById('statusOcr').innerText = "⏳ Analisando imagem... Aguarde (Isso pode levar alguns segundos).";
+            
+            // Desabilita o botão de salvar enquanto processa
+            let botoesSalvar = document.querySelectorAll('#modalMot button[style*="#28a745"]');
+            botoesSalvar.forEach(b => b.disabled = true);
 
             try {
                 // 1. Redimensiona e Comprime a imagem para não sobrecarregar o Firebase (Máx 800px)
@@ -681,17 +685,22 @@
                 const result = await Tesseract.recognize(file, 'por', { logger: m => console.log(m) });
                 const textoPlano = result.data.text.toUpperCase();
                 
-                // 3. Extrai as informações e preenche os inputs
+                // 3. Extrai as informações e preenche os inputs (Agora tenta puxar NOME e RG)
                 extrairDadosParaFormulario(textoPlano);
                 
-                document.getElementById('statusOcr').innerText = "✅ Leitura concluída! Por favor, confira os campos preenchidos e ajuste se necessário.";
-                setTimeout(() => document.getElementById('statusOcr').style.display = 'none', 5000);
+                document.getElementById('statusOcr').style.color = "#2ecc71";
+                document.getElementById('statusOcr').style.borderColor = "#2ecc71";
+                document.getElementById('statusOcr').innerText = "✅ Leitura concluída! Por favor, confira e corrija possíveis erros nos campos abaixo.";
+                setTimeout(() => document.getElementById('statusOcr').style.display = 'none', 6000);
             } catch(e) {
                 alert("Erro ao ler documento: " + e.message);
                 document.getElementById('statusOcr').style.display = 'none';
             } finally {
-                document.getElementById('btnProcessarDoc').disabled = false;
-                fileInput.value = ""; // limpa o input
+                botoesSalvar.forEach(b => b.disabled = false);
+                fileInput.value = ""; // limpa o input para aceitar novos arquivos
+                // Reseta a cor do aviso para o original
+                document.getElementById('statusOcr').style.color = "#f1c40f";
+                document.getElementById('statusOcr').style.borderColor = "#f1c40f";
             }
         }
 
@@ -705,7 +714,6 @@
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
-                        // Limite de 800px de largura para manter leve no banco
                         const MAX_WIDTH = 800;
                         let width = img.width;
                         let height = img.height;
@@ -713,7 +721,6 @@
                         canvas.width = width;
                         canvas.height = height;
                         ctx.drawImage(img, 0, 0, width, height);
-                        // Retorna JPEG com 60% de qualidade
                         resolve(canvas.toDataURL('image/jpeg', 0.6));
                     }
                 }
@@ -721,37 +728,56 @@
         }
 
         function extrairDadosParaFormulario(texto) {
-            // Expressões regulares para buscar padrões brasileiros comuns
             const cpfCnpjRegex = /\b\d{3}[\.]?\d{3}[\.]?\d{3}[-]?\d{2}\b|\b\d{2}[\.]?\d{3}[\.]?\d{3}[\/]?\d{4}[-]?\d{2}\b/g;
             const placaRegex = /\b[A-Z]{3}[-]?\d[A-Z0-9]\d{2}\b/g;
-            const cnhRegex = /\b\d{11}\b/g; 
+            const cnhRegex = /\b\d{11}\b/g;
+            const rgRegex = /\b\d{9,10}\b|\b\d{2}[\.]?\d{3}[\.]?\d{3}[-]?\d{1}\b/g;
 
-            // Extração de CPF/CNPJ
+            const linhas = texto.split('\n').map(l => l.trim());
+
+            // 1. TENTATIVA DE NOME (Busca letras maiúsculas puras após certas palavras)
+            let possivelNome = "";
+            for(let l of linhas) {
+                if (l.includes("NOME") || l.includes("N O M E")) continue;
+                // Busca uma linha longa, com espaços, sem números, ignorando cabeçalhos de CNH/RG
+                if (/^[A-ZÀ-Ú ]{10,40}$/.test(l) && !l.includes("MINISTERIO") && !l.includes("REPUBLICA") && !l.includes("CARTEIRA") && !l.includes("NACIONAL") && !l.includes("TRANSITO") && !l.includes("DETRAN") && !l.includes("VALIDADE")) {
+                    possivelNome = l;
+                    break;
+                }
+            }
+            if(possivelNome && !document.getElementById('motNome').value) {
+                document.getElementById('motNome').value = possivelNome;
+            }
+
+            // 2. EXTRAÇÃO DE CPF/CNPJ
             const matchCpf = texto.match(cpfCnpjRegex);
             if(matchCpf && matchCpf.length > 0) {
-                // Se não tiver nada no CPF do motorista, preenche com o primeiro CPF encontrado
                 if(!document.getElementById('motCpfM').value) {
                     document.getElementById('motCpfM').value = matchCpf[0].replace(/[^\d]/g, "");
                 }
             }
 
-            // Extração de Placas (Mercosul e Antiga)
+            // 3. EXTRAÇÃO DE PLACAS
             const matchPlacas = texto.match(placaRegex);
             if(matchPlacas && matchPlacas.length > 0) {
                 if(!document.getElementById('motCavalo').value) document.getElementById('motCavalo').value = matchPlacas[0].replace("-", "");
                 if(matchPlacas.length > 1 && !document.getElementById('motSreb1').value) document.getElementById('motSreb1').value = matchPlacas[1].replace("-", "");
             }
 
-            // Extração de CNH (Procura por sequências de 11 números)
+            // 4. EXTRAÇÃO DE CNH E RG
             const matchCnh = texto.match(cnhRegex);
             if(matchCnh && matchCnh.length > 0) {
-                // Filtra para pegar um que não seja o mesmo CPF recém descoberto sem formatação
-                let cnhValida = matchCnh.find(num => {
-                    let cpfAtual = document.getElementById('motCpfM').value;
-                    return num !== cpfAtual;
-                });
+                let cnhValida = matchCnh.find(num => num !== document.getElementById('motCpfM').value);
                 if(cnhValida && !document.getElementById('motCnh').value) {
                     document.getElementById('motCnh').value = cnhValida;
+                }
+            }
+            
+            const matchRg = texto.match(rgRegex);
+            if(matchRg && matchRg.length > 0) {
+                let rgValido = matchRg.find(num => num !== document.getElementById('motCpfM').value && num !== document.getElementById('motCnh').value);
+                if(rgValido && !document.getElementById('motRg').value) {
+                    document.getElementById('motRg').value = rgValido.replace(/[^\d]/g, "");
                 }
             }
         }
@@ -763,8 +789,8 @@
                 let doc = arquivosAnexadosTemp[key];
                 div.innerHTML += `
                     <div class="anexo-item">
-                        <a href="${doc.base64}" download="${doc.nome}">📄 ${doc.nome} (Baixar/Ver)</a>
-                        <span class="btn-remover-anexo" onclick="removerAnexoTemp('${key}')">X</span>
+                        <a href="${doc.base64}" download="${doc.nome}">📄 ${doc.nome} (Baixar)</a>
+                        <span class="btn-remover-anexo" onclick="removerAnexoTemp('${key}')" title="Excluir anexo">X</span>
                     </div>
                 `;
             }
@@ -799,7 +825,6 @@
             document.getElementById('motEnder').value = m.ender || "";
             document.getElementById('motMun').value = m.mun || "";
             
-            // Carrega os anexos se existirem no banco
             arquivosAnexadosTemp = m.documentos || {};
             renderizarListaAnexos();
 
@@ -819,7 +844,7 @@
                 prop: document.getElementById('motProp').value, cpfP: document.getElementById('motCpfP').value,
                 ender: document.getElementById('motEnder').value, mun: document.getElementById('motMun').value,
                 cnh: document.getElementById('motCnh').value, rg: document.getElementById('motRg').value, cpfM: document.getElementById('motCpfM').value,
-                documentos: arquivosAnexadosTemp // Salva os arquivos (comprimidos) no firebase
+                documentos: arquivosAnexadosTemp // Salva os arquivos no firebase
             };
 
             let dbRef = firebase.database().ref('motoristas');
