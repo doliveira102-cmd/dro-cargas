@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V70</title>
+    <title>DRO Cargas Sistema Completo V71</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -287,7 +287,7 @@
         </div>
     </div>
 
-    <!-- MODAL MOTORISTA V70 (LEITURA INTELIGENTE DETRAN V70) -->
+    <!-- MODAL MOTORISTA V71 (LEITOR BLINDADO CNH E CRLV) -->
     <div id="modalMot" class="modal">
         <div class="modal-content" style="max-height: 95vh;">
             <h3 id="modalMotTitulo" style="margin-top:0;">Cadastrar Motorista</h3>
@@ -295,7 +295,7 @@
             
             <!-- BLOCO 0: LEITOR AUTOMÁTICO DE PDF -->
             <div class="grupo-dados" style="background: #111a27; border-color: #8e44ad;">
-                <h4 style="color: #c39bd3; border-bottom-color: #8e44ad;">🤖 Leitor Automático de PDF (DETRAN / CNH)</h4>
+                <h4 style="color: #c39bd3; border-bottom-color: #8e44ad;">🤖 Leitura Automática de PDF (DETRAN / CNH)</h4>
                 <div style="display: flex; gap: 10px; align-items: center;">
                     <div style="flex: 2;">
                         <span class="label-campo">Selecione o PDF oficial (CNH ou CRLV):</span>
@@ -652,7 +652,7 @@
             }
         }
 
-        // --- LEITURA 100% AUTOMÁTICA DE PDF DO DETRAN (V70) ---
+        // --- LEITURA 100% AUTOMÁTICA DE PDF DO DETRAN (V71 BLINDADO) ---
         async function lerPdfAutomatico(input) {
             if (!input.files.length) return;
             const file = input.files[0];
@@ -699,11 +699,11 @@
                     arquivosAnexadosTemp[fileId] = { nome: file.name, base64: base64 };
                     renderizarListaAnexos();
 
-                    // Preenche os inputs com o novo algoritmo blindado V70
-                    processarTextoDetranV70(textoCompleto, linhasTexto);
+                    // Preenche os inputs com o algoritmo blindado V71
+                    processarTextoDetranV71(textoCompleto, linhasTexto);
 
                     statusEl.style.color = "#2ecc71";
-                    statusEl.innerText = "✅ Documento lido e campos preenchidos com sucesso!";
+                    statusEl.innerText = "✅ Documento lido e preenchido com sucesso!";
                     setTimeout(() => statusEl.style.display = 'none', 4000);
                 };
                 reader.readAsArrayBuffer(file);
@@ -723,67 +723,56 @@
             });
         }
 
-        function processarTextoDetranV70(txt, linhas) {
+        function processarTextoDetranV71(txt, linhas) {
+            let linhasFiltradas = linhas.map(l => l.trim()).filter(l => l.length > 0);
+
             // 1. CNH DIGITAL DO SENATRAN
             if (txt.includes("HABILITAÇÃO") || txt.includes("SENATRAN") || txt.includes("DRIVER LICENSE")) {
                 
-                // Procura CPF exato ignorando cabeçalhos genéricos
-                let matchCpf = txt.match(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/) || txt.match(/\b\d{11}\b/g);
-                if (matchCpf) {
-                    // Pega o CPF que não seja do órgão emissor ou sequências inválidas
-                    let cpfValido = Array.isArray(matchCpf) ? matchCpf.find(n => n.length === 11 && n !== "00390780120") : matchCpf[0];
-                    if (cpfValido) {
-                        document.getElementById('motCpfM').value = cpfValido.replace(/[^\d]/g, "");
+                // Extrair CPF (formato 000.000.000-00 ou 11 dígitos limpos)
+                let cpfMatch = txt.match(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/);
+                if (!cpfMatch) {
+                    let nums11 = txt.match(/\b\d{11}\b/g);
+                    if (nums11) {
+                        let cpfVal = nums11.find(n => n !== "00390780120" && !n.startsWith("005")) || nums11[0];
+                        cpfMatch = [cpfVal];
+                    }
+                }
+                if (cpfMatch) {
+                    document.getElementById('motCpfM').value = cpfMatch[0].replace(/[^\d]/g, "");
+                }
+
+                // Extrair CNH / Registro
+                let cnhMatch = txt.match(/REGISTRO[:\s]*(\d{9,11})/i) || txt.match(/H\.?\s*(\d{11})/i);
+                if (cnhMatch) {
+                    document.getElementById('motCnh').value = cnhMatch[1];
+                } else {
+                    let allNums = txt.match(/\b\d{11}\b/g);
+                    let cpfAtual = document.getElementById('motCpfM').value;
+                    if (allNums) {
+                        let cnhNum = allNums.find(n => n !== cpfAtual);
+                        if (cnhNum) document.getElementById('motCnh').value = cnhNum;
                     }
                 }
 
-                // Procura CNH / Registro (11 dígitos logo após a tag HABILITAÇÃO ou na linha de registro)
-                for (let i = 0; i < linhas.length; i++) {
-                    let l = linhas[i].toUpperCase();
-                    if (l.includes("REGISTRO") || l.includes("C.H.")) {
-                        let nums = l.match(/\b\d{9,11}\b/);
-                        if (nums) {
-                            document.getElementById('motCnh').value = nums[0];
-                            break;
-                        }
+                // Extrair Nome exato do motorista (Evitando lixo de cabeçalho)
+                let nomeEncontrado = "";
+                for (let i = 0; i < linhasFiltradas.length; i++) {
+                    let l = linhasFiltradas[i];
+                    let lUp = l.toUpperCase();
+                    if (lUp.includes("REPÚBLICA") || lUp.includes("MINISTÉRIO") || lUp.includes("SECRETARIA") || 
+                        lUp.includes("TRANSITO") || lUp.includes("SENATRAN") || lUp.includes("QR-CODE") || 
+                        lUp.includes("VÁLIDA") || lUp.includes("CARTEIRA") || lUp.includes("GOV.BR") || 
+                        lUp.includes("SERPRO") || lUp.includes("ASSINADO") || /\d/.test(l)) {
+                        continue;
+                    }
+                    if (l.length >= 6 && l === lUp && l.includes(" ")) {
+                        nomeEncontrado = l;
+                        break;
                     }
                 }
-                if (!document.getElementById('motCnh').value) {
-                    // Tenta achar o número 003... da CNH que aparece nos dados
-                    let all11 = txt.match(/\b\d{11}\b/g);
-                    if (all11 && all11.length > 1) {
-                        document.getElementById('motCnh').value = all11.find(n => n !== document.getElementById('motCpfM').value) || all11[0];
-                    }
-                }
-
-                // Procura Nome exato do motorista (Evitando "MINISTÉRIO DOS TRANSPORTES")
-                for (let i = 0; i < linhas.length; i++) {
-                    let l = linhas[i].trim();
-                    let upper = l.toUpperCase();
-                    if (upper === "NOME" || upper.includes("SOBRENOME") || upper.includes("DRIVER")) {
-                        // O nome costuma estar na linha seguinte ou nas próximas 2 linhas
-                        for (let j = i + 1; j <= i + 3 && j < linhas.length; j++) {
-                            let cand = linhas[j].trim();
-                            let candUp = cand.toUpperCase();
-                            if (cand.length > 5 && !candUp.includes("MINISTÉRIO") && !candUp.includes("SECRETARIA") && !candUp.includes("REPÚBLICA") && !candUp.includes("TRANSITO") && !candUp.includes("HABILITAÇÃO") && !/\d/.test(cand)) {
-                                document.getElementById('motNome').value = cand;
-                                i = 999; // para o loop externo
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                // Fallback inteligente para nome se não encontrou pela tag
-                if (!document.getElementById('motNome').value) {
-                    for (let l of linhas) {
-                        let clean = l.trim();
-                        let cleanUp = clean.toUpperCase();
-                        if (clean.length > 6 && !cleanUp.includes("MINISTÉRIO") && !cleanUp.includes("SECRETARIA") && !cleanUp.includes("REPÚBLICA") && !cleanUp.includes("TRANSITO") && !cleanUp.includes("DETRAN") && !cleanUp.includes("VALIDA") && !/\d/.test(clean)) {
-                            document.getElementById('motNome').value = clean;
-                            break;
-                        }
-                    }
+                if (nomeEncontrado) {
+                    document.getElementById('motNome').value = nomeEncontrado;
                 }
 
             } 
@@ -792,17 +781,17 @@
                 let matchPlaca = txt.match(/\b[A-Z]{3}\d[A-Z0-9]\d{2}\b/);
                 let placa = matchPlaca ? matchPlaca[0] : "";
 
-                for (let i = 0; i < linhas.length; i++) {
-                    let l = linhas[i].toUpperCase();
-                    if (l === "NOME" && i + 1 < linhas.length) {
-                        document.getElementById('motProp').value = linhas[i + 1].trim();
+                for (let i = 0; i < linhasFiltradas.length; i++) {
+                    let l = linhasFiltradas[i].toUpperCase();
+                    if (l === "NOME" && i + 1 < linhasFiltradas.length) {
+                        document.getElementById('motProp').value = linhasFiltradas[i + 1].trim();
                     }
-                    if (l.includes("CPF/CNPJ") && i + 1 < linhas.length) {
-                        let docProp = linhas[i + 1].replace(/[^\d]/g, "");
+                    if (l.includes("CPF/CNPJ") && i + 1 < linhasFiltradas.length) {
+                        let docProp = linhasFiltradas[i + 1].replace(/[^\d]/g, "");
                         document.getElementById('motCpfP').value = docProp;
                     }
-                    if (l.includes("LOCAL") && i + 1 < linhas.length) {
-                        document.getElementById('motMun').value = linhas[i + 1].trim();
+                    if (l.includes("LOCAL") && i + 1 < linhasFiltradas.length) {
+                        document.getElementById('motMun').value = linhasFiltradas[i + 1].trim();
                     }
                 }
 
