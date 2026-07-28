@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V57</title>
+    <title>DRO Cargas Sistema Completo V58</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -261,11 +261,8 @@
             <span class="label-campo">Cliente Origem:</span><input type="text" id="editCliOrig">
             <span class="label-campo">Cliente Destino:</span><input type="text" id="editCliDest">
             <span class="label-campo">Produto:</span><input type="text" id="editProduto">
-            
-            <!-- AQUI: Adicionado a função de preencher os 10% a menos automaticamente ao digitar -->
             <span class="label-campo">Valor Empresa (R$):</span><input type="number" id="editVlrEmpresa" step="0.01" oninput="calcularVlrMotAuto(this.value)">
             <span class="label-campo">Valor Motorista (R$):</span><input type="number" id="editVlrMot" step="0.01">
-            
             <span class="label-campo">Localização (Link/Endereço):</span><input type="text" id="editLocalizacao">
             <span class="label-campo">Observações:</span><textarea id="editObs" style="height: 60px;"></textarea>
             <div style="display: flex; gap: 5px; margin-top: 10px;">
@@ -276,7 +273,7 @@
         </div>
     </div>
 
-    <!-- MODAL MOTORISTA -->
+    <!-- MODAL MOTORISTA COMPLETADO (COM RG E ENDEREÇOS) -->
     <div id="modalMot" class="modal">
         <div class="modal-content">
             <h3 id="modalMotTitulo">Cadastrar Motorista</h3>
@@ -291,13 +288,25 @@
             <details style="margin-bottom: 10px; background: #040b14; padding: 10px; border-radius: 4px; border: 1px solid #23374f;">
                 <summary style="cursor: pointer; font-size: 11px; color: #a0b2c6;">Exibir mais campos opcionais (Reboques, CNH, CPF...)</summary>
                 <div style="margin-top: 10px;">
-                    <input type="text" id="motSreb1" placeholder="Placa S. Reb 1">
-                    <input type="text" id="motSreb2" placeholder="Placa S. Reb 2">
-                    <input type="text" id="motSreb3" placeholder="Placa S. Reb 3">
-                    <input type="text" id="motProp" placeholder="Proprietário">
-                    <input type="text" id="motCpfP" placeholder="CPF/CNPJ Prop">
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="motSreb1" placeholder="Placa S. Reb 1">
+                        <input type="text" id="motSreb2" placeholder="Placa S. Reb 2">
+                        <input type="text" id="motSreb3" placeholder="Placa S. Reb 3">
+                    </div>
+                    <span class="label-campo">Proprietário:</span>
+                    <input type="text" id="motProp" placeholder="Nome do Proprietário">
+                    <input type="text" id="motCpfP" placeholder="CPF/CNPJ do Proprietário">
+                    
+                    <span class="label-campo">Endereço do Proprietário/Motorista:</span>
+                    <input type="text" id="motEnder" placeholder="Endereço (Rua, Bairro)">
+                    <input type="text" id="motMun" placeholder="Município / UF">
+
+                    <span class="label-campo">Documentação do Motorista:</span>
                     <input type="text" id="motCnh" placeholder="CNH Nº">
-                    <input type="text" id="motCpfM" placeholder="CPF Motorista">
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="motRg" placeholder="RG">
+                        <input type="text" id="motCpfM" placeholder="CPF Motorista">
+                    </div>
                 </div>
             </details>
 
@@ -328,26 +337,104 @@
         </div>
     </div>
 
-    <!-- Template Oculto para o PDF -->
-    <div id="pdf-template" style="display: none; padding: 40px; background: white; color: black; font-family: Arial, sans-serif;">
-        <div style="text-align: center; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px;">
-            <h1 style="margin: 0;">ORDEM DE CARREGAMENTO</h1>
-            <p style="margin: 5px 0 0 0; color: #555;" id="pdf-data"></p>
-        </div>
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-            <tr><td style="padding: 8px; border: 1px solid #ccc; background: #f9f9f9; width: 30%;"><strong>Motorista:</strong></td><td style="padding: 8px; border: 1px solid #ccc;" id="pdf-mot"></td></tr>
-            <tr><td style="padding: 8px; border: 1px solid #ccc; background: #f9f9f9;"><strong>Veículo/Placa:</strong></td><td style="padding: 8px; border: 1px solid #ccc;" id="pdf-placa"></td></tr>
-            <tr><td style="padding: 8px; border: 1px solid #ccc; background: #f9f9f9;"><strong>Origem:</strong></td><td style="padding: 8px; border: 1px solid #ccc;" id="pdf-origem"></td></tr>
-            <tr><td style="padding: 8px; border: 1px solid #ccc; background: #f9f9f9;"><strong>Destino:</strong></td><td style="padding: 8px; border: 1px solid #ccc;" id="pdf-destino"></td></tr>
-            <tr><td style="padding: 8px; border: 1px solid #ccc; background: #f9f9f9;"><strong>Produto:</strong></td><td style="padding: 8px; border: 1px solid #ccc;" id="pdf-produto"></td></tr>
-            <tr><td style="padding: 8px; border: 1px solid #ccc; background: #f9f9f9;"><strong>Peso Solicitado:</strong></td><td style="padding: 8px; border: 1px solid #ccc;" id="pdf-peso"></td></tr>
-            <tr><td style="padding: 8px; border: 1px solid #ccc; background: #f9f9f9;"><strong>Valor Motorista:</strong></td><td style="padding: 8px; border: 1px solid #ccc; font-weight: bold;" id="pdf-vlrmot"></td></tr>
+    <!-- ================= TEMPLATE DO PDF EXATO ================= -->
+    <div id="pdf-template" style="display: none; padding: 20px; background: white; color: black; font-family: Arial, sans-serif; width: 800px;">
+        
+        <!-- CABEÇALHO G10 -->
+        <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 2px solid black;">
+            <tr>
+                <td style="width: 35%; text-align: center; border-right: 2px solid black; padding: 10px;">
+                    <div style="display: inline-block; text-align: left;">
+                        <span style="font-size: 70px; color: #5a3031; font-style: italic; font-weight: 900; letter-spacing: -6px; line-height: 1;">G10</span>
+                        <div style="background: #5a3031; color: white; padding: 2px 5px; font-weight: bold; font-size: 12px; margin-top: -10px; display: inline-block;">TRANSPORTES</div>
+                    </div>
+                </td>
+                <td style="width: 65%; padding: 10px; font-weight: bold; line-height: 1.5;">
+                    G10 - TRANSPORTES LTDA<br>
+                    BR 392 KM 10 SALA 17, 1<br>
+                    BARRA, RIO GRANDE - RS<br>
+                    FONE: (53) 3230-3713<br>
+                    RIO GRANDE<br>
+                    CNPJ: 07.569.161/0012-00 | IE: 1000298180
+                </td>
+            </tr>
         </table>
-        <div style="margin-top: 50px; text-align: center;">
-            <p>____________________________________________________</p>
-            <p>Assinatura do Motorista</p>
+
+        <!-- TÍTULO -->
+        <h2 style="text-align: center; margin: 15px 0; font-size: 16px; font-weight: bold; text-decoration: underline;">AUTORIZAÇÃO DE CARREGAMENTO</h2>
+
+        <!-- ORIGEM E DESTINO -->
+        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 10px; border: 1px solid black;">
+            <tr>
+                <td style="border: 1px solid black; padding: 6px; width: 50%;"><strong>REMETENTE:</strong> <span id="pdf-remetente"></span></td>
+                <td style="border: 1px solid black; padding: 6px; width: 50%;"><strong>LOCAL:</strong> <span id="pdf-loc-remetente"></span></td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 6px;"><strong>DESTINATÁRIO:</strong> <span id="pdf-destinatario"></span></td>
+                <td style="border: 1px solid black; padding: 6px;"><strong>LOCAL:</strong> <span id="pdf-loc-destinatario"></span></td>
+            </tr>
+        </table>
+
+        <!-- FAIXA PRETA -->
+        <div style="background: black; color: white; text-align: center; font-weight: bold; padding: 5px; font-size: 12px; margin-bottom: 10px;">
+            AUTORIZAMOS O CARREGAMENTO DO SEGUINTE VEÍCULO
         </div>
+
+        <!-- DADOS DO VEÍCULO E MOTORISTA -->
+        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 10px; border: 1px solid black;">
+            <tr>
+                <td style="border: 1px solid black; padding: 6px; width: 33%;"><strong>CAVALO:</strong> <span id="pdf-cavalo"></span></td>
+                <td style="border: 1px solid black; padding: 6px; width: 67%;" colspan="2"><strong>S.REB.:</strong> <span id="pdf-sreb"></span></td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 6px;" colspan="2"><strong>PROPRIETÁRIO:</strong> <span id="pdf-prop"></span></td>
+                <td style="border: 1px solid black; padding: 6px;"><strong>CPF/CNPJ:</strong> <span id="pdf-cpfp"></span></td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 6px;" colspan="2"><strong>ENDEREÇO:</strong> <span id="pdf-ender"></span></td>
+                <td style="border: 1px solid black; padding: 6px;"><strong>MUNICÍPIO:</strong> <span id="pdf-mun"></span></td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 6px;" colspan="3"><strong>MOTORISTA:</strong> <span id="pdf-motorista"></span></td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 6px;"><strong>CART. HAB. Nº:</strong> <span id="pdf-cnh"></span></td>
+                <td style="border: 1px solid black; padding: 6px;"><strong>RG:</strong> <span id="pdf-rg"></span></td>
+                <td style="border: 1px solid black; padding: 6px;"><strong>CPF:</strong> <span id="pdf-cpfm"></span></td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 6px;" colspan="3"><strong>TELEFONE:</strong> <span id="pdf-tel"></span></td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 6px;" colspan="3"><strong>OBSERVAÇÃO:</strong> <span id="pdf-obs"></span></td>
+            </tr>
+        </table>
+
+        <!-- DADOS DO CARREGAMENTO -->
+        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 40px; border: 1px solid black; text-align: center;">
+            <tr style="background: #e0e0e0;">
+                <td style="border: 1px solid black; padding: 6px; font-weight: bold;" colspan="3">DADOS DO CARREGAMENTO</td>
+            </tr>
+            <tr style="background: #f9f9f9;">
+                <td style="border: 1px solid black; padding: 6px; font-weight: bold; width: 25%;">PEDIDO (PESO)</td>
+                <td style="border: 1px solid black; padding: 6px; font-weight: bold; width: 50%;">PRODUTO</td>
+                <td style="border: 1px solid black; padding: 6px; font-weight: bold; width: 25%;">FRETE MOTORISTA</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 15px;"><span id="pdf-peso-detalhe"></span> TONS</td>
+                <td style="border: 1px solid black; padding: 15px; font-weight: bold;"><span id="pdf-produto-detalhe"></span></td>
+                <td style="border: 1px solid black; padding: 15px; font-weight: bold;">R$ <span id="pdf-vlr-mot-detalhe"></span></td>
+            </tr>
+        </table>
+
+        <div style="text-align: center; margin-top: 60px;">
+            <p style="margin: 0;">_________________________________________________________</p>
+            <p style="margin: 5px 0 0 0; font-weight: bold; font-size: 12px;">Assinatura do Motorista</p>
+            <p style="margin: 5px 0 0 0; font-size: 10px; color: #555;">Emitida em: <span id="pdf-data-emissao"></span></p>
+        </div>
+
     </div>
+    <!-- ================= FIM TEMPLATE PDF ================= -->
 
 
     <script>
@@ -398,12 +485,7 @@
                     if(vlrEmp <= 0) continue; 
                     
                     let icone = (c.origem_cadastro === 'robo') ? '🤖' : '👤';
-                    
-                    // Lógica correta de desconto (-10%)
-                    let calcDefaultDesc = vlrEmp * 0.9;
-                    
-                    // Se existir o valor salvo, ele usa. Se não, tira os 10% do valor da empresa.
-                    let vlrMot = c.valorMot !== undefined ? parseFloat(c.valorMot) : calcDefaultDesc;
+                    let vlrMot = c.valorMot !== undefined ? parseFloat(c.valorMot) : (vlrEmp * 0.9);
 
                     tbody.innerHTML += `<tr>
                         <td><input type="checkbox" class="check-carga" data-id="${id}"></td>
@@ -466,10 +548,7 @@
             
             let dtIni = document.getElementById('filtroOrdDataIni').value;
             let dtFim = document.getElementById('filtroOrdDataFim').value;
-
-            let ordensArray = Object.keys(ordensCacheGlobal).map(key => {
-                return { id: key, ...ordensCacheGlobal[key] };
-            });
+            let ordensArray = Object.keys(ordensCacheGlobal).map(key => { return { id: key, ...ordensCacheGlobal[key] }; });
 
             ordensArray.sort((a, b) => new Date(b.dataCriacao) - new Date(a.dataCriacao));
 
@@ -480,18 +559,11 @@
 
                 let dataFormatada = dataObj.toLocaleDateString('pt-BR') + ' ' + dataObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                 let carga = cargasCacheGlobal[o.cargaId] || {};
-                let origemDestino = `${carga.cidadeOrigem || 'Desconhecida'} -> ${carga.cidadeDestino || 'Desconhecida'}`;
+                let origemDestino = `${carga.cidadeOrigem || '-'} -> ${carga.cidadeDestino || '-'}`;
+                let motNome = motoristasCacheGlobal[o.motoristaId] ? motoristasCacheGlobal[o.motoristaId].mot : "Desconhecido";
                 
-                let motNome = "Desconhecido";
-                if (motoristasCacheGlobal[o.motoristaId]) motNome = motoristasCacheGlobal[o.motoristaId].mot || '';
-
-                let badge = o.status === 'finalizada' 
-                    ? `<span class="status-badge status-finalizada">Finalizada</span>` 
-                    : `<span class="status-badge status-pendente">Pendente</span>`;
-
-                let botaoFinalizar = o.status !== 'finalizada' 
-                    ? `<button class="btn-acao" style="background: #28a745;" onclick="finalizarOrdem('${o.id}')">Dar Baixa</button>` 
-                    : '';
+                let badge = o.status === 'finalizada' ? `<span class="status-badge status-finalizada">Finalizada</span>` : `<span class="status-badge status-pendente">Pendente</span>`;
+                let botaoFinalizar = o.status !== 'finalizada' ? `<button class="btn-acao" style="background: #28a745;" onclick="finalizarOrdem('${o.id}')">Dar Baixa</button>` : '';
 
                 tbody.innerHTML += `<tr>
                     <td>${dataFormatada}</td>
@@ -509,11 +581,12 @@
         }
 
 
-        // --- FUNÇÕES CRUD MOTORISTAS ---
+        // --- FUNÇÕES CRUD MOTORISTAS (COMPLETO COM RG/ENDEREÇO) ---
         function abrirModalMotorista(id = null) {
             document.getElementById('motFirebaseKey').value = id || "";
             document.getElementById('modalMotTitulo').innerText = id ? "Editar Motorista" : "Cadastrar Motorista";
             let m = id ? (motoristasCacheGlobal[id] || {}) : {};
+            
             document.getElementById('motCavalo').value = m.cavalo || "";
             document.getElementById('motTipo').value = m.tipo || "";
             document.getElementById('motNome').value = m.mot || "";
@@ -523,8 +596,12 @@
             document.getElementById('motSreb3').value = m.sreb3 || "";
             document.getElementById('motProp').value = m.prop || "";
             document.getElementById('motCpfP').value = m.cpfP || "";
+            document.getElementById('motEnder').value = m.ender || "";
+            document.getElementById('motMun').value = m.mun || "";
             document.getElementById('motCnh').value = m.cnh || "";
+            document.getElementById('motRg').value = m.rg || "";
             document.getElementById('motCpfM').value = m.cpfM || "";
+
             document.getElementById('btnExcluirMot').style.display = id ? "block" : "none";
             document.getElementById('modalMot').style.display = 'flex';
         }
@@ -536,9 +613,11 @@
 
             let motData = {
                 mot: nome, cavalo: document.getElementById('motCavalo').value, tipo: document.getElementById('motTipo').value,
-                zap: document.getElementById('motZap').value, sreb1: document.getElementById('motSreb1').value, sreb2: document.getElementById('motSreb2').value,
-                sreb3: document.getElementById('motSreb3').value, prop: document.getElementById('motProp').value, cpfP: document.getElementById('motCpfP').value,
-                cnh: document.getElementById('motCnh').value, cpfM: document.getElementById('motCpfM').value
+                zap: document.getElementById('motZap').value, sreb1: document.getElementById('motSreb1').value, 
+                sreb2: document.getElementById('motSreb2').value, sreb3: document.getElementById('motSreb3').value, 
+                prop: document.getElementById('motProp').value, cpfP: document.getElementById('motCpfP').value,
+                ender: document.getElementById('motEnder').value, mun: document.getElementById('motMun').value,
+                cnh: document.getElementById('motCnh').value, rg: document.getElementById('motRg').value, cpfM: document.getElementById('motCpfM').value
             };
 
             let dbRef = firebase.database().ref('motoristas');
@@ -552,7 +631,7 @@
         }
 
 
-        // --- FUNÇÕES CRUD ORDENS (PDF E BAIXA) ---
+        // --- FUNÇÕES CRUD ORDENS E GERAÇÃO DO PDF G10 EXATO ---
         function abrirModalGerarOrdem(cargaId) {
             document.getElementById('ordemCargaId').value = cargaId;
             document.getElementById('ordemSelectMot').value = "";
@@ -580,110 +659,100 @@
         function gerarPDFOrdem(ordemId) {
             let o = ordensCacheGlobal[ordemId]; if(!o) return alert("Ordem não encontrada.");
             let c = cargasCacheGlobal[o.cargaId] || {}; let m = motoristasCacheGlobal[o.motoristaId] || {};
-            let dataFormatada = new Date(o.dataCriacao).toLocaleString('pt-BR');
+            let dataObj = new Date(o.dataCriacao);
+            let dataFormatada = dataObj.toLocaleDateString('pt-BR') + ' ' + dataObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
 
-            document.getElementById('pdf-data').innerText = "Emitida em: " + dataFormatada;
-            document.getElementById('pdf-mot').innerText = m.mot || '';
-            document.getElementById('pdf-placa').innerText = m.cavalo || '';
-            document.getElementById('pdf-origem').innerText = c.cidadeOrigem || '';
-            document.getElementById('pdf-destino').innerText = c.cidadeDestino || '';
-            document.getElementById('pdf-produto').innerText = c.produto || '';
-            document.getElementById('pdf-peso').innerText = (o.peso || 'N/A') + " Ton";
+            // Preenchimento Mapeado Exato
+            document.getElementById('pdf-remetente').innerText = c.clienteOrigem || '';
+            document.getElementById('pdf-loc-remetente').innerText = c.cidadeOrigem || '';
+            document.getElementById('pdf-destinatario').innerText = c.clienteDestino || '';
+            document.getElementById('pdf-loc-destinatario').innerText = c.cidadeDestino || '';
+
+            document.getElementById('pdf-cavalo').innerText = m.cavalo || '';
+            let reboques = [m.sreb1, m.sreb2, m.sreb3].filter(Boolean).join(" / ");
+            document.getElementById('pdf-sreb').innerText = reboques;
             
-            // PDF agora mostra Valor do Motorista formatado corretamente
+            document.getElementById('pdf-prop').innerText = m.prop || '';
+            document.getElementById('pdf-cpfp').innerText = m.cpfP || '';
+            document.getElementById('pdf-ender').innerText = m.ender || '';
+            document.getElementById('pdf-mun').innerText = m.mun || '';
+            
+            document.getElementById('pdf-motorista').innerText = m.mot || '';
+            document.getElementById('pdf-cnh').innerText = m.cnh || '';
+            document.getElementById('pdf-rg').innerText = m.rg || '';
+            document.getElementById('pdf-cpfm').innerText = m.cpfM || '';
+            document.getElementById('pdf-tel').innerText = m.zap || '';
+            document.getElementById('pdf-obs').innerText = c.obs || '';
+
+            document.getElementById('pdf-peso-detalhe').innerText = o.peso || 'N/A';
+            document.getElementById('pdf-produto-detalhe').innerText = c.produto || '';
+            
             let vlrEmp = parseFloat(c.valor || 0);
             let vlrMot = c.valorMot !== undefined ? parseFloat(c.valorMot) : (vlrEmp * 0.9);
-            document.getElementById('pdf-vlrmot').innerText = "R$ " + vlrMot.toFixed(2);
+            document.getElementById('pdf-vlr-mot-detalhe').innerText = vlrMot.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            
+            document.getElementById('pdf-data-emissao').innerText = dataFormatada;
 
             let element = document.getElementById('pdf-template');
             element.style.display = 'block';
 
-            let opt = { margin: 10, filename: `Ordem_${m.mot || 'Mot'}_${dataFormatada.replace(/[\/ :]/g,'-')}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+            let opt = { 
+                margin: 5, 
+                filename: `Ordem_${m.mot || 'Mot'}_${dataFormatada.replace(/[\/ :]/g,'-')}.pdf`, 
+                image: { type: 'jpeg', quality: 0.98 }, 
+                html2canvas: { scale: 2 }, 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+            };
+            
             html2pdf().set(opt).from(element).save().then(() => { element.style.display = 'none'; });
         }
 
 
-        // --- LÓGICA DE CORREÇÃO DO VALOR (10% A MENOS E EDIÇÃO) ---
-        function calcularVlrMotAuto(val) {
-            let num = parseFloat(val) || 0;
-            // 10% a menos (Desconto)
-            document.getElementById('editVlrMot').value = (num * 0.9).toFixed(2);
-        }
+        // --- LÓGICA DE CARGAS E CLIENTES ---
+        function calcularVlrMotAuto(val) { document.getElementById('editVlrMot').value = ((parseFloat(val) || 0) * 0.9).toFixed(2); }
 
         function abrirModalNovaCarga() {
-            document.getElementById('editFirebaseKey').value = ""; 
-            document.getElementById('modalEditarTitulo').innerText = "Cadastrar Nova Carga";
+            document.getElementById('editFirebaseKey').value = ""; document.getElementById('modalEditarTitulo').innerText = "Cadastrar Nova Carga";
             document.getElementById('editOp').value = ""; document.getElementById('editCidOrig').value = ""; document.getElementById('editCidDest').value = ""; 
             document.getElementById('editCliOrig').value = ""; document.getElementById('editCliDest').value = ""; document.getElementById('editProduto').value = ""; 
             document.getElementById('editVlrEmpresa').value = ""; document.getElementById('editVlrMot').value = ""; 
             document.getElementById('editLocalizacao').value = ""; document.getElementById('editObs').value = "";
-            document.getElementById('btnExcluirCarga').style.display = 'none'; 
-            document.getElementById('modalEditar').style.display = 'flex';
+            document.getElementById('btnExcluirCarga').style.display = 'none'; document.getElementById('modalEditar').style.display = 'flex';
         }
 
         function abrirModalEditarCarga(id) {
             let c = cargasCacheGlobal[id]; if (!c) return;
-            document.getElementById('editFirebaseKey').value = id;
-            document.getElementById('modalEditarTitulo').innerText = "Editar Carga";
+            document.getElementById('editFirebaseKey').value = id; document.getElementById('modalEditarTitulo').innerText = "Editar Carga";
             document.getElementById('editOp').value = c.cn || ''; document.getElementById('editCidOrig').value = c.cidadeOrigem || ''; document.getElementById('editCidDest').value = c.cidadeDestino || ''; 
             document.getElementById('editCliOrig').value = c.clienteOrigem || ''; document.getElementById('editCliDest').value = c.clienteDestino || ''; document.getElementById('editProduto').value = c.produto || ''; 
             
-            // Puxa o Valor Empresa
-            let vEmp = parseFloat(c.valor || 0);
-            document.getElementById('editVlrEmpresa').value = vEmp; 
-            
-            // Puxa o Valor Motorista Salvo (ou calcula 10% a menos se não existir)
-            let vMot = c.valorMot !== undefined ? parseFloat(c.valorMot) : (vEmp * 0.9);
-            document.getElementById('editVlrMot').value = vMot.toFixed(2);
+            let vEmp = parseFloat(c.valor || 0); document.getElementById('editVlrEmpresa').value = vEmp; 
+            let vMot = c.valorMot !== undefined ? parseFloat(c.valorMot) : (vEmp * 0.9); document.getElementById('editVlrMot').value = vMot.toFixed(2);
             
             document.getElementById('editLocalizacao').value = c.localizacao || ''; document.getElementById('editObs').value = c.obs || '';
-            document.getElementById('btnExcluirCarga').style.display = 'block'; 
-            document.getElementById('modalEditar').style.display = 'flex';
+            document.getElementById('btnExcluirCarga').style.display = 'block'; document.getElementById('modalEditar').style.display = 'flex';
         }
 
         function salvarEdicaoCarga() {
-            let key = document.getElementById('editFirebaseKey').value;
-            let vlr = parseFloat(document.getElementById('editVlrEmpresa').value) || 0;
-            // Pega o valor que está digitado no campo do motorista
+            let key = document.getElementById('editFirebaseKey').value; let vlr = parseFloat(document.getElementById('editVlrEmpresa').value) || 0;
             let vlrMotInput = parseFloat(document.getElementById('editVlrMot').value) || (vlr * 0.9);
-
             if (vlr <= 0) return alert("O valor não pode ser <= 0.");
-            
             let dadosAtualizados = {
                 cn: document.getElementById('editOp').value || '', cidadeOrigem: document.getElementById('editCidOrig').value || '', 
                 cidadeDestino: document.getElementById('editCidDest').value || '', clienteOrigem: document.getElementById('editCliOrig').value || '', 
                 clienteDestino: document.getElementById('editCliDest').value || '', produto: document.getElementById('editProduto').value || '', 
-                valor: vlr, 
-                valorMot: vlrMotInput, // AGORA O SISTEMA SALVA O VALOR MOTORISTA NO BANCO
-                localizacao: document.getElementById('editLocalizacao').value || '', obs: document.getElementById('editObs').value || '', 
+                valor: vlr, valorMot: vlrMotInput, localizacao: document.getElementById('editLocalizacao').value || '', obs: document.getElementById('editObs').value || '', 
                 origem_cadastro: key ? (cargasCacheGlobal[key]?.origem_cadastro || 'manual') : 'manual'
             };
-
             if (key) { firebase.database().ref('cargas/' + key).update(dadosAtualizados).then(() => { document.getElementById('modalEditar').style.display = 'none'; }); } 
             else { firebase.database().ref('cargas').push(dadosAtualizados).then(() => { document.getElementById('modalEditar').style.display = 'none'; }); }
         }
 
-
-        function excluirCargaUnica() {
-            let key = document.getElementById('editFirebaseKey').value;
-            if (!key) return; 
-            if (confirm("Excluir esta carga?")) { firebase.database().ref('cargas/' + key).remove().then(() => { document.getElementById('modalEditar').style.display = 'none'; }); }
-        }
-
-        // --- AS OUTRAS FUNÇÕES (CLIENTES, ANTT, RAIO) MANTIDAS IGUAIS DA V56 ---
-        function excluirSelecionadas() {
-            let checkboxes = document.querySelectorAll('.check-carga:checked');
-            if (checkboxes.length === 0) return alert("Selecione ao menos uma carga.");
-            if (confirm(`Excluir ${checkboxes.length} cargas selecionadas?`)) { let dbRef = firebase.database().ref('cargas'); checkboxes.forEach(cb => dbRef.child(cb.getAttribute('data-id')).remove()); }
-        }
-        function removerCargasZeradasAutomatico() {
-            let dbRef = firebase.database().ref('cargas');
-            dbRef.once('value', (snapshot) => { let data = snapshot.val(); if(data) { for(let id in data) { if(parseFloat(data[id].valor || 0) <= 0) dbRef.child(id).remove(); } } alert("Limpeza concluída!"); });
-        }
-        firebase.database().ref('clientes').on('value', (snapshot) => {
-            const data = snapshot.val(); clientesCacheGlobal = data || {}; const tbody = document.getElementById('lista-clientes');
-            if(tbody) { tbody.innerHTML = ""; for (let id in data) { let cli = data[id]; let mapsBtn = cli.localizacao ? `<a href="${cli.localizacao}" target="_blank" style="color: #2d8cff;">Abrir Maps</a>` : '-'; tbody.innerHTML += `<tr><td><strong>${cli.nome||''}</strong></td><td>${cli.cidade||''}</td><td>${cli.responsavel||'-'}</td><td>${cli.cnpj||'-'}</td><td>${cli.telefone||'-'}</td><td>${mapsBtn}</td><td><button class="btn-acao" onclick="abrirModalEditarCliente('${id}')">Editar</button></td></tr>`; } }
-        });
+        function excluirCargaUnica() { let key = document.getElementById('editFirebaseKey').value; if (!key) return; if (confirm("Excluir esta carga?")) { firebase.database().ref('cargas/' + key).remove().then(() => { document.getElementById('modalEditar').style.display = 'none'; }); } }
+        function excluirSelecionadas() { let checkboxes = document.querySelectorAll('.check-carga:checked'); if (checkboxes.length === 0) return alert("Selecione ao menos uma carga."); if (confirm(`Excluir ${checkboxes.length} cargas selecionadas?`)) { let dbRef = firebase.database().ref('cargas'); checkboxes.forEach(cb => dbRef.child(cb.getAttribute('data-id')).remove()); } }
+        function removerCargasZeradasAutomatico() { let dbRef = firebase.database().ref('cargas'); dbRef.once('value', (snapshot) => { let data = snapshot.val(); if(data) { for(let id in data) { if(parseFloat(data[id].valor || 0) <= 0) dbRef.child(id).remove(); } } alert("Limpeza concluída!"); }); }
+        
+        firebase.database().ref('clientes').on('value', (snapshot) => { const data = snapshot.val(); clientesCacheGlobal = data || {}; const tbody = document.getElementById('lista-clientes'); if(tbody) { tbody.innerHTML = ""; for (let id in data) { let cli = data[id]; let mapsBtn = cli.localizacao ? `<a href="${cli.localizacao}" target="_blank" style="color: #2d8cff;">Abrir Maps</a>` : '-'; tbody.innerHTML += `<tr><td><strong>${cli.nome||''}</strong></td><td>${cli.cidade||''}</td><td>${cli.responsavel||'-'}</td><td>${cli.cnpj||'-'}</td><td>${cli.telefone||'-'}</td><td>${mapsBtn}</td><td><button class="btn-acao" onclick="abrirModalEditarCliente('${id}')">Editar</button></td></tr>`; } } });
         function abrirModalNovoCliente() { document.getElementById('cliFirebaseKey').value = ""; document.getElementById('modalClienteTitulo').innerText = "Cadastrar Novo Cliente"; document.getElementById('cliNome').value = ""; document.getElementById('cliCidade').value = ""; document.getElementById('cliResponsavel').value = ""; document.getElementById('cliCnpjCpf').value = ""; document.getElementById('cliTelefone').value = ""; document.getElementById('cliEmail').value = ""; document.getElementById('cliLocalizacao').value = ""; document.getElementById('cliObs').value = ""; document.getElementById('btnExcluirCliente').style.display = "none"; document.getElementById('modalCliente').style.display = 'flex'; }
         function abrirModalEditarCliente(id) { let cli = clientesCacheGlobal[id]; if(!cli) return; document.getElementById('cliFirebaseKey').value = id; document.getElementById('modalClienteTitulo').innerText = "Editar Cliente"; document.getElementById('cliNome').value = cli.nome || ""; document.getElementById('cliCidade').value = cli.cidade || ""; document.getElementById('cliResponsavel').value = cli.responsavel || ""; document.getElementById('cliCnpjCpf').value = cli.cnpj || ""; document.getElementById('cliTelefone').value = cli.telefone || ""; document.getElementById('cliEmail').value = cli.email || ""; document.getElementById('cliLocalizacao').value = cli.localizacao || ""; document.getElementById('cliObs').value = cli.obs || ""; document.getElementById('btnExcluirCliente').style.display = "block"; document.getElementById('modalCliente').style.display = 'flex'; }
         function salvarClienteFirebase() { let key = document.getElementById('cliFirebaseKey').value; let nome = document.getElementById('cliNome').value; let cidade = document.getElementById('cliCidade').value; if(!nome) return alert("Preencha o nome."); let locRaw = document.getElementById('cliLocalizacao').value; let mapsLink = locRaw ? locRaw : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(nome + ' ' + cidade)}`; let dadosCli = { nome: nome, cidade: cidade, responsavel: document.getElementById('cliResponsavel').value || '', cnpj: document.getElementById('cliCnpjCpf').value || '', telefone: document.getElementById('cliTelefone').value || '', email: document.getElementById('cliEmail').value || '', localizacao: mapsLink, obs: document.getElementById('cliObs').value || '' }; let dbRef = firebase.database().ref('clientes'); if(key) { dbRef.child(key).update(dadosCli).then(() => { document.getElementById('modalCliente').style.display = 'none'; }); } else { dbRef.push(dadosCli).then(() => { document.getElementById('modalCliente').style.display = 'none'; }); } }
