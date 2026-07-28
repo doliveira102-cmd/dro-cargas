@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V58</title>
+    <title>DRO Cargas Sistema Completo V59</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -15,8 +15,11 @@
         .active { display: block; }
         button { background: #2d8cff; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 4px; font-weight: bold; }
         button:hover { background: #1a6fd8; }
-        table { width: 100%; border-collapse: collapse; background: #0d1728; margin-top: 10px; }
-        th, td { padding: 8px; border-bottom: 1px solid #23374f; font-size: 11px; text-align: left; }
+        
+        /* O segredo para não vazar a cor pro PDF: Limitar as cores escuras SÓ para as abas do sistema */
+        .tab-content table { width: 100%; border-collapse: collapse; background: #0d1728; margin-top: 10px; }
+        .tab-content th, .tab-content td { padding: 8px; border-bottom: 1px solid #23374f; font-size: 11px; text-align: left; color: #f4f7fe; }
+        
         .btn-acao { background: #23374f; font-size: 10px; margin: 2px; }
         .btn-excluir-selecionadas { background: #ff4d4d; margin-left: 10px; }
         .btn-limpar-zeradas { background: #e67e22; margin-left: 5px; }
@@ -229,7 +232,6 @@
 
     <!-- ================= MODAIS ================= -->
 
-    <!-- MODAL CLIENTE -->
     <div id="modalCliente" class="modal">
         <div class="modal-content">
             <h3 id="modalClienteTitulo">Cadastrar / Editar Cliente</h3>
@@ -250,7 +252,6 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR/NOVA CARGA -->
     <div id="modalEditar" class="modal">
         <div class="modal-content">
             <h3 id="modalEditarTitulo">Editar Carga</h3>
@@ -273,7 +274,6 @@
         </div>
     </div>
 
-    <!-- MODAL MOTORISTA COMPLETADO (COM RG E ENDEREÇOS) -->
     <div id="modalMot" class="modal">
         <div class="modal-content">
             <h3 id="modalMotTitulo">Cadastrar Motorista</h3>
@@ -318,7 +318,6 @@
         </div>
     </div>
 
-    <!-- MODAL ORDEM -->
     <div id="modalOrdem" class="modal">
         <div class="modal-content">
             <h3>Emitir Ordem (G10)</h3>
@@ -337,19 +336,18 @@
         </div>
     </div>
 
-    <!-- ================= TEMPLATE DO PDF EXATO ================= -->
-    <div id="pdf-template" style="display: none; padding: 20px; background: white; color: black; font-family: Arial, sans-serif; width: 800px;">
+    <!-- ================= TEMPLATE DO PDF EXATO (FUNDO BRANCO OBRIGATÓRIO) ================= -->
+    <div id="pdf-template" style="display: none; padding: 30px; background-color: #ffffff; color: #000000; font-family: Arial, sans-serif; width: 800px; box-sizing: border-box;">
         
         <!-- CABEÇALHO G10 -->
-        <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 2px solid black;">
+        <table style="width: 100%; border-collapse: collapse; border: none; margin-bottom: 20px; background-color: #ffffff;">
             <tr>
-                <td style="width: 35%; text-align: center; border-right: 2px solid black; padding: 10px;">
-                    <div style="display: inline-block; text-align: left;">
-                        <span style="font-size: 70px; color: #5a3031; font-style: italic; font-weight: 900; letter-spacing: -6px; line-height: 1;">G10</span>
-                        <div style="background: #5a3031; color: white; padding: 2px 5px; font-weight: bold; font-size: 12px; margin-top: -10px; display: inline-block;">TRANSPORTES</div>
+                <td style="width: 40%; text-align: left; padding: 0; border: none; vertical-align: top;">
+                    <div style="font-size: 75px; font-weight: 900; font-style: italic; color: #5a2a2a; letter-spacing: -4px; line-height: 0.8; margin-top: 10px;">
+                        G10<span style="font-size: 14px; background-color: #5a2a2a; color: #ffffff; padding: 4px 8px; font-style: normal; font-weight: bold; vertical-align: middle; position: relative; top: -18px; margin-left: -5px; letter-spacing: 0px;">TRANSPORTES</span>
                     </div>
                 </td>
-                <td style="width: 65%; padding: 10px; font-weight: bold; line-height: 1.5;">
+                <td style="width: 60%; font-size: 13px; font-weight: bold; text-align: left; padding: 0; border: none; line-height: 1.4; color: #000000;">
                     G10 - TRANSPORTES LTDA<br>
                     BR 392 KM 10 SALA 17, 1<br>
                     BARRA, RIO GRANDE - RS<br>
@@ -361,77 +359,73 @@
         </table>
 
         <!-- TÍTULO -->
-        <h2 style="text-align: center; margin: 15px 0; font-size: 16px; font-weight: bold; text-decoration: underline;">AUTORIZAÇÃO DE CARREGAMENTO</h2>
+        <div style="text-align: center; margin: 25px 0;">
+            <span style="font-size: 18px; font-weight: bold; text-decoration: underline;">AUTORIZAÇÃO DE CARREGAMENTO</span>
+        </div>
 
         <!-- ORIGEM E DESTINO -->
-        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 10px; border: 1px solid black;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 15px; border: 1px solid #000000; background-color: #ffffff;">
             <tr>
-                <td style="border: 1px solid black; padding: 6px; width: 50%;"><strong>REMETENTE:</strong> <span id="pdf-remetente"></span></td>
-                <td style="border: 1px solid black; padding: 6px; width: 50%;"><strong>LOCAL:</strong> <span id="pdf-loc-remetente"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; width: 50%; color: #000000;"><strong>REMETENTE:</strong> <span id="pdf-remetente"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; width: 50%; color: #000000;"><strong>LOCAL:</strong> <span id="pdf-loc-remetente"></span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid black; padding: 6px;"><strong>DESTINATÁRIO:</strong> <span id="pdf-destinatario"></span></td>
-                <td style="border: 1px solid black; padding: 6px;"><strong>LOCAL:</strong> <span id="pdf-loc-destinatario"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; color: #000000;"><strong>DESTINATÁRIO:</strong> <span id="pdf-destinatario"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; color: #000000;"><strong>LOCAL:</strong> <span id="pdf-loc-destinatario"></span></td>
             </tr>
         </table>
 
         <!-- FAIXA PRETA -->
-        <div style="background: black; color: white; text-align: center; font-weight: bold; padding: 5px; font-size: 12px; margin-bottom: 10px;">
+        <div style="background-color: #000000; color: #ffffff; text-align: center; font-weight: bold; padding: 6px; font-size: 13px; margin-bottom: 15px; border: 1px solid #000000;">
             AUTORIZAMOS O CARREGAMENTO DO SEGUINTE VEÍCULO
         </div>
 
         <!-- DADOS DO VEÍCULO E MOTORISTA -->
-        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 10px; border: 1px solid black;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 20px; border: 1px solid #000000; background-color: #ffffff;">
             <tr>
-                <td style="border: 1px solid black; padding: 6px; width: 33%;"><strong>CAVALO:</strong> <span id="pdf-cavalo"></span></td>
-                <td style="border: 1px solid black; padding: 6px; width: 67%;" colspan="2"><strong>S.REB.:</strong> <span id="pdf-sreb"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; width: 40%; color: #000000;"><strong>CAVALO:</strong> <span id="pdf-cavalo"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; width: 60%; color: #000000;" colspan="2"><strong>S.REB.:</strong> <span id="pdf-sreb"></span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid black; padding: 6px;" colspan="2"><strong>PROPRIETÁRIO:</strong> <span id="pdf-prop"></span></td>
-                <td style="border: 1px solid black; padding: 6px;"><strong>CPF/CNPJ:</strong> <span id="pdf-cpfp"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; color: #000000;" colspan="2"><strong>PROPRIETÁRIO:</strong> <span id="pdf-prop"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; color: #000000;"><strong>CPF/CNPJ:</strong> <span id="pdf-cpfp"></span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid black; padding: 6px;" colspan="2"><strong>ENDEREÇO:</strong> <span id="pdf-ender"></span></td>
-                <td style="border: 1px solid black; padding: 6px;"><strong>MUNICÍPIO:</strong> <span id="pdf-mun"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; color: #000000;" colspan="2"><strong>ENDEREÇO:</strong> <span id="pdf-ender"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; color: #000000;"><strong>MUNICÍPIO:</strong> <span id="pdf-mun"></span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid black; padding: 6px;" colspan="3"><strong>MOTORISTA:</strong> <span id="pdf-motorista"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; color: #000000;" colspan="3"><strong>MOTORISTA:</strong> <span id="pdf-motorista"></span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid black; padding: 6px;"><strong>CART. HAB. Nº:</strong> <span id="pdf-cnh"></span></td>
-                <td style="border: 1px solid black; padding: 6px;"><strong>RG:</strong> <span id="pdf-rg"></span></td>
-                <td style="border: 1px solid black; padding: 6px;"><strong>CPF:</strong> <span id="pdf-cpfm"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; color: #000000; width: 33%;"><strong>CART. HAB. Nº:</strong> <span id="pdf-cnh"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; color: #000000; width: 33%;"><strong>RG:</strong> <span id="pdf-rg"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; color: #000000; width: 34%;"><strong>CPF:</strong> <span id="pdf-cpfm"></span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid black; padding: 6px;" colspan="3"><strong>TELEFONE:</strong> <span id="pdf-tel"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; color: #000000;" colspan="3"><strong>TELEFONE:</strong> <span id="pdf-tel"></span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid black; padding: 6px;" colspan="3"><strong>OBSERVAÇÃO:</strong> <span id="pdf-obs"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; color: #000000;" colspan="3"><strong>OBSERVAÇÃO:</strong> <span id="pdf-obs"></span></td>
             </tr>
         </table>
 
         <!-- DADOS DO CARREGAMENTO -->
-        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 40px; border: 1px solid black; text-align: center;">
-            <tr style="background: #e0e0e0;">
-                <td style="border: 1px solid black; padding: 6px; font-weight: bold;" colspan="3">DADOS DO CARREGAMENTO</td>
-            </tr>
-            <tr style="background: #f9f9f9;">
-                <td style="border: 1px solid black; padding: 6px; font-weight: bold; width: 25%;">PEDIDO (PESO)</td>
-                <td style="border: 1px solid black; padding: 6px; font-weight: bold; width: 50%;">PRODUTO</td>
-                <td style="border: 1px solid black; padding: 6px; font-weight: bold; width: 25%;">FRETE MOTORISTA</td>
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 50px; border: 1px solid #000000; background-color: #ffffff; text-align: center;">
+            <tr>
+                <td style="border: 1px solid #000000; padding: 8px; font-weight: bold; color: #000000;" colspan="3">DADOS DO CARREGAMENTO</td>
             </tr>
             <tr>
-                <td style="border: 1px solid black; padding: 15px;"><span id="pdf-peso-detalhe"></span> TONS</td>
-                <td style="border: 1px solid black; padding: 15px; font-weight: bold;"><span id="pdf-produto-detalhe"></span></td>
-                <td style="border: 1px solid black; padding: 15px; font-weight: bold;">R$ <span id="pdf-vlr-mot-detalhe"></span></td>
+                <td style="border: 1px solid #000000; padding: 8px; font-weight: bold; width: 33%; color: #000000;">PEDIDO</td>
+                <td style="border: 1px solid #000000; padding: 8px; font-weight: bold; width: 34%; color: #000000;">PRODUTO</td>
+                <td style="border: 1px solid #000000; padding: 8px; font-weight: bold; width: 33%; color: #000000;">FRETE MOTORISTA</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #000000; padding: 20px; color: #000000;"><span id="pdf-peso-detalhe"></span> TONS</td>
+                <td style="border: 1px solid #000000; padding: 20px; color: #000000;"><span id="pdf-produto-detalhe"></span></td>
+                <td style="border: 1px solid #000000; padding: 20px; color: #000000;">R$ <span id="pdf-vlr-mot-detalhe"></span></td>
             </tr>
         </table>
-
-        <div style="text-align: center; margin-top: 60px;">
-            <p style="margin: 0;">_________________________________________________________</p>
-            <p style="margin: 5px 0 0 0; font-weight: bold; font-size: 12px;">Assinatura do Motorista</p>
-            <p style="margin: 5px 0 0 0; font-size: 10px; color: #555;">Emitida em: <span id="pdf-data-emissao"></span></p>
-        </div>
 
     </div>
     <!-- ================= FIM TEMPLATE PDF ================= -->
@@ -468,7 +462,6 @@
 
         // --- LISTENERS FIREBASE ---
 
-        // 1. CARGAS
         firebase.database().ref('cargas').on('value', (snapshot) => {
             const data = snapshot.val();
             cargasCacheGlobal = data || {}; 
@@ -507,7 +500,6 @@
             }
         });
 
-        // 2. MOTORISTAS 
         firebase.database().ref('motoristas').on('value', (snapshot) => {
             const data = snapshot.val();
             motoristasCacheGlobal = data || {};
@@ -535,7 +527,6 @@
             }
         });
 
-        // 3. ORDENS 
         firebase.database().ref('ordens').on('value', (snapshot) => {
             ordensCacheGlobal = snapshot.val() || {};
             renderizarOrdens();
@@ -581,7 +572,7 @@
         }
 
 
-        // --- FUNÇÕES CRUD MOTORISTAS (COMPLETO COM RG/ENDEREÇO) ---
+        // --- FUNÇÕES CRUD MOTORISTAS ---
         function abrirModalMotorista(id = null) {
             document.getElementById('motFirebaseKey').value = id || "";
             document.getElementById('modalMotTitulo').innerText = id ? "Editar Motorista" : "Cadastrar Motorista";
@@ -631,7 +622,7 @@
         }
 
 
-        // --- FUNÇÕES CRUD ORDENS E GERAÇÃO DO PDF G10 EXATO ---
+        // --- FUNÇÕES CRUD ORDENS E GERAÇÃO DO PDF ---
         function abrirModalGerarOrdem(cargaId) {
             document.getElementById('ordemCargaId').value = cargaId;
             document.getElementById('ordemSelectMot').value = "";
@@ -662,7 +653,6 @@
             let dataObj = new Date(o.dataCriacao);
             let dataFormatada = dataObj.toLocaleDateString('pt-BR') + ' ' + dataObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
 
-            // Preenchimento Mapeado Exato
             document.getElementById('pdf-remetente').innerText = c.clienteOrigem || '';
             document.getElementById('pdf-loc-remetente').innerText = c.cidadeOrigem || '';
             document.getElementById('pdf-destinatario').innerText = c.clienteDestino || '';
@@ -691,16 +681,14 @@
             let vlrMot = c.valorMot !== undefined ? parseFloat(c.valorMot) : (vlrEmp * 0.9);
             document.getElementById('pdf-vlr-mot-detalhe').innerText = vlrMot.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             
-            document.getElementById('pdf-data-emissao').innerText = dataFormatada;
-
             let element = document.getElementById('pdf-template');
             element.style.display = 'block';
 
             let opt = { 
                 margin: 5, 
                 filename: `Ordem_${m.mot || 'Mot'}_${dataFormatada.replace(/[\/ :]/g,'-')}.pdf`, 
-                image: { type: 'jpeg', quality: 0.98 }, 
-                html2canvas: { scale: 2 }, 
+                image: { type: 'jpeg', quality: 1 }, 
+                html2canvas: { scale: 2, useCORS: true }, 
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
             };
             
