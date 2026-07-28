@@ -2,13 +2,13 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V67</title>
+    <title>DRO Cargas Sistema Completo V68</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <!-- Biblioteca para gerar PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <!-- Biblioteca oficial do PDF.js para ler PDFs do DETRAN perfeitamente -->
+    <!-- Biblioteca oficial do PDF.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -30,7 +30,7 @@
         .btn-nova-carga { background: #28a745; margin-left: 5px; }
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 650px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 680px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
         
         input, textarea, select { width: 100%; margin-bottom: 8px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; box-sizing: border-box; font-size: 12px; border-radius: 4px; }
         input[type="checkbox"] { width: auto; }
@@ -287,7 +287,7 @@
         </div>
     </div>
 
-    <!-- MODAL MOTORISTA V67 (LEITOR DE PDF DO DETRAN AUTOMÁTICO) -->
+    <!-- MODAL MOTORISTA V68 (LEITOR INTELIGENTE DE PDF + CAIXA DE TEXTO VISÍVEL) -->
     <div id="modalMot" class="modal">
         <div class="modal-content" style="max-height: 95vh;">
             <h3 id="modalMotTitulo" style="margin-top:0;">Cadastrar Motorista</h3>
@@ -303,8 +303,14 @@
                     </div>
                 </div>
                 
-                <div id="statusOcr" style="font-size: 12px; color: #2ecc71; margin-top: 10px; display: none; font-weight: bold;">
-                    ✅ PDF lido e campos preenchidos com sucesso!
+                <div id="statusOcr" style="font-size: 12px; color: #f1c40f; margin-top: 8px; display: none; font-weight: bold;">
+                    ⏳ Lendo arquivo...
+                </div>
+
+                <span class="label-campo" style="margin-top: 8px;">Texto extraído do documento (Se preferir, cole o texto copiado do PDF aqui e clique em Extrair):</span>
+                <div style="display: flex; gap: 5px;">
+                    <textarea id="debugPdfTexto" placeholder="O texto do PDF aparecerá aqui automaticamente..." style="margin-bottom: 0; height: 50px; font-size: 10px; color: #f4f7fe;"></textarea>
+                    <button type="button" onclick="extrairDadosManualmente()" style="background: #8e44ad; width: 120px; font-size: 11px;">⚡ Extrair do Texto</button>
                 </div>
                 
                 <!-- Lista de Anexos -->
@@ -653,14 +659,15 @@
             }
         }
 
-        // --- LÓGICA DE LEITURA DE PDF DO DETRAN (V67) ---
+        // --- LEITOR DE PDF OFICIAL DETRAN (V68) ---
         async function processarPdfDetran(input) {
             if (!input.files.length) return;
             const file = input.files[0];
             
             const statusEl = document.getElementById('statusOcr');
+            const debugEl = document.getElementById('debugPdfTexto');
             statusEl.style.display = 'block';
-            statusEl.innerText = "⏳ Lendo o arquivo PDF oficial...";
+            statusEl.innerText = "⏳ Lendo arquivo...";
 
             try {
                 const reader = new FileReader();
@@ -676,18 +683,17 @@
                         textoCompleto += textItems.join(" ") + "\n";
                     }
 
-                    // Salva arquivo nos anexos temporários
+                    debugEl.value = textoCompleto; // Exibe o texto extraído para conferência
+
                     const base64 = await converterFileParaBase64(file);
                     const fileId = "doc_" + Date.now();
                     arquivosAnexadosTemp[fileId] = { nome: file.name, base64: base64 };
                     renderizarListaAnexos();
 
-                    // Identifica e preenche com base no tipo de PDF (CNH ou CRLV)
                     extrairDadosDetran(textoCompleto);
 
                     statusEl.style.color = "#2ecc71";
-                    statusEl.innerText = "✅ Documento lido com sucesso! Dados preenchidos automaticamente.";
-                    setTimeout(() => statusEl.style.display = 'none', 5000);
+                    statusEl.innerText = "✅ Leitura concluída! Campos preenchidos automaticamente.";
                 };
                 reader.readAsArrayBuffer(file);
             } catch(e) {
@@ -696,6 +702,13 @@
             } finally {
                 input.value = "";
             }
+        }
+
+        function extrairDadosManualmente() {
+            const texto = document.getElementById('debugPdfTexto').value;
+            if(!texto) return alert("A caixa de texto está vazia.");
+            extrairDadosDetran(texto);
+            alert("Dados extraídos com sucesso!");
         }
 
         function converterFileParaBase64(file) {
@@ -707,83 +720,63 @@
         }
 
         function extrairDadosDetran(texto) {
-            const txtUpper = texto.toUpperCase();
+            const txt = texto.toUpperCase();
 
-            // 1. VERIFICA SE É CNH DIGITAL
-            if (txtUpper.includes("CARTEIRA NACIONAL DE HABILITAÇÃO") || txtUpper.includes("SENATRAN") && txtUpper.includes("HABILITAÇÃO")) {
-                // Tenta extrair Nome (geralmente após HABILITAÇÃO ou NOME)
-                let matchNome = txtUpper.match(/(?:NOME|HABILITAÇÃO)\s*[\r\n]+\s*([A-ZÇÃÕÁÉÍÓÚÂÊÔÀ\s]+)/);
-                // Extração direta por padrão de linhas comuns na CNH digital do Senatran:
-                const linhas = txtUpper.split('\n').map(l => l.trim());
-                
-                // Extração de CPF (formato 000.000.000-00 ou 11 dígitos)
-                let matchCpf = txtUpper.match(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/) || txtUpper.match(/\b\d{11}\b/);
-                if (matchCpf && !document.getElementById('motCpfM').value) {
-                    let cpfLimpo = matchCpf[0].replace(/[^\d]/g, "");
-                    document.getElementById('motCpfM').value = cpfLimpo;
+            // 1. CNH DETRAN
+            if (txt.includes("HABILITAÇÃO") || txt.includes("SENATRAN") || txt.includes("DRIVER")) {
+                let mCpf = txt.match(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/) || txt.match(/\b\d{11}\b/);
+                if (mCpf && !document.getElementById('motCpfM').value) {
+                    document.getElementById('motCpfM').value = mCpf[0].replace(/[^\d]/g, "");
                 }
 
-                // Extração de Registro / CNH
-                let matchReg = txtUpper.match(/REGISTRO[:\s]*(\d{9,11})/);
-                if (matchReg && !document.getElementById('motCnh').value) {
-                    document.getElementById('motCnh').value = matchReg[1];
+                let mCnh = txt.match(/REGISTRO[:\s]*(\d{9,11})/);
+                if (mCnh && !document.getElementById('motCnh').value) {
+                    document.getElementById('motCnh').value = mCnh[1];
                 }
 
-                // Varre linhas para achar o nome (geralmente linhas longas só com letras maiúsculas)
-                for (let i = 0; i < linhas.length; i++) {
-                    let l = linhas[i];
-                    if (l.length > 5 && !l.includes("BRASIL") && !l.includes("MINISTERIO") && !l.includes("DETRAN") && !l.includes("TRANSITO") && !/\d/.test(l)) {
-                        if (!document.getElementById('motNome').value && (i < 15)) { // Nome costuma vir no topo
-                            document.getElementById('motNome').value = l;
-                            break;
-                        }
+                // Procura nome após a palavra NOME ou HABILITAÇÃO
+                let partes = txt.split(/NOME|HABILITAÇÃO/);
+                if (partes.length > 1) {
+                    let possivelNome = partes[1].replace(/[^A-ZÇÃÕÁÉÍÓÚÂÊÔÀ\s]/g, "").trim().split('\n')[0];
+                    if (possivelNome.length > 5 && !document.getElementById('motNome').value) {
+                        document.getElementById('motNome').value = possivelNome;
                     }
                 }
             } 
-            // 2. VERIFICA SE É CRLV DIGITAL (VEÍCULOS / CAVALO / CARRETA)
-            else if (txtUpper.includes("CERTIFICADO DE REGISTRO E LICENCIAMENTO") || txtUpper.includes("RENAVAM")) {
-                
-                // Extrai Placa (Ex: IVA8J03 ou MGZ8C00)
-                let matchPlaca = txtUpper.match(/\b[A-Z]{3}\d[A-Z0-9]\d{2}\b/);
-                let placaEncontrada = matchPlaca ? matchPlaca[0] : "";
+            // 2. CRLV VEÍCULOS / CAVALO / CARRETA
+            else if (txt.includes("CERTIFICADO DE REGISTRO") || txt.includes("RENAVAM")) {
+                let mPlaca = txt.match(/\b[A-Z]{3}\d[A-Z0-9]\d{2}\b/);
+                let placa = mPlaca ? mPlaca[0] : "";
 
-                // Extrai Nome do Proprietário
-                let matchNomeProp = txtUpper.match(/NOME\s*([A-ZÇÃÕÁÉÍÓÚÂÊÔÀ\s]+?)(?:CPF|LOCAL|ENDEREÇO|$)/);
-                let nomePropri = "";
-                
-                // Varre linhas para achar proprietário e endereço
-                const linhas = txtUpper.split('\n').map(l => l.trim());
-                let achouNomeTag = false;
-                for (let i = 0; i < linhas.length; i++) {
-                    let l = linhas[i];
-                    if (l === "NOME" && i + 1 < linhas.length) {
-                        nomePropri = linhas[i + 1];
-                    }
-                    if (l.includes("CPF/CNPJ") && i + 1 < linhas.length) {
-                        let docProp = linhas[i + 1].replace(/[^\d]/g, "");
-                        if (!document.getElementById('motCpfP').value) document.getElementById('motCpfP').value = docProp;
+                // Procura Nome do Proprietário após a palavra NOME
+                let partesNome = txt.split("NOME");
+                if (partesNome.length > 1) {
+                    let prop = partesNome[1].replace(/[^A-ZÇÃÕÁÉÍÓÚÂÊÔÀ\s]/g, "").trim().split('\n')[0];
+                    if (prop.length > 5 && !document.getElementById('motProp').value) {
+                        document.getElementById('motProp').value = prop;
                     }
                 }
 
-                if (nomePropri && !document.getElementById('motProp').value) {
-                    document.getElementById('motProp').value = nomePropri;
+                // Procura CPF/CNPJ do proprietário
+                let mCpfProp = txt.match(/\b\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}\b/) || txt.match(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/);
+                if (mCpfProp && !document.getElementById('motCpfP').value) {
+                    document.getElementById('motCpfP').value = mCpfProp[0].replace(/[^\d]/g, "");
                 }
 
-                // Verifica se é Cavalo Trator ou Semirreboque pela espécie/tipo
-                if (txtUpper.includes("TRATOR") || txtUpper.includes("CAMINHAO") || (placaEncontrada && !txtUpper.includes("SEMI-REBOQUE"))) {
-                    if (placaEncontrada && !document.getElementById('motCavalo').value) {
-                        document.getElementById('motCavalo').value = placaEncontrada;
+                // Se for Cavalo ou Caminhão Trator
+                if (txt.includes("TRATOR") || txt.includes("CAMINHAO") || (!txt.includes("SEMI-REBOQUE") && !txt.includes("REBOQUE"))) {
+                    if (placa && !document.getElementById('motCavalo').value) {
+                        document.getElementById('motCavalo').value = placa;
                     }
                 } else {
-                    // É Reboque / Carreta! Preenche o primeiro reboque vazio disponível
-                    if (placaEncontrada) {
+                    // Se for Carreta / Reboque
+                    if (placa) {
                         let s1 = document.getElementById('motSreb1');
                         let s2 = document.getElementById('motSreb2');
                         let s3 = document.getElementById('motSreb3');
-
-                        if (!s1.value) s1.value = placaEncontrada;
-                        else if (!s2.value) s2.value = placaEncontrada;
-                        else if (!s3.value) s3.value = placaEncontrada;
+                        if (!s1.value) s1.value = placa;
+                        else if (!s2.value) s2.value = placa;
+                        else if (!s3.value) s3.value = placa;
                     }
                 }
             }
@@ -831,6 +824,7 @@
             document.getElementById('motEnder').value = m.ender || "";
             document.getElementById('motMun').value = m.mun || "";
             
+            document.getElementById('debugPdfTexto').value = "";
             document.getElementById('statusOcr').style.display = 'none';
 
             arquivosAnexadosTemp = m.documentos || {};
