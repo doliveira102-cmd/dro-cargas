@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V72</title>
+    <title>DRO Cargas Sistema Completo V73</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -289,7 +289,7 @@
         </div>
     </div>
 
-    <!-- MODAL MOTORISTA V72 (LEITOR DE QR CODE DO DETRAN) -->
+    <!-- MODAL MOTORISTA V73 -->
     <div id="modalMot" class="modal">
         <div class="modal-content" style="max-height: 95vh;">
             <h3 id="modalMotTitulo" style="margin-top:0;">Cadastrar Motorista</h3>
@@ -306,13 +306,10 @@
                 </div>
                 
                 <div id="statusOcr" style="font-size: 12px; color: #2ecc71; margin-top: 8px; display: none; font-weight: bold;">
-                    ✅ QR Code lido e dados preenchidos com sucesso!
+                    ✅ Documento lido com sucesso!
                 </div>
                 
-                <!-- Canvas oculto para processar a imagem do QR Code -->
                 <canvas id="pdfCanvas" style="display:none;"></canvas>
-
-                <!-- Lista de Anexos -->
                 <div id="listaAnexos" style="margin-top: 10px; min-height: 25px;"></div>
             </div>
 
@@ -426,8 +423,8 @@
         </div>
     </div>
 
-    <!-- ================= TEMPLATE DO PDF ================= -->
-    <div id="pdf-template" style="display: none; padding: 30px; background-color: #ffffff; color: #000000; font-family: Arial, sans-serif; width: 800px; box-sizing: border-box;">
+    <!-- ================= TEMPLATE DO PDF (BORDAS CORRIGIDAS E FECHADAS) ================= -->
+    <div id="pdf-template" style="display: none; padding: 30px; background-color: #ffffff; color: #000000; font-family: Arial, sans-serif; width: 800px; box-sizing: border-box; border: 1px solid #000000;">
         
         <!-- CABEÇALHO G10 -->
         <table style="width: 100%; border-collapse: collapse; border: none; margin-bottom: 20px; background-color: #ffffff;">
@@ -453,7 +450,7 @@
             <span style="font-size: 18px; font-weight: bold; text-decoration: underline;">AUTORIZAÇÃO DE CARREGAMENTO</span>
         </div>
 
-        <!-- ORIGEM E DESTINO -->
+        <!-- ORIGEM E DESTINO (Bordas fechadas) -->
         <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 15px; border: 1px solid #000000; background-color: #ffffff;">
             <tr>
                 <td style="border: 1px solid #000000; padding: 8px; width: 50%; color: #000000;"><strong>REMETENTE:</strong> <span id="pdf-remetente"></span></td>
@@ -470,7 +467,7 @@
             AUTORIZAMOS O CARREGAMENTO DO SEGUINTE VEÍCULO
         </div>
 
-        <!-- DADOS DO VEÍCULO E MOTORISTA -->
+        <!-- DADOS DO VEÍCULO E MOTORISTA (Bordas fechadas) -->
         <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 20px; border: 1px solid #000000; background-color: #ffffff;">
             <tr>
                 <td style="border: 1px solid #000000; padding: 8px; width: 40%; color: #000000;"><strong>CAVALO:</strong> <span id="pdf-cavalo"></span></td>
@@ -500,7 +497,7 @@
             </tr>
         </table>
 
-        <!-- DADOS DO CARREGAMENTO -->
+        <!-- DADOS DO CARREGAMENTO (Bordas fechadas) -->
         <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 50px; border: 1px solid #000000; background-color: #ffffff; text-align: center;">
             <tr>
                 <td style="border: 1px solid #000000; padding: 8px; font-weight: bold; color: #000000;" colspan="3">DADOS DO CARREGAMENTO</td>
@@ -657,7 +654,7 @@
             }
         }
 
-        // --- LEITURA DO QR CODE E TEXTO DO PDF (V72) ---
+        // --- LEITURA DO QR CODE E TEXTO DO PDF ---
         async function lerPdfEQRCode(input) {
             if (!input.files.length) return;
             const file = input.files[0];
@@ -672,9 +669,8 @@
                     const typedarray = new Uint8Array(this.result);
                     const pdf = await pdfjsLib.getDocument(typedarray).promise;
                     
-                    // 1. TENTA LER O QR CODE DA PRIMEIRA PÁGINA VIA CANVAS
                     const page = await pdf.getPage(1);
-                    const viewport = page.getViewport({ scale: 2.0 }); // Escala alta para leitura perfeita do QR Code
+                    const viewport = page.getViewport({ scale: 2.0 });
                     const canvas = document.getElementById('pdfCanvas');
                     const context = canvas.getContext('2d');
                     canvas.height = viewport.height;
@@ -687,14 +683,12 @@
                         const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
                         const code = jsQR(imageData.data, imageData.width, imageData.height);
                         if (code && code.data) {
-                            console.log("QR Code detectado:", code.data);
                             qrLido = processarDadosQRCode(code.data);
                         }
                     } catch(err) {
                         console.log("Erro no jsQR:", err);
                     }
 
-                    // 2. SE O QR CODE NÃO RETORNOU DADOS DIRETOS, FAZ A LEITURA DO TEXTO DO PDF
                     if (!qrLido) {
                         let linhasTexto = [];
                         for (let i = 1; i <= pdf.numPages; i++) {
@@ -722,7 +716,6 @@
                         processarTextoPdfFallback(linhasTexto.join("\n").toUpperCase(), linhasTexto);
                     }
 
-                    // Anexa o arquivo automaticamente no sistema
                     const base64 = await converterFileParaBase64(file);
                     const fileId = "doc_" + Date.now();
                     arquivosAnexadosTemp[fileId] = { nome: file.name, base64: base64 };
@@ -750,11 +743,7 @@
         }
 
         function processarDadosQRCode(dataStr) {
-            // Se o QR Code contiver dados estruturados ou URL do Detran/Vio
             let txt = dataStr.toUpperCase();
-            
-            // Se for CNH ou CRLV, tenta extrair CPFs e Placas diretamente do conteúdo do QR Code
-            let matchCpf = txt.match(/\b\d{11}\b/) || txt.match(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/);
             let matchPlaca = txt.match(/\b[A-Z]{3}\d[A-Z0-9]\d{2}\b/);
             
             if (matchPlaca) {
