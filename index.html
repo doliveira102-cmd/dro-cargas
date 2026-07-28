@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V59</title>
+    <title>DRO Cargas Sistema Completo V60</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -16,7 +16,7 @@
         button { background: #2d8cff; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 4px; font-weight: bold; }
         button:hover { background: #1a6fd8; }
         
-        /* O segredo para não vazar a cor pro PDF: Limitar as cores escuras SÓ para as abas do sistema */
+        /* Proteção para não vazar a cor escura para o PDF */
         .tab-content table { width: 100%; border-collapse: collapse; background: #0d1728; margin-top: 10px; }
         .tab-content th, .tab-content td { padding: 8px; border-bottom: 1px solid #23374f; font-size: 11px; text-align: left; color: #f4f7fe; }
         
@@ -24,9 +24,12 @@
         .btn-excluir-selecionadas { background: #ff4d4d; margin-left: 10px; }
         .btn-limpar-zeradas { background: #e67e22; margin-left: 5px; }
         .btn-nova-carga { background: #28a745; margin-left: 5px; }
+        
+        /* Modal Style Refinado */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 550px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
-        input, textarea, select { width: 100%; margin-bottom: 8px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; box-sizing: border-box; font-size: 12px; }
+        .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 650px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
+        
+        input, textarea, select { width: 100%; margin-bottom: 8px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; box-sizing: border-box; font-size: 12px; border-radius: 4px; }
         input[type="checkbox"] { width: auto; }
         
         .calc-inputs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
@@ -34,9 +37,16 @@
         .calc-bloco { display: flex; flex-direction: column; gap: 5px; }
         .calc-bloco label { font-size: 11px; color: #a0b2c6; }
         .label-campo { font-size: 10px; color: #a0b2c6; margin-bottom: 2px; display: block; }
+        
         .status-badge { padding: 3px 6px; border-radius: 4px; font-weight: bold; font-size: 10px; }
         .status-pendente { background: #e67e22; color: white; }
         .status-finalizada { background: #28a745; color: white; }
+
+        /* Estilo para agrupar dados do Motorista */
+        .grupo-dados { background: #040b14; padding: 15px; border-radius: 6px; border: 1px solid #23374f; margin-bottom: 15px; }
+        .grupo-dados h4 { margin-top: 0; margin-bottom: 10px; color: #2d8cff; font-size: 13px; border-bottom: 1px solid #23374f; padding-bottom: 5px; }
+        .flex-row { display: flex; gap: 10px; }
+        .flex-col { flex: 1; }
     </style>
 </head>
 <body>
@@ -274,46 +284,99 @@
         </div>
     </div>
 
+    <!-- MODAL MOTORISTA V60 (LAYOUT PROFISSIONAL G10) -->
     <div id="modalMot" class="modal">
         <div class="modal-content">
             <h3 id="modalMotTitulo">Cadastrar Motorista</h3>
             <input type="hidden" id="motFirebaseKey">
-            <div style="display: flex; gap: 10px;">
-                <div style="flex:1"><span class="label-campo">Cavalo (Placa):</span><input type="text" id="motCavalo"></div>
-                <div style="flex:1"><span class="label-campo">Tipo de Veículo:</span><input type="text" id="motTipo"></div>
-            </div>
-            <span class="label-campo">Nome do Motorista:</span><input type="text" id="motNome">
-            <span class="label-campo">WhatsApp:</span><input type="text" id="motZap">
             
-            <details style="margin-bottom: 10px; background: #040b14; padding: 10px; border-radius: 4px; border: 1px solid #23374f;">
-                <summary style="cursor: pointer; font-size: 11px; color: #a0b2c6;">Exibir mais campos opcionais (Reboques, CNH, CPF...)</summary>
-                <div style="margin-top: 10px;">
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="motSreb1" placeholder="Placa S. Reb 1">
-                        <input type="text" id="motSreb2" placeholder="Placa S. Reb 2">
-                        <input type="text" id="motSreb3" placeholder="Placa S. Reb 3">
+            <!-- BLOCO 1: MOTORISTA -->
+            <div class="grupo-dados">
+                <h4>🧑‍✈️ Dados do Motorista</h4>
+                <div class="flex-row">
+                    <div class="flex-col">
+                        <span class="label-campo">Nome do Motorista:</span>
+                        <input type="text" id="motNome" placeholder="Ex: João da Silva">
                     </div>
-                    <span class="label-campo">Proprietário:</span>
-                    <input type="text" id="motProp" placeholder="Nome do Proprietário">
-                    <input type="text" id="motCpfP" placeholder="CPF/CNPJ do Proprietário">
-                    
-                    <span class="label-campo">Endereço do Proprietário/Motorista:</span>
-                    <input type="text" id="motEnder" placeholder="Endereço (Rua, Bairro)">
-                    <input type="text" id="motMun" placeholder="Município / UF">
-
-                    <span class="label-campo">Documentação do Motorista:</span>
-                    <input type="text" id="motCnh" placeholder="CNH Nº">
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="motRg" placeholder="RG">
-                        <input type="text" id="motCpfM" placeholder="CPF Motorista">
+                    <div class="flex-col">
+                        <span class="label-campo">Telefone / WhatsApp:</span>
+                        <input type="text" id="motZap" placeholder="(00) 00000-0000">
                     </div>
                 </div>
-            </details>
+                <div class="flex-row">
+                    <div class="flex-col">
+                        <span class="label-campo">CART. HAB. Nº (CNH):</span>
+                        <input type="text" id="motCnh" placeholder="Número da CNH">
+                    </div>
+                    <div class="flex-col">
+                        <span class="label-campo">RG:</span>
+                        <input type="text" id="motRg" placeholder="Número do RG">
+                    </div>
+                    <div class="flex-col">
+                        <span class="label-campo">CPF:</span>
+                        <input type="text" id="motCpfM" placeholder="CPF do Motorista">
+                    </div>
+                </div>
+            </div>
 
-            <div style="display: flex; gap: 5px;">
-                <button type="button" onclick="salvarMotorista()" style="background: #28a745; flex: 1;">Salvar</button>
-                <button type="button" onclick="document.getElementById('modalMot').style.display='none'" style="background: #6c757d;">Fechar</button>
-                <button type="button" id="btnExcluirMot" onclick="excluirMotorista()" style="background: #ff4d4d; display: none;">Excluir</button>
+            <!-- BLOCO 2: VEÍCULO -->
+            <div class="grupo-dados">
+                <h4>🚛 Dados do Veículo</h4>
+                <div class="flex-row">
+                    <div class="flex-col">
+                        <span class="label-campo">Placa do Cavalo:</span>
+                        <input type="text" id="motCavalo" placeholder="Ex: ABC1D23" style="text-transform: uppercase;">
+                    </div>
+                    <div class="flex-col">
+                        <span class="label-campo">Tipo de Veículo (Opcional):</span>
+                        <input type="text" id="motTipo" placeholder="Ex: Bitrem, RodoCaçamba...">
+                    </div>
+                </div>
+                <div class="flex-row">
+                    <div class="flex-col">
+                        <span class="label-campo">S. REB 1:</span>
+                        <input type="text" id="motSreb1" placeholder="Placa Carreta 1" style="text-transform: uppercase;">
+                    </div>
+                    <div class="flex-col">
+                        <span class="label-campo">S. REB 2:</span>
+                        <input type="text" id="motSreb2" placeholder="Placa Carreta 2" style="text-transform: uppercase;">
+                    </div>
+                    <div class="flex-col">
+                        <span class="label-campo">S. REB 3:</span>
+                        <input type="text" id="motSreb3" placeholder="Placa Carreta 3" style="text-transform: uppercase;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- BLOCO 3: PROPRIETÁRIO -->
+            <div class="grupo-dados">
+                <h4>📝 Dados do Proprietário (CRLV)</h4>
+                <div class="flex-row">
+                    <div class="flex-col">
+                        <span class="label-campo">Nome do Proprietário:</span>
+                        <input type="text" id="motProp" placeholder="Proprietário do Documento">
+                    </div>
+                    <div class="flex-col">
+                        <span class="label-campo">CPF / CNPJ do Proprietário:</span>
+                        <input type="text" id="motCpfP" placeholder="Documento do Prop.">
+                    </div>
+                </div>
+                <div class="flex-row">
+                    <div class="flex-col">
+                        <span class="label-campo">Endereço (Rua, Número, Bairro):</span>
+                        <input type="text" id="motEnder" placeholder="Ex: Av Brasil, 100 - Centro">
+                    </div>
+                    <div class="flex-col">
+                        <span class="label-campo">Município / UF:</span>
+                        <input type="text" id="motMun" placeholder="Ex: Passo Fundo - RS">
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 5px; margin-top: 10px;">
+                <button type="button" onclick="salvarMotorista()" style="background: #28a745; flex: 1; padding: 12px; font-size: 14px;">Salvar Motorista</button>
+                <button type="button" onclick="document.getElementById('modalMot').style.display='none'" style="background: #6c757d; padding: 12px; font-size: 14px;">Fechar</button>
+                <button type="button" id="btnExcluirMot" onclick="excluirMotorista()" style="background: #ff4d4d; display: none; padding: 12px; font-size: 14px;">Excluir</button>
             </div>
         </div>
     </div>
@@ -572,27 +635,29 @@
         }
 
 
-        // --- FUNÇÕES CRUD MOTORISTAS ---
+        // --- FUNÇÕES CRUD MOTORISTAS (LAYOUT V60) ---
         function abrirModalMotorista(id = null) {
             document.getElementById('motFirebaseKey').value = id || "";
-            document.getElementById('modalMotTitulo').innerText = id ? "Editar Motorista" : "Cadastrar Motorista";
+            document.getElementById('modalMotTitulo').innerText = id ? "Editar Motorista" : "Cadastrar Novo Motorista";
             let m = id ? (motoristasCacheGlobal[id] || {}) : {};
             
-            document.getElementById('motCavalo').value = m.cavalo || "";
-            document.getElementById('motTipo').value = m.tipo || "";
             document.getElementById('motNome').value = m.mot || "";
             document.getElementById('motZap').value = m.zap || "";
-            document.getElementById('motSreb1').value = m.sreb1 || "";
-            document.getElementById('motSreb2').value = m.sreb2 || "";
-            document.getElementById('motSreb3').value = m.sreb3 || "";
-            document.getElementById('motProp').value = m.prop || "";
-            document.getElementById('motCpfP').value = m.cpfP || "";
-            document.getElementById('motEnder').value = m.ender || "";
-            document.getElementById('motMun').value = m.mun || "";
             document.getElementById('motCnh').value = m.cnh || "";
             document.getElementById('motRg').value = m.rg || "";
             document.getElementById('motCpfM').value = m.cpfM || "";
 
+            document.getElementById('motCavalo').value = m.cavalo || "";
+            document.getElementById('motTipo').value = m.tipo || "";
+            document.getElementById('motSreb1').value = m.sreb1 || "";
+            document.getElementById('motSreb2').value = m.sreb2 || "";
+            document.getElementById('motSreb3').value = m.sreb3 || "";
+            
+            document.getElementById('motProp').value = m.prop || "";
+            document.getElementById('motCpfP').value = m.cpfP || "";
+            document.getElementById('motEnder').value = m.ender || "";
+            document.getElementById('motMun').value = m.mun || "";
+            
             document.getElementById('btnExcluirMot').style.display = id ? "block" : "none";
             document.getElementById('modalMot').style.display = 'flex';
         }
@@ -612,13 +677,13 @@
             };
 
             let dbRef = firebase.database().ref('motoristas');
-            if(key) { dbRef.child(key).update(motData).then(() => { alert("Atualizado!"); document.getElementById('modalMot').style.display = 'none'; }); }
-            else { dbRef.push(motData).then(() => { alert("Salvo!"); document.getElementById('modalMot').style.display = 'none'; }); }
+            if(key) { dbRef.child(key).update(motData).then(() => { alert("Motorista atualizado!"); document.getElementById('modalMot').style.display = 'none'; }); }
+            else { dbRef.push(motData).then(() => { alert("Motorista salvo!"); document.getElementById('modalMot').style.display = 'none'; }); }
         }
 
         function excluirMotorista() {
             let key = document.getElementById('motFirebaseKey').value;
-            if(confirm("Deseja excluir?")) { firebase.database().ref('motoristas/' + key).remove().then(() => { document.getElementById('modalMot').style.display = 'none'; }); }
+            if(confirm("Deseja excluir permanentemente este motorista?")) { firebase.database().ref('motoristas/' + key).remove().then(() => { document.getElementById('modalMot').style.display = 'none'; }); }
         }
 
 
@@ -639,7 +704,7 @@
             let novaOrdem = { cargaId: cargaId, motoristaId: motId, peso: peso, dataCriacao: new Date().toISOString(), status: 'pendente' };
             let novaOrdemRef = firebase.database().ref('ordens').push();
             novaOrdemRef.set(novaOrdem).then(() => {
-                alert("Ordem salva!"); document.getElementById('modalOrdem').style.display = 'none';
+                alert("Ordem salva no painel com sucesso!"); document.getElementById('modalOrdem').style.display = 'none';
                 gerarPDFOrdem(novaOrdemRef.key); trocarTab('ordens');
             });
         }
