@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>DRO Cargas Sistema Completo V76</title>
+    <title>DRO Cargas Sistema Completo V77</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -17,7 +17,8 @@
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     <style>
         body { background: #040b14; color: #f4f7fe; font-family: sans-serif; margin: 0; padding: 20px; }
-        .nav-bar { margin-bottom: 20px; }
+        .nav-bar { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .nav-botoes { display: flex; gap: 5px; flex-wrap: wrap; }
         .tab-content { display: none; }
         .active { display: block; }
         button { background: #2d8cff; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 4px; font-weight: bold; }
@@ -31,7 +32,7 @@
         .btn-limpar-zeradas { background: #e67e22; margin-left: 5px; }
         .btn-nova-carga { background: #28a745; margin-left: 5px; }
         
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 1000; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 1000; }
         .modal-content { background: #0d1728; padding: 20px; border-radius: 8px; width: 680px; border: 1px solid #2d8cff; max-height: 90vh; overflow-y: auto; }
         
         input, textarea, select { width: 100%; margin-bottom: 8px; padding: 8px; background: #040b14; color: white; border: 1px solid #23374f; box-sizing: border-box; font-size: 12px; border-radius: 4px; }
@@ -55,18 +56,47 @@
         .anexo-item { display: inline-block; background: #23374f; padding: 5px 10px; border-radius: 4px; font-size: 11px; margin-right: 5px; margin-bottom: 5px; }
         .anexo-item a { color: #2d8cff; text-decoration: none; font-weight: bold; }
         .btn-remover-anexo { color: #ff4d4d; cursor: pointer; margin-left: 8px; font-weight: bold; }
+        
+        .user-info { font-size: 12px; background: #111a27; padding: 5px 10px; border-radius: 4px; border: 1px solid #23374f; display: flex; align-items: center; gap: 10px; }
     </style>
 </head>
 <body>
 
+    <!-- MODAL DE LOGIN -->
+    <div id="modalLogin" class="modal" style="display: flex;">
+        <div class="modal-content" style="width: 350px; text-align: center;">
+            <h3 style="color: #2d8cff; margin-top: 0;">🔐 Acesso ao Sistema DRO</h3>
+            <p style="font-size: 11px; color: #a0b2c6; margin-bottom: 15px;">Selecione seu usuário e digite sua senha para entrar.</p>
+            
+            <span class="label-campo" style="text-align: left;">Usuário:</span>
+            <select id="loginUsuario" style="margin-bottom: 12px;">
+                <option value="Diego">Diego (Admin Principal)</option>
+                <option value="Auxiliar">Auxiliar / Operador</option>
+            </select>
+
+            <span class="label-campo" style="text-align: left;">Senha:</span>
+            <input type="password" id="loginSenha" placeholder="Digite sua senha" style="margin-bottom: 15px;">
+
+            <button type="button" onclick="fazerLogin()" style="width: 100%; background: #28a745; padding: 10px; font-size: 14px;">Entrar no Sistema</button>
+        </div>
+    </div>
+
+    <!-- BARRA DE NAVEGAÇÃO -->
     <div class="nav-bar">
-        <button type="button" onclick="trocarTab('cargas')">Cargas</button>
-        <button type="button" onclick="trocarTab('motoristas')">Motoristas</button>
-        <button type="button" onclick="trocarTab('agenda')">Agenda</button>
-        <button type="button" onclick="trocarTab('clientes')">Clientes</button>
-        <button type="button" onclick="trocarTab('raio')" style="background: #17a2b8;">📍 Embarques por Raio</button>
-        <button type="button" onclick="trocarTab('calculadora')" style="background: #23374f; border: 1px solid #2d8cff;">📊 Piso ANTT</button>
-        <button type="button" onclick="trocarTab('ordens')" style="background: #8e44ad;">📋 Controle de Ordens</button>
+        <div class="nav-botoes">
+            <button type="button" onclick="trocarTab('cargas')">Cargas</button>
+            <button type="button" onclick="trocarTab('motoristas')">Motoristas</button>
+            <button type="button" onclick="trocarTab('agenda')">Agenda</button>
+            <button type="button" onclick="trocarTab('clientes')">Clientes</button>
+            <button type="button" onclick="trocarTab('raio')" style="background: #17a2b8;">📍 Embarques por Raio</button>
+            <button type="button" onclick="trocarTab('calculadora')" style="background: #23374f; border: 1px solid #2d8cff;">📊 Piso ANTT</button>
+            <button type="button" onclick="trocarTab('ordens')" style="background: #8e44ad;" id="btnTabOrdens">📋 Minhas Ordens</button>
+            <button type="button" onclick="trocarTab('ordensOutro')" style="background: #e67e22; display: none;" id="btnTabOrdensOutro">📋 Ordens do Auxiliar</button>
+        </div>
+        <div class="user-info">
+            <span>👤 Logado como: <strong id="spanUsuarioLogado" style="color: #2ecc71;">-</strong></span>
+            <button type="button" onclick="fazerLogout()" style="background: #ff4d4d; padding: 4px 8px; font-size: 10px;">Sair</button>
+        </div>
     </div>
 
     <!-- ABA CARGAS -->
@@ -103,9 +133,9 @@
         </table>
     </div>
 
-    <!-- ABA CONTROLE DE ORDENS -->
+    <!-- ABA CONTROLE DE ORDENS (MINHAS ORDENS) -->
     <div id="ordens" class="tab-content">
-        <h2>Controle de Ordens Emitidas</h2>
+        <h2 id="tituloAbaOrdens">Minhas Ordens Emitidas</h2>
         <div class="calc-inputs" style="background: #0d1728; padding: 15px; border-radius: 8px;">
             <div class="calc-bloco">
                 <label>Data Início</label>
@@ -127,6 +157,19 @@
                 </tr>
             </thead>
             <tbody id="lista-ordens-emitidas"></tbody>
+        </table>
+    </div>
+
+    <!-- ABA ORDENS DO OUTRO USUÁRIO (VISÍVEL APENAS PARA O DIEGO) -->
+    <div id="ordensOutro" class="tab-content">
+        <h2>Ordens Emitidas pelo Auxiliar (Visualização e Gerenciamento)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data Emissão</th><th>Motorista</th><th>Carga (Origem -> Destino)</th><th>Peso</th><th>Status</th><th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="lista-ordens-outro"></tbody>
         </table>
     </div>
 
@@ -289,7 +332,7 @@
         </div>
     </div>
 
-    <!-- MODAL MOTORISTA V76 -->
+    <!-- MODAL MOTORISTA V77 -->
     <div id="modalMot" class="modal">
         <div class="modal-content" style="max-height: 95vh;">
             <h3 id="modalMotTitulo" style="margin-top:0;">Cadastrar Motorista</h3>
@@ -404,7 +447,7 @@
         </div>
     </div>
 
-    <!-- MODAL ORDEM V76 (COM CONTROLE MANUAL DE OBS E FRETE) -->
+    <!-- MODAL ORDEM V77 -->
     <div id="modalOrdem" class="modal">
         <div class="modal-content">
             <h3>Emitir Ordem (G10)</h3>
@@ -430,7 +473,7 @@
         </div>
     </div>
 
-    <!-- ================= TEMPLATE DO PDF (V76) ================= -->
+    <!-- ================= TEMPLATE DO PDF (V77) ================= -->
     <div id="pdf-template" style="display: none; background-color: #ffffff; color: #000000; font-family: Arial, sans-serif; width: 100%; max-width: 720px; margin: 0 auto; box-sizing: border-box; border: 2px solid #000000; padding: 15px;">
         
         <!-- CABEÇALHO G10 -->
@@ -533,6 +576,55 @@
         let motoristasCacheGlobal = {};
         let ordensCacheGlobal = {};
         let arquivosAnexadosTemp = {};
+        
+        let usuarioLogado = localStorage.getItem('dro_usuario') || "";
+
+        // --- SISTEMA DE LOGIN ---
+        function verificarSessao() {
+            if (!usuarioLogado) {
+                document.getElementById('modalLogin').style.display = 'flex';
+            } else {
+                document.getElementById('modalLogin').style.display = 'none';
+                document.getElementById('spanUsuarioLogado').innerText = usuarioLogado;
+                
+                if (usuarioLogado === 'Diego') {
+                    document.getElementById('btnTabOrdens').innerText = "📋 Minhas Ordens (Diego)";
+                    document.getElementById('btnTabOrdensOutro').style.display = 'inline-block';
+                } else {
+                    document.getElementById('btnTabOrdens').innerText = "📋 Minhas Ordens";
+                    document.getElementById('btnTabOrdensOutro').style.display = 'none';
+                }
+            }
+        }
+
+        function fazerLogin() {
+            let u = document.getElementById('loginUsuario').value;
+            let s = document.getElementById('loginSenha').value;
+
+            let senhasValidas = {
+                'Diego': '123',
+                'Auxiliar': '456'
+            };
+
+            if (senhasValidas[u] && senhasValidas[u] === s) {
+                localStorage.setItem('dro_usuario', u);
+                usuarioLogado = u;
+                document.getElementById('loginSenha').value = "";
+                verificarSessao();
+                location.reload();
+            } else {
+                alert("Senha incorreta!");
+            }
+        }
+
+        function fazerLogout() {
+            localStorage.removeItem('dro_usuario');
+            location.reload();
+        }
+
+        window.onload = function() {
+            verificarSessao();
+        };
 
         function trocarTab(tab) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
@@ -625,9 +717,13 @@
         });
 
         function renderizarOrdens() {
-            const tbody = document.getElementById('lista-ordens-emitidas');
-            if(!tbody) return;
-            tbody.innerHTML = "";
+            const tbodyMinhas = document.getElementById('lista-ordens-emitidas');
+            const tbodyOutro = document.getElementById('lista-ordens-outro');
+            if(!tbodyMinhas) return;
+
+            tbodyMinhas.innerHTML = "";
+            if(tbodyOutro) tbodyOutro.innerHTML = "";
+
             let dtIni = document.getElementById('filtroOrdDataIni').value;
             let dtFim = document.getElementById('filtroOrdDataFim').value;
             let ordensArray = Object.keys(ordensCacheGlobal).map(key => { return { id: key, ...ordensCacheGlobal[key] }; });
@@ -646,7 +742,9 @@
                 let badge = o.status === 'finalizada' ? `<span class="status-badge status-finalizada">Finalizada</span>` : `<span class="status-badge status-pendente">Pendente</span>`;
                 let botaoFinalizar = o.status !== 'finalizada' ? `<button class="btn-acao" style="background: #28a745;" onclick="finalizarOrdem('${o.id}')">Dar Baixa</button>` : '';
 
-                tbody.innerHTML += `<tr>
+                let criadorOrdem = o.criadoPor || 'Diego';
+
+                let linhaHTML = `<tr>
                     <td>${dataFormatada}</td>
                     <td><strong>${motNome}</strong></td>
                     <td>${origemDestino}</td>
@@ -658,6 +756,19 @@
                         <button class="btn-acao" style="background: #ff4d4d;" onclick="excluirOrdem('${o.id}')">Excluir</button>
                     </td>
                 </tr>`;
+
+                if (criadorOrdem === usuarioLogado) {
+                    tbodyMinhas.innerHTML += linhaHTML;
+                } else if (usuarioLogado === 'Diego' && criadorOrdem === 'Auxiliar') {
+                    if(tbodyOutro) tbodyOutro.innerHTML += linhaHTML;
+                }
+            }
+
+            if(tbodyMinhas.innerHTML === "") {
+                tbodyMinhas.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 15px; color: #a0b2c6;">Nenhuma ordem encontrada para o seu usuário.</td></tr>`;
+            }
+            if(tbodyOutro && tbodyOutro.innerHTML === "" && usuarioLogado === 'Diego') {
+                tbodyOutro.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 15px; color: #a0b2c6;">Nenhuma ordem emitida pelo Auxiliar.</td></tr>`;
             }
         }
 
@@ -911,7 +1022,6 @@
             document.getElementById('ordemSelectMot').value = "";
             document.getElementById('ordemPesoCarga').value = "";
             
-            // Sugere valores iniciais da carga, mas deixa 100% livre para editar ou apagar
             let c = cargasCacheGlobal[cargaId] || {};
             let vlrEmp = parseFloat(c.valor || 0);
             let vlrMotSug = c.valorMot !== undefined ? parseFloat(c.valorMot) : (vlrEmp * 0.9);
@@ -937,6 +1047,7 @@
                 peso: peso, 
                 freteMotManual: freteMot,
                 obsManual: obsManual,
+                criadoPor: usuarioLogado,
                 dataCriacao: new Date().toISOString(), 
                 status: 'pendente' 
             };
@@ -977,13 +1088,10 @@
             document.getElementById('pdf-cpfm').innerText = m.cpfM || '';
             document.getElementById('pdf-tel').innerText = m.zap || '';
             
-            // Usa exatamente o que foi digitado manualmente na ordem
             document.getElementById('pdf-obs').innerText = o.obsManual || '';
 
             document.getElementById('pdf-peso-detalhe').innerText = o.peso || 'N/A';
             document.getElementById('pdf-produto-detalhe').innerText = c.produto || '';
-            
-            // Usa o frete manual digitado na ordem
             document.getElementById('pdf-vlr-mot-detalhe').innerText = o.freteMotManual || '0,00';
             
             let element = document.getElementById('pdf-template');
